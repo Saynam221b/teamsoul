@@ -1,68 +1,49 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useRef } from "react";
 import { getEras } from "@/data/helpers";
 import EraCard from "./EraCard";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 export default function EraTimeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const eras = getEras();
 
   return (
-    <section
-      id="era-timeline"
-      ref={containerRef}
-      className="relative py-24 md:py-36 px-4"
-    >
-      {/* Section Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        className="text-center mb-20"
-      >
-        <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
-          The Journey
-        </h2>
-        <p className="mt-3 text-text-secondary text-sm max-w-lg mx-auto">
-          From the founding five in December 2018 to the BGIS 2026
-          championship — every strategic pivot, roster fracture, and triumphant
-          rebuild.
-        </p>
-      </motion.div>
+    <section id="era-timeline" className="archive-section">
+      <div className="page-wrap">
+        <RevealOnScroll className="section-head">
+          <p className="section-kicker">Team Legacy</p>
+          <h2 className="section-title">Every era pushed the story further</h2>
+          <p className="section-copy">
+            Team SOUL&apos;s journey is bigger than one roster or one title. These eras show how the
+            identity evolved while the standard stayed the same.
+          </p>
+        </RevealOnScroll>
 
-      {/* Vertical Timeline */}
-      <div className="relative max-w-3xl mx-auto">
-        {/* Vertical line */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border-subtle md:-translate-x-px" />
-
-        {/* Era Cards along the line */}
-        <div className="space-y-16">
-          {eras.map((era, index) => (
-            <div
-              key={era.id}
-              className={`relative flex items-start gap-8 ${
-                index % 2 === 0
-                  ? "md:flex-row"
-                  : "md:flex-row-reverse"
-              }`}
-            >
-              {/* Dot milestone */}
-              <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-background z-10 mt-6" />
-
-              {/* Spacer for dot on mobile */}
-              <div className="w-8 shrink-0 md:hidden" />
-
-              {/* Card (half-width on desktop) */}
-              <div className="flex-1 md:w-[calc(50%-2rem)]">
-                <EraCard era={era} index={index} />
+        <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+          <RevealOnScroll as="div" delay={0.1}>
+            <aside className="utility-panel rounded-[24px] p-5 lg:sticky lg:top-28 lg:h-fit">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-text-muted">Timeline</p>
+              <div className="mt-6 space-y-4">
+                {eras.map((era, index) => (
+                  <div key={era.id} className="border-l border-border-subtle pl-4">
+                    <p className="font-display text-3xl uppercase leading-none text-white">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.2em] text-text-secondary">
+                      {era.yearRange[0]}-{era.yearRange[1]}
+                    </p>
+                    <p className="mt-2 text-sm text-text-muted">{era.name}</p>
+                  </div>
+                ))}
               </div>
+            </aside>
+          </RevealOnScroll>
 
-              {/* Invisible spacer for alternation on desktop */}
-              <div className="hidden md:block flex-1" />
-            </div>
-          ))}
+          <div className="space-y-6">
+            {eras.map((era, index) => (
+              <EraCard key={era.id} era={era} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

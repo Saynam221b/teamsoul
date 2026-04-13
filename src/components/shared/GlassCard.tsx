@@ -19,8 +19,8 @@ export default function Card({
     <div
       onClick={onClick}
       className={`
-        card
-        ${hover ? "card-hover" : ""}
+        archive-panel rounded-[24px]
+        ${hover ? "transition-transform duration-200 hover:-translate-y-0.5" : ""}
         ${onClick ? "cursor-pointer" : ""}
         ${className}
       `}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Inter, Teko } from "next/font/google";
 import "./globals.css";
+import AppLoader from "@/components/layout/AppLoader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -8,19 +9,19 @@ const inter = Inter({
   display: "swap",
 });
 
-const sora = Sora({
-  variable: "--font-sora",
+const teko = Teko({
+  variable: "--font-teko",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Team SouL — Archive | 2018–2026 Esports History",
+  title: "Team SOUL | Bharat Ki Sarvashreshth Team",
   description:
-    "The definitive historical archive of Team SouL esports. 80+ tournaments, 30+ players, $718K in earnings. From the OG Era to the BGIS 2026 championship.",
+    "Team SOUL's official legacy experience featuring championships, iconic rosters, defining eras, and the achievements that shaped Indian BGMI.",
   keywords: [
-    "Team SouL",
+    "Team SOUL",
     "S8UL Esports",
     "BGMI",
     "PUBG Mobile",
@@ -32,9 +33,9 @@ export const metadata: Metadata = {
     "BGIS 2026",
   ],
   openGraph: {
-    title: "Team SouL — Archive",
+    title: "Team SOUL",
     description:
-      "The definitive historical archive of Team SouL esports. 2018–2026.",
+      "Bharat Ki Sarvashreshth Team, Team SOUL. Explore the championships, roster legacy, and defining achievements.",
     type: "website",
   },
 };
@@ -47,9 +48,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${sora.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${inter.variable} ${teko.variable} h-full antialiased`}
+      style={{ colorScheme: "dark" }}
     >
-      <body className="min-h-full flex flex-col">
+      <head>
+        <meta name="theme-color" content="#020305" />
+      </head>
+      <body className="min-h-full flex flex-col bg-[#020305] text-foreground">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+        <AppLoader />
         {children}
       </body>
     </html>

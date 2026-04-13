@@ -1,93 +1,64 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { getWins } from "@/data/helpers";
 import TrophyCard from "./TrophyCard";
-import StatCounter from "../shared/StatCounter";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 export default function TrophyRoom() {
   const wins = getWins();
-
-  // Separate major wins (A-Tier+) from minor wins
-  const majorWins = wins.filter(
-    (w) => w.tier === "S-Tier" || w.tier === "A-Tier"
-  );
-  const otherWins = wins.filter(
-    (w) => w.tier !== "S-Tier" && w.tier !== "A-Tier"
-  );
-
-  const totalWinPrize = wins.reduce((sum, w) => sum + (w.prize ?? 0), 0);
+  const headlineWins = wins.filter((w) => w.tier === "S-Tier" || w.tier === "A-Tier").slice(0, 3);
+  const archiveWins = wins.filter((w) => w.tier !== "S-Tier" && w.tier !== "A-Tier").slice(0, 4);
 
   return (
-    <section id="trophy-room" className="py-24 md:py-36 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-14"
-        >
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
-            Championships
-          </h2>
-          <p className="mt-3 text-text-secondary text-sm max-w-lg mx-auto">
-            Every 1st place finish. Every championship trophy. The complete
-            record of Team SouL&apos;s competitive victories.
+    <section id="trophy-room" className="archive-section">
+      <div className="page-wrap">
+        <RevealOnScroll className="section-head">
+          <p className="section-kicker">Championship Wall</p>
+          <h2 className="section-title">Titles that made Team SOUL iconic</h2>
+          <p className="section-copy">
+            Some wins become part of the record. Others become part of the identity. These are the
+            championships fans remember first.
           </p>
-        </motion.div>
+        </RevealOnScroll>
 
-        {/* Win Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center gap-14 mb-16"
-        >
-          <StatCounter
-            value={wins.length}
-            label="Total Victories"
-          />
-          <StatCounter
-            value={totalWinPrize}
-            prefix="$"
-            label="Prize from Wins"
-          />
-        </motion.div>
-
-        {/* Major Wins */}
-        {majorWins.length > 0 && (
-          <div className="mb-14">
-            <div className="flex items-center gap-4 mb-6">
-              <h3 className="font-display text-xl font-bold text-text-primary">
-                Major Championships
-              </h3>
-              <div className="flex-1 h-px bg-border-subtle" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {majorWins.map((t, i) => (
-                <TrophyCard key={t.id} tournament={t} index={i} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Other Wins */}
-        {otherWins.length > 0 && (
+        <div className="space-y-12">
           <div>
-            <div className="flex items-center gap-4 mb-6">
-              <h3 className="font-display text-xl font-bold text-text-primary">
-                All Victories
+            <RevealOnScroll className="mb-5 flex items-center justify-between gap-3">
+              <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                Headline titles
               </h3>
-              <div className="flex-1 h-px bg-border-subtle" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {otherWins.map((t, i) => (
-                <TrophyCard key={t.id} tournament={t} index={i} />
+              <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+                Curated
+              </span>
+            </RevealOnScroll>
+            <div className="results-grid">
+              {headlineWins.map((tournament, index) => (
+                <TrophyCard
+                  key={tournament.id}
+                  tournament={tournament}
+                  index={index}
+                  featured={index === 0}
+                />
               ))}
             </div>
           </div>
-        )}
+
+          <div>
+            <RevealOnScroll className="mb-5 flex items-center justify-between gap-3">
+              <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                Further title runs
+              </h3>
+              <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+                Selected
+              </span>
+            </RevealOnScroll>
+            <div className="bento-grid">
+              {archiveWins.map((tournament, index) => (
+                <TrophyCard key={tournament.id} tournament={tournament} index={index} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

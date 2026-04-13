@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type { Player } from "@/data/types";
-import Card from "../shared/GlassCard";
 import { formatDate } from "@/data/helpers";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface PlayerCardProps {
   player: Player;
@@ -11,110 +10,89 @@ interface PlayerCardProps {
 }
 
 const STATUS_STYLES = {
-  active: { color: "text-emerald-400", bg: "bg-emerald-400/8", dot: "bg-emerald-400" },
-  retired: { color: "text-amber-400", bg: "bg-amber-400/8", dot: "bg-amber-400" },
-  departed: { color: "text-text-muted", bg: "bg-white/5", dot: "bg-text-muted" },
+  active: "text-accent",
+  retired: "text-[#f3c76a]",
+  departed: "text-text-secondary",
 };
 
 export default function PlayerCard({ player, index }: PlayerCardProps) {
-  const style = STATUS_STYLES[player.currentStatus];
   const latestStint = player.stints[player.stints.length - 1];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ delay: Math.min(index * 0.04, 0.4), duration: 0.4 }}
+    <RevealOnScroll
+      as="article"
+      delay={Math.min(index * 0.04, 0.24)}
+      distance={20}
+      margin="-30px"
+      className="archive-panel group rounded-[28px] p-5"
     >
-      <Card hover className="h-full flex flex-col group">
-        {/* Avatar + Name */}
-        <div className="flex items-start gap-4 mb-4">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className={`
-              avatar-grayscale
-              w-12 h-12 rounded-xl flex items-center justify-center font-display text-lg font-bold
-              ${player.isActive ? "bg-accent-dim text-accent" : "bg-surface-elevated text-text-muted"}
-              ${player.isFounder ? "ring-1 ring-amber-500/20" : ""}
-            `}
+            className={`avatar-grayscale flex h-16 w-16 items-center justify-center rounded-full border font-display text-3xl uppercase ${
+              player.isFounder
+                ? "border-[#f3c76a]/30 bg-[#f3c76a]/10 text-[#f3c76a]"
+                : "border-white/10 bg-white/5 text-white"
+            }`}
           >
-            {player.displayName.slice(0, 2).toUpperCase()}
+            {player.displayName.slice(0, 2)}
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <h3 className="font-display text-base font-bold text-text-primary truncate">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-display text-4xl uppercase leading-none text-white">
                 {player.displayName}
               </h3>
               {player.isFounder && (
-                <span className="text-[9px] font-medium text-amber-400 bg-amber-400/8 px-1.5 py-0.5 rounded-md uppercase tracking-wider">
+                <span className="rounded-full border border-[#f3c76a]/30 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-[#f3c76a]">
                   Founder
                 </span>
               )}
             </div>
-            {player.realName && (
-              <p className="text-xs text-text-muted truncate">{player.realName}</p>
-            )}
+            <p className="mt-1 text-sm text-text-muted">{player.realName}</p>
           </div>
         </div>
 
-        {/* Role & Status */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-text-secondary">{player.role}</span>
-          <span
-            className={`tag ${style.bg} ${style.color}`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-            {player.currentStatus}
-          </span>
+        <span className={`text-[10px] uppercase tracking-[0.18em] ${STATUS_STYLES[player.currentStatus]}`}>
+          {player.currentStatus}
+        </span>
+      </div>
+
+      <p className="text-[11px] uppercase tracking-[0.22em] text-text-muted">Role</p>
+      <p className="mt-2 text-base text-text-secondary">{player.role}</p>
+
+      <div className="mt-5 grid gap-3 border-t border-white/8 pt-5 sm:grid-cols-2">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Joined</p>
+          <p className="mt-1 text-sm text-text-secondary">{formatDate(latestStint.joinDate)}</p>
         </div>
-
-        {/* Stint Info */}
-        <div className="text-xs text-text-muted mb-3">
-          <div className="flex justify-between">
-            <span>Joined: {formatDate(latestStint.joinDate)}</span>
-            <span>
-              {latestStint.leaveDate
-                ? `Left: ${formatDate(latestStint.leaveDate)}`
-                : "Present"}
-            </span>
-          </div>
-          {player.stints.length > 1 && (
-            <span className="text-accent mt-1 block">
-              {player.stints.length} stints
-            </span>
-          )}
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Current</p>
+          <p className="mt-1 text-sm text-text-secondary">
+            {latestStint.leaveDate ? formatDate(latestStint.leaveDate) : "Active now"}
+          </p>
         </div>
+      </div>
 
-        {/* Awards */}
-        {player.awards.length > 0 && (
-          <div className="mb-3">
-            <span className="text-[10px] text-text-muted uppercase tracking-wider">
-              Awards ({player.awards.length})
-            </span>
-            <div className="mt-1 flex flex-wrap gap-1">
-              {player.awards.slice(0, 3).map((award, i) => (
-                <span
-                  key={i}
-                  className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/8 text-amber-400"
-                >
-                  {award.name}
-                </span>
-              ))}
-              {player.awards.length > 3 && (
-                <span className="text-[10px] text-text-muted">
-                  +{player.awards.length - 3} more
-                </span>
-              )}
-            </div>
+      {player.awards.length > 0 && (
+        <div className="mt-5 border-t border-white/8 pt-5">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Awards</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {player.awards.slice(0, 3).map((award, awardIndex) => (
+              <span
+                key={`${player.id}-${awardIndex}`}
+                className="rounded-full border border-white/10 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-text-secondary"
+              >
+                {award.name}
+              </span>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Impact */}
-        <p className="text-xs text-text-secondary leading-relaxed mt-auto line-clamp-3">
-          {player.impact}
-        </p>
-      </Card>
-    </motion.div>
+      <p className="mt-5 border-t border-white/8 pt-5 text-sm leading-7 text-text-secondary">
+        {player.impact}
+      </p>
+    </RevealOnScroll>
   );
 }

@@ -1,94 +1,80 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type { Era } from "@/data/types";
 import { getPlayerById } from "@/data/helpers";
-import Card from "../shared/GlassCard";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface EraCardProps {
   era: Era;
   index: number;
 }
 
-const OUTCOME_STYLES: Record<
-  string,
-  { color: string; bg: string; label: string }
-> = {
-  triumph: { color: "text-emerald-400", bg: "bg-emerald-400/8", label: "TRIUMPH" },
-  decline: { color: "text-red-400", bg: "bg-red-400/8", label: "DECLINE" },
-  rebuild: { color: "text-amber-400", bg: "bg-amber-400/8", label: "REBUILD" },
-  dominance: { color: "text-sky-400", bg: "bg-sky-400/8", label: "DOMINANCE" },
+const OUTCOME_STYLES: Record<string, string> = {
+  triumph: "bg-[rgba(57,255,20,0.08)] text-[#39ff14]",
+  decline: "bg-[rgba(107,114,128,0.12)] text-[#9ca3af]",
+  rebuild: "bg-[rgba(0,229,255,0.08)] text-[#00e5ff]",
+  dominance: "bg-[rgba(0,229,255,0.08)] text-[#00e5ff]",
 };
 
 export default function EraCard({ era, index }: EraCardProps) {
-  const style = OUTCOME_STYLES[era.outcome] || OUTCOME_STYLES.rebuild;
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
+    <RevealOnScroll
+      as="article"
+      delay={Math.min(index * 0.06, 0.22)}
+      distance={24}
+      margin="-50px"
+      className="timeline-era-row rounded-[24px] p-5 md:p-6"
     >
-      <Card className="h-full flex flex-col">
-        {/* Era Number + Year Range */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-[10px] text-text-muted uppercase tracking-widest">
+      <div className="grid gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">
+        <div className="border-b border-border-subtle pb-5 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+          <p className="text-[11px] uppercase tracking-[0.24em] text-text-muted">
             Era {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="text-xs font-medium text-accent">
-            {era.yearRange[0]}–{era.yearRange[1]}
+          </p>
+          <p className="mt-3 font-display text-5xl uppercase leading-none text-white">
+            {era.yearRange[0]}
+          </p>
+          <p className="font-display text-3xl uppercase leading-none text-text-muted">
+            {era.yearRange[1]}
+          </p>
+          <span
+            className={`mt-5 inline-flex rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] ${OUTCOME_STYLES[era.outcome] ?? OUTCOME_STYLES.rebuild}`}
+          >
+            {era.outcome}
           </span>
         </div>
 
-        {/* Era Name */}
-        <h3 className="font-display text-lg font-bold text-text-primary mb-2 leading-tight">
-          {era.name}
-        </h3>
+        <div>
+          <h3 className="font-display text-5xl uppercase leading-[0.88] text-white md:text-6xl">
+            {era.name}
+          </h3>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-text-secondary">{era.description}</p>
 
-        {/* Outcome Badge */}
-        <span
-          className={`tag w-fit mb-3 ${style.bg} ${style.color}`}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-current" />
-          {style.label}
-        </span>
+          <div className="mt-7 grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-[18px] border border-border-subtle bg-white/[0.01] p-5">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-text-muted">
+                Defining moment
+              </p>
+              <p className="mt-3 text-sm leading-7 text-text-secondary">{era.definingMoment}</p>
+            </div>
 
-        {/* Description */}
-        <p className="text-text-secondary text-xs leading-relaxed mb-4 flex-1">
-          {era.description}
-        </p>
-
-        {/* Key Players */}
-        <div className="pt-3 border-t border-border-subtle">
-          <span className="text-[10px] text-text-muted uppercase tracking-wider">
-            Key Roster
-          </span>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {era.keyPlayers.slice(0, 5).map((playerId) => {
-              const player = getPlayerById(playerId);
-              return (
-                <span
-                  key={playerId}
-                  className="text-[11px] px-2 py-0.5 rounded-md bg-surface-elevated text-text-secondary"
-                >
-                  {player?.displayName || playerId}
-                </span>
-              );
-            })}
+            <div className="rounded-[18px] border border-border-subtle bg-white/[0.01] p-5">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-text-muted">
+                Core players
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {era.keyPlayers.slice(0, 6).map((playerId) => (
+                  <span
+                    key={playerId}
+                    className="rounded-full border border-border-subtle px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-text-secondary"
+                  >
+                    {getPlayerById(playerId)?.displayName ?? playerId}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Defining Moment */}
-        <div className="mt-3 pt-3 border-t border-border-subtle">
-          <span className="text-[10px] text-text-muted uppercase tracking-wider">
-            Defining Moment
-          </span>
-          <p className="mt-1 text-xs text-text-secondary leading-relaxed">
-            {era.definingMoment}
-          </p>
-        </div>
-      </Card>
-    </motion.div>
+      </div>
+    </RevealOnScroll>
   );
 }

@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "upload:bgmi-assets": "node scripts/upload_blob_assets.mjs",
+    "db:apply-schema:supabase": "node scripts/apply_schema_to_postgres.mjs",
+    "db:migrate:supabase": "node scripts/migrate_data_to_supabase.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
     "framer-motion": "^12.38.0",
     "next": "16.2.3",
+    "pg": "^8.20.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

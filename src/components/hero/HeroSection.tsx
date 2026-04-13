@@ -1,118 +1,142 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
 import Image from "next/image";
-import StatCounter from "../shared/StatCounter";
 import { getOrganization, getStats } from "@/data/helpers";
+import { homeHeroContent } from "@/data/presentation";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
+
+const heroStats = (org: ReturnType<typeof getOrganization>, wins: number) => [
+  { label: "Major wins", value: wins.toString().padStart(2, "0") },
+  { label: "Tournaments tracked", value: org.totalTournaments.toString() },
+  { label: "Peak viewers", value: org.peakViewership.toLocaleString("en-US") },
+  { label: "Approx earnings", value: `$${org.totalEarnings.toLocaleString("en-US")}` },
+];
 
 export default function HeroSection() {
   const org = getOrganization();
   const stats = getStats();
+  const marqueeStats = heroStats(org, stats.totalWins);
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4"
-    >
-      {/* Subtle background gradient — barely visible */}
-      <div className="absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 40%, rgba(226, 29, 39, 0.04) 0%, transparent 60%)",
-          }}
-        />
-      </div>
+    <section className="hero-section relative overflow-hidden pt-28 md:pt-32">
+      <div className="page-wrap">
+        <div className="hero-stage relative px-2 pb-6 pt-6 md:px-4 md:pb-8 lg:px-6 lg:pt-10">
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(0,229,255,0.16),transparent_30%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_10%,rgba(57,255,20,0.05),transparent_24%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(232,234,237,0.03),transparent_34%,transparent_72%,rgba(0,229,255,0.04))]" />
+          </div>
 
-      {/* Logo — clean, no pulse */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-      >
-        <div className="relative w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-2xl overflow-hidden bg-surface-card flex items-center justify-center border border-border-subtle">
-          <Image
-            src="/logo.png"
-            alt="Team SouL Logo"
-            width={160}
-            height={160}
-            className="object-contain p-4"
-            priority
-          />
+          <div className="relative z-10 flex flex-col gap-10">
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+              <RevealOnScroll distance={24} margin="-20px">
+                <div className="max-w-3xl">
+                  <span className="eyebrow-pill">{homeHeroContent.eyebrow}</span>
+                  <h1 className="hero-title mt-6 font-display uppercase text-white">
+                    Team Soul
+                    <span className="hero-tagline mt-3 block text-text-secondary">
+                      {homeHeroContent.title}
+                    </span>
+                  </h1>
+                  <p className="hero-copy mt-5 max-w-2xl text-text-secondary md:text-lg">
+                    {homeHeroContent.description}
+                  </p>
+
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <Link href={homeHeroContent.primaryCta.href} className="button-primary">
+                      {homeHeroContent.primaryCta.label}
+                    </Link>
+                    <Link href={homeHeroContent.secondaryCta.href} className="button-secondary">
+                      {homeHeroContent.secondaryCta.label}
+                    </Link>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              <RevealOnScroll delay={0.1} distance={24} margin="-20px">
+                <div className="flex flex-col justify-end gap-6 lg:pl-8">
+                  <div className="hero-highlight relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(0,229,255,0.18),transparent_34%)]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(232,234,237,0.015),rgba(5,7,10,0.34))]" />
+
+                    <div className="relative z-10 flex min-h-[300px] flex-col justify-between p-6 md:min-h-[360px] md:p-8">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[11px] uppercase tracking-[0.26em] text-accent">
+                            Featured Championship
+                          </p>
+                          <h2 className="mt-4 max-w-sm font-display text-4xl uppercase leading-[0.9] text-white md:text-5xl">
+                            BGIS 2026 Grand Finals
+                          </h2>
+                        </div>
+                        <div className="hero-badge">
+                          <span>Champion</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-end justify-between gap-6">
+                        <div className="max-w-sm">
+                          <p className="text-sm leading-7 text-text-secondary">
+                            The newest crown in Team SOUL&apos;s story. A modern title run built on
+                            pressure, control, and championship composure.
+                          </p>
+                        </div>
+
+                        <div className="relative hidden h-28 w-28 shrink-0 md:block">
+                          <Image
+                            src="/logo.png"
+                            alt="Team SOUL logo"
+                            fill
+                            sizes="112px"
+                            priority
+                            className="object-contain drop-shadow-[0_0_28px_rgba(0,229,255,0.18)]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="hero-note">
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-text-muted">
+                        Legacy
+                      </p>
+                      <p className="mt-2 text-sm leading-7 text-text-secondary">
+                        Years of elite rosters, iconic calls, and tournament-winning discipline.
+                      </p>
+                    </div>
+                    <div className="hero-note">
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-text-muted">
+                        Reputation
+                      </p>
+                      <p className="mt-2 text-sm leading-7 text-text-secondary">
+                        A fan-first website that presents Team SOUL the way the audience already sees
+                        them: the benchmark.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            </div>
+
+            <RevealOnScroll delay={0.2} distance={20} margin="-20px" className="mt-2">
+              <div className="stat-marquee">
+                {marqueeStats.map((item) => (
+                  <div key={item.label}>
+                    <p className="font-display text-4xl uppercase leading-none tracking-[0.06em] text-white md:text-5xl">
+                      {item.value}
+                    </p>
+                    <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-text-muted">
+                      {item.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </RevealOnScroll>
+          </div>
         </div>
-      </motion.div>
-
-      {/* Headline */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        className="mt-10 text-center"
-      >
-        <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-800 tracking-tight text-text-primary">
-          A Legacy in Motion.
-        </h1>
-        <p className="mt-3 text-sm md:text-base text-text-muted tracking-[0.2em] uppercase">
-          Team SouL · Est. 2018
-        </p>
-      </motion.div>
-
-      {/* Subtext */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-        className="mt-6 max-w-xl text-center text-text-secondary text-sm md:text-base leading-relaxed"
-      >
-        The definitive historical record of India&apos;s most storied mobile
-        esports dynasty. From the founding five to the BGIS 2026 championship.
-      </motion.p>
-
-      {/* Stat Counters */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.6 }}
-        className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-14"
-      >
-        <StatCounter
-          value={org.totalEarnings}
-          prefix="$"
-          label="Total Earnings"
-        />
-        <StatCounter
-          value={stats.totalWins}
-          label="Championships"
-        />
-        <StatCounter
-          value={org.peakViewership}
-          label="Peak Viewers"
-        />
-        <StatCounter
-          value={org.totalTournaments}
-          label="Tournaments"
-        />
-      </motion.div>
-
-      {/* Scroll CTA */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-10 flex flex-col items-center gap-2"
-      >
-        <span className="text-[10px] text-text-muted uppercase tracking-widest">
-          Scroll to explore
-        </span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
-          className="w-5 h-8 rounded-full border border-border-subtle flex items-start justify-center pt-1.5"
-        >
-          <div className="w-1 h-1.5 rounded-full bg-text-muted" />
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

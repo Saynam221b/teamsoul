@@ -74,6 +74,10 @@ export interface Tournament {
   placement: number | string;
   prize: number | null;
   isWin: boolean;
+  status?: "completed" | "upcoming" | "live";
+  eventDate?: string;
+  location?: string;
+  details?: string;
   roster?: string[];
   awards?: Award[];
 }
@@ -109,10 +113,10 @@ export interface AggregateStats {
 
 // Tier color mapping — muted professional palette
 export const TIER_COLORS: Record<string, { bg: string; text: string; glow: string }> = {
-  "S-Tier": { bg: "bg-amber-500/8", text: "text-amber-400", glow: "" },
-  "A-Tier": { bg: "bg-sky-500/8", text: "text-sky-400", glow: "" },
-  "B-Tier": { bg: "bg-emerald-500/8", text: "text-emerald-400", glow: "" },
-  "C-Tier": { bg: "bg-zinc-500/8", text: "text-zinc-400", glow: "" },
-  "Qualifier": { bg: "bg-violet-500/8", text: "text-violet-400", glow: "" },
-  "Showmatch": { bg: "bg-rose-500/8", text: "text-rose-400", glow: "" },
+  "S-Tier": { bg: "bg-cyan-400/10", text: "text-cyan-300", glow: "" },
+  "A-Tier": { bg: "bg-cyan-400/8", text: "text-cyan-300", glow: "" },
+  "B-Tier": { bg: "bg-lime-400/10", text: "text-lime-300", glow: "" },
+  "C-Tier": { bg: "bg-zinc-500/10", text: "text-zinc-400", glow: "" },
+  "Qualifier": { bg: "bg-zinc-500/10", text: "text-zinc-400", glow: "" },
+  "Showmatch": { bg: "bg-zinc-500/10", text: "text-zinc-300", glow: "" },
 };

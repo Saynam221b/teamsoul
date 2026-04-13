@@ -1,35 +1,116 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import TournamentDash from "@/components/tournaments/TournamentDash";
+import { getTournamentsFromDb } from "@/lib/db/tournaments";
+import { formatPrize } from "@/data/helpers";
+import dynamic from "next/dynamic";
+
+const TournamentDash = dynamic(() => import("@/components/tournaments/TournamentDash"), { ssr: true });
 
 export const metadata: Metadata = {
-  title: "Tournament History — Team SouL Archive",
+  title: "Tournament History — Team SOUL Archive",
   description:
-    "Complete tournament history of Team SouL. 80+ verified tournaments from 2019 to 2026 with placements, prizes, and roster data.",
+    "Simple tournament history of Team SOUL with placements, status, and approx price details.",
 };
 
-export default function TournamentsPage() {
-  return (
-    <>
-      <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Page Header */}
-          <div className="mb-10">
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
-              Tournament History
-            </h1>
-            <p className="mt-3 text-text-secondary text-sm max-w-lg">
-              Every verified tournament placement, prize pool, and roster from 2018 to
-              April 2026. Filter by tier, year, or browse championships only.
-            </p>
-          </div>
+export default async function TournamentsPage() {
+  const tournaments = await getTournamentsFromDb();
+  const completed = tournaments.filter((item) => item.status !== "upcoming");
+  const wins = completed.filter((item) => item.isWin);
+  const upcoming = tournaments.filter((item) => item.status === "upcoming");
+  const totalPrize = completed.reduce((sum, item) => sum + (item.prize ?? 0), 0);
+  const latestYear = completed.reduce((latest, item) => Math.max(latest, item.year), 0);
 
-          <TournamentDash />
-        </div>
+  return (
+    <div className="archive-shell">
+      <Navbar />
+      <main id="main-content" className="flex-1 pt-28 md:pt-32">
+        <section className="archive-section !pt-0">
+          <div className="page-wrap">
+            <div className="inner-hero rounded-[36px] px-6 py-8 md:px-10 md:py-10">
+              <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+                <div className="max-w-3xl">
+                  <p className="section-kicker">Tournament archive</p>
+                  <h1 className="section-title">Every campaign, every final table, one live command board</h1>
+                  <p className="section-copy">
+                    Team SOUL&apos;s tournament history should scan like a flagship archive, not a dump of
+                    records. This page leads with the scale of the run, then drops straight into filters and results.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <span className="hero-chip">Tracked through {latestYear || "today"}</span>
+                  <span className="hero-chip">{upcoming.length} upcoming event{upcoming.length !== 1 ? "s" : ""}</span>
+                </div>
+              </div>
+
+              <div className="section-divider mt-8" />
+
+              <div className="hero-stat-grid mt-8">
+                <article className="hero-stat-card">
+                  <p className="section-label">Completed events</p>
+                  <p className="font-display text-5xl uppercase leading-none text-white md:text-6xl">
+                    {completed.length}
+                  </p>
+                </article>
+                <article className="hero-stat-card">
+                  <p className="section-label">Title finishes</p>
+                  <p className="font-display text-5xl uppercase leading-none text-accent md:text-6xl">
+                    {wins.length}
+                  </p>
+                </article>
+                <article className="hero-stat-card">
+                  <p className="section-label">Approx prize tracked</p>
+                  <p className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                    {formatPrize(totalPrize)}
+                  </p>
+                </article>
+                <article className="hero-stat-card">
+                  <p className="section-label">Upcoming queue</p>
+                  <p className="font-display text-5xl uppercase leading-none text-[#f3c76a] md:text-6xl">
+                    {upcoming.length}
+                  </p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="archive-section !pt-0">
+          <div className="page-wrap">
+            <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="archive-panel rounded-[28px] p-6 md:p-7">
+                <p className="section-kicker">Archive signal</p>
+                <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                  Scan fast, then go deep
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-text-secondary">
+                  Recent users should understand immediately what this page is for: live schedule on top,
+                  championship cuts first, then every result grouped however they want to inspect it.
+                </p>
+              </div>
+
+              <div className="archive-panel rounded-[28px] p-6 md:p-7">
+                <p className="section-kicker">Best return</p>
+                <p className="font-display text-5xl uppercase leading-none text-white md:text-6xl">
+                  {wins[0]?.year ?? "—"}
+                </p>
+                <p className="mt-4 text-sm leading-7 text-text-secondary">
+                  The archive keeps the biggest wins visible first so the page still feels like Team SOUL,
+                  even when someone arrives here only to search one event.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="archive-section !pt-0">
+          <div className="page-wrap">
+            <TournamentDash tournaments={tournaments} />
+          </div>
+        </section>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

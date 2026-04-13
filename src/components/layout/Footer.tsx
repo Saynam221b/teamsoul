@@ -1,37 +1,36 @@
 "use client";
 
+import Link from "next/link";
+import { finalCtaContent } from "@/data/presentation";
+
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-border-subtle">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Branding */}
-          <span className="font-display text-xs font-600 tracking-[0.12em] text-text-secondary">
-            TEAM SOUL ARCHIVE
-          </span>
+    <footer className="mt-auto bg-transparent">
+      <section className="page-wrap py-16">
+        <div className="footer-callout px-6 py-8 md:px-10 md:py-10">
+          <p className="section-kicker">{finalCtaContent.eyebrow}</p>
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <h2 className="section-title">{finalCtaContent.title}</h2>
+              <p className="section-copy">{finalCtaContent.description}</p>
+            </div>
 
-          {/* Meta */}
-          <div className="flex items-center gap-6">
-            <span className="text-xs text-text-muted">
-              Est. 2018
-            </span>
-            <span className="text-xs text-text-dim">·</span>
-            <span className="text-xs text-text-muted">
-              Data verified Apr 2026
-            </span>
-          </div>
-
-          {/* Credits */}
-          <div className="text-xs text-text-muted">
-            Built by{" "}
-            <span className="text-accent">D3xTRverse</span>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href={finalCtaContent.primaryCta.href} className="button-primary">
+                {finalCtaContent.primaryCta.label}
+              </Link>
+              <Link href={finalCtaContent.secondaryCta.href} className="button-secondary">
+                {finalCtaContent.secondaryCta.label}
+              </Link>
+            </div>
           </div>
         </div>
 
-        <p className="mt-6 text-center text-[10px] text-text-dim uppercase tracking-widest">
-          All data sourced from Liquipedia, Esports Charts, and verified public records.
-        </p>
-      </div>
+        <div className="flex flex-col gap-3 py-8 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
+          <p className="uppercase tracking-[0.2em]">Team SOUL</p>
+          <p>Bharat Ki Sarvashreshth Team, Team SOUL</p>
+        </div>
+      </section>
     </footer>
   );
 }

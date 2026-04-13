@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { getAllTournaments, getWins, getYears } from "@/data/helpers";
 import type { Tournament } from "@/data/types";
 import TournamentCard from "./TournamentCard";
@@ -24,160 +24,181 @@ const TIER_FILTERS = [
   "Showmatch",
 ] as const;
 
-export default function TournamentDash() {
+export default function TournamentDash({ tournaments }: { tournaments?: Tournament[] }) {
   const [activeTab, setActiveTab] = useState<TabId>("championships");
   const [tierFilter, setTierFilter] = useState<string>("All");
   const [yearFilter, setYearFilter] = useState<number | null>(null);
 
-  const allTournaments = getAllTournaments();
-  const wins = getWins();
-  const years = getYears();
+  const staticData = useMemo(
+    () => getAllTournaments().map((item) => ({ ...item, status: "completed" as const })),
+    []
+  );
+
+  const source = useMemo(
+    () => (tournaments?.length ? tournaments : staticData),
+    [tournaments, staticData]
+  );
+
+  const allTournaments = useMemo(
+    () => source.filter((item) => item.status !== "upcoming"),
+    [source]
+  );
+
+  const upcomingTournaments = useMemo(
+    () => source.filter((item) => item.status === "upcoming"),
+    [source]
+  );
+
+  const wins = useMemo(
+    () => (tournaments?.length ? source : getWins()).filter((item) => item.isWin),
+    [source, tournaments]
+  );
+
+  const years = useMemo(() => {
+    if (!tournaments?.length) return getYears();
+    return Array.from(new Set(allTournaments.map((item) => item.year))).sort((a, b) => a - b);
+  }, [tournaments, allTournaments]);
 
   const filteredTournaments = useMemo(() => {
-    let base: Tournament[];
-
-    switch (activeTab) {
-      case "championships":
-        base = wins;
-        break;
-      case "all":
-      case "by-year":
-      default:
-        base = allTournaments;
-    }
+    let base: Tournament[] = activeTab === "championships" ? wins : allTournaments;
 
     if (tierFilter !== "All") {
-      base = base.filter((t) => t.tier === tierFilter);
+      base = base.filter((item) => item.tier === tierFilter);
     }
 
     if (yearFilter !== null) {
-      base = base.filter((t) => t.year === yearFilter);
+      base = base.filter((item) => item.year === yearFilter);
     }
 
     return base;
-  }, [activeTab, tierFilter, yearFilter, allTournaments, wins]);
+  }, [activeTab, tierFilter, yearFilter, wins, allTournaments]);
 
-  // Group by year for "By Year" tab
   const groupedByYear = useMemo(() => {
-    if (activeTab !== "by-year") return null;
-    const groups: Record<number, Tournament[]> = {};
-    filteredTournaments.forEach((t) => {
-      if (!groups[t.year]) groups[t.year] = [];
-      groups[t.year].push(t);
-    });
+    if (activeTab !== "by-year") return [];
+
+    const groups = filteredTournaments.reduce<Record<number, Tournament[]>>((acc, item) => {
+      if (!acc[item.year]) acc[item.year] = [];
+      acc[item.year].push(item);
+      return acc;
+    }, {});
+
     return Object.entries(groups)
       .sort(([a], [b]) => Number(b) - Number(a))
-      .map(([year, tournaments]) => ({
-        year: Number(year),
-        tournaments,
-      }));
+      .map(([year, items]) => ({ year: Number(year), tournaments: items }));
   }, [activeTab, filteredTournaments]);
 
   return (
     <div>
-      {/* Tabs — Clean underline style */}
-      <div className="flex items-center gap-0 mb-8 border-b border-border-subtle">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id);
-              setTierFilter("All");
-              setYearFilter(null);
-            }}
-            id={`tab-${tab.id}`}
-            className={`
-              relative px-5 py-3 text-sm font-medium transition-colors
-              ${activeTab === tab.id ? "text-text-primary" : "text-text-muted hover:text-text-secondary"}
-            `}
-          >
-            {tab.label}
-            {activeTab === tab.id && (
-              <motion.div
-                layoutId="tab-indicator"
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-accent"
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {/* Tier Filter */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {TIER_FILTERS.map((tier) => (
-            <button
-              key={tier}
-              onClick={() => setTierFilter(tier)}
-              className={`
-                text-[11px] font-medium uppercase tracking-wider px-3 py-1.5 rounded-md transition-colors
-                ${tierFilter === tier
-                  ? "bg-accent-dim text-accent border border-accent/20"
-                  : "bg-surface-card text-text-muted border border-border-subtle hover:text-text-secondary"
-                }
-              `}
-            >
-              {tier}
-            </button>
-          ))}
+      <section className="archive-panel mb-8 rounded-[32px] p-5 md:p-6">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-white/8 pb-5">
+          <div>
+            <p className="section-kicker">Upcoming events</p>
+            <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+              What&apos;s next
+            </h2>
+          </div>
+          <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+            {upcomingTournaments.length} scheduled
+          </span>
         </div>
 
-        {/* Year Filter */}
-        {activeTab !== "championships" && (
-          <select
-            value={yearFilter ?? ""}
-            onChange={(e) =>
-              setYearFilter(e.target.value ? Number(e.target.value) : null)
-            }
-            className="text-xs bg-surface-card text-text-secondary border border-border-subtle rounded-md px-3 py-1.5 focus:outline-none focus:border-accent/40"
-          >
-            <option value="">All Years</option>
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
+        {upcomingTournaments.length > 0 ? (
+          <div className="results-grid">
+            {upcomingTournaments.map((item, index) => (
+              <TournamentCard key={item.id} tournament={item} index={index} />
             ))}
-          </select>
+          </div>
+        ) : (
+          <p className="text-sm leading-7 text-text-muted">No upcoming tournaments yet.</p>
         )}
+      </section>
 
-        {/* Result Count */}
-        <span className="text-xs text-text-muted self-center ml-auto">
+      <section className="utility-panel sticky top-24 z-20 mb-8 rounded-[28px] p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap gap-2">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setTierFilter("All");
+                  setYearFilter(null);
+                }}
+                className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-white text-black"
+                    : "border border-white/10 text-text-secondary hover:text-white"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="ml-auto flex flex-wrap gap-2">
+            {TIER_FILTERS.map((tier) => (
+              <button
+                key={tier}
+                onClick={() => setTierFilter(tier)}
+                className={`rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                  tierFilter === tier
+                    ? "bg-accent text-white"
+                    : "border border-white/10 text-text-muted hover:text-white"
+                }`}
+              >
+                {tier}
+              </button>
+            ))}
+
+            {activeTab !== "championships" && (
+              <select
+                value={yearFilter ?? ""}
+                onChange={(e) => setYearFilter(e.target.value ? Number(e.target.value) : null)}
+                className="rounded-full border border-white/10 bg-transparent px-4 py-2 text-xs uppercase tracking-[0.18em] text-text-secondary outline-none"
+              >
+                <option value="">All Years</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+
+        <p className="mt-4 text-xs uppercase tracking-[0.18em] text-text-muted">
           {filteredTournaments.length} result{filteredTournaments.length !== 1 ? "s" : ""}
-        </span>
-      </div>
+        </p>
+      </section>
 
-      {/* Tournament Grid */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${activeTab}-${tierFilter}-${yearFilter}`}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
+          exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
         >
-          {activeTab === "by-year" && groupedByYear ? (
-            // Grouped by year
-            <div className="space-y-12">
-              {groupedByYear.map(({ year, tournaments }) => (
+          {activeTab === "by-year" ? (
+            <div className="space-y-10">
+              {groupedByYear.map(({ year, tournaments: items }) => (
                 <div key={year}>
-                  <div className="flex items-center gap-4 mb-4">
-                    <h3 className="font-display text-2xl font-bold text-text-primary">
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
                       {year}
                     </h3>
-                    <div className="flex-1 h-px bg-border-subtle" />
-                    <span className="text-xs text-text-muted">
-                      {tournaments.length} tournaments
+                    <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+                      {items.length} tournaments
                     </span>
                   </div>
                   <div className="bento-grid">
-                    {tournaments.map((t, i) => (
+                    {items.map((item, index) => (
                       <TournamentCard
-                        key={t.id}
-                        tournament={t}
-                        index={i}
-                        featured={t.isWin && (t.tier === "A-Tier" || t.tier === "S-Tier")}
+                        key={item.id}
+                        tournament={item}
+                        index={index}
+                        featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
                       />
                     ))}
                   </div>
@@ -185,24 +206,21 @@ export default function TournamentDash() {
               ))}
             </div>
           ) : (
-            // Flat grid
             <div className="bento-grid">
-              {filteredTournaments.map((t, i) => (
+              {filteredTournaments.map((item, index) => (
                 <TournamentCard
-                  key={t.id}
-                  tournament={t}
-                  index={i}
-                  featured={t.isWin && (t.tier === "A-Tier" || t.tier === "S-Tier")}
+                  key={item.id}
+                  tournament={item}
+                  index={index}
+                  featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
                 />
               ))}
             </div>
           )}
 
           {filteredTournaments.length === 0 && (
-            <div className="text-center py-20">
-              <span className="text-sm text-text-muted">
-                No tournaments match the current filters.
-              </span>
+            <div className="py-20 text-center text-sm leading-7 text-text-muted">
+              No tournaments match the current filters.
             </div>
           )}
         </motion.div>

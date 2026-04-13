@@ -20,6 +20,45 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## BGMI Blob Assets
+
+This repo includes a Vercel Blob upload flow for BGMI assets and a dedicated page at `/bgis-champions`.
+
+1. Set `BLOB_READ_WRITE_TOKEN` in `.env.local`
+2. Upload assets:
+
+```bash
+npm run upload:bgmi-assets
+```
+
+This generates `src/data/blob-assets.json`, which is consumed by the champions page.
+
+## Admin Console
+
+- URL: `/admin_saynam`
+- Password: `saynam1101`
+
+You can:
+- manage Blob asset folders/files/uploads
+- manage PostgreSQL records with CRUD in Database mode
+
+## Supabase Migration
+
+1. Ensure Supabase/Postgres environment variables are present in `.env.local`.
+2. Apply schema:
+
+```bash
+npm run db:apply-schema:supabase
+```
+
+3. Migrate static archive data:
+
+```bash
+npm run db:migrate:supabase
+```
+
+This seeds relational tables and creates upcoming tournaments used by the tournaments page.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { getAllPlayers, getEras } from "@/data/helpers";
 import type { Player } from "@/data/types";
 import PlayerCard from "./PlayerCard";
@@ -20,95 +20,88 @@ export default function PlayerGrid() {
     let result: Player[] = allPlayers;
 
     if (statusFilter !== "all") {
-      result = result.filter((p) => p.currentStatus === statusFilter);
+      result = result.filter((player) => player.currentStatus === statusFilter);
     }
 
     if (eraFilter !== "all") {
-      result = result.filter((p) =>
-        p.stints.some((s) => s.era === eraFilter)
-      );
+      result = result.filter((player) => player.stints.some((stint) => stint.era === eraFilter));
     }
 
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+      const query = searchQuery.toLowerCase();
       result = result.filter(
-        (p) =>
-          p.displayName.toLowerCase().includes(q) ||
-          p.realName.toLowerCase().includes(q) ||
-          p.role.toLowerCase().includes(q)
+        (player) =>
+          player.displayName.toLowerCase().includes(query) ||
+          player.realName.toLowerCase().includes(query) ||
+          player.role.toLowerCase().includes(query)
       );
     }
 
     return result;
-  }, [allPlayers, statusFilter, eraFilter, searchQuery]);
+  }, [allPlayers, eraFilter, searchQuery, statusFilter]);
 
   return (
     <div>
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        {/* Search */}
-        <div className="relative flex-1 min-w-[200px]">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search players..."
-            className="w-full text-sm bg-surface-card text-text-primary border border-border-subtle rounded-xl px-4 py-2.5 focus:outline-none focus:border-accent/40 placeholder:text-text-muted transition-colors"
-            id="player-search"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
+      <div className="utility-panel sticky top-24 z-20 mb-8 rounded-[28px] p-4">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <div className="relative xl:min-w-[320px] xl:flex-1">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name, role, or real name"
+              className="w-full rounded-full border border-white/10 bg-transparent px-4 py-3 text-sm text-white outline-none placeholder:text-text-muted"
+              id="player-search"
+            />
           </div>
-        </div>
 
-        {/* Status Filter */}
-        <div className="flex items-center gap-1 p-1 bg-surface-card border border-border-subtle rounded-xl">
-          {(["all", "active", "retired", "departed"] as FilterStatus[]).map(
-            (status) => (
+          <div className="flex flex-wrap gap-2">
+            {(["all", "active", "retired", "departed"] as FilterStatus[]).map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`
-                  text-[11px] font-medium uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors
-                  ${statusFilter === status
-                    ? "bg-accent-dim text-accent"
-                    : "text-text-muted hover:text-text-secondary"
-                  }
-                `}
+                className={`rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                  statusFilter === status
+                    ? "bg-white text-black"
+                    : "border border-white/10 text-text-secondary hover:text-white"
+                }`}
               >
                 {status}
               </button>
-            )
-          )}
+            ))}
+          </div>
+
+          <select
+            value={eraFilter}
+            onChange={(e) => setEraFilter(e.target.value)}
+            className="rounded-full border border-white/10 bg-transparent px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-text-secondary outline-none"
+          >
+            <option value="all">All Eras</option>
+            {eras.map((era) => (
+              <option key={era.id} value={era.id}>
+                {era.name} ({era.yearRange[0]}-{era.yearRange[1]})
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Era Filter */}
-        <select
-          value={eraFilter}
-          onChange={(e) => setEraFilter(e.target.value)}
-          className="text-xs bg-surface-card text-text-secondary border border-border-subtle rounded-xl px-3 py-2 focus:outline-none focus:border-accent/40"
-        >
-          <option value="all">All Eras</option>
-          {eras.map((era) => (
-            <option key={era.id} value={era.id}>
-              {era.name} ({era.yearRange[0]}-{era.yearRange[1]})
-            </option>
-          ))}
-        </select>
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.18em] text-text-muted">
+          <span>{filteredPlayers.length} players shown</span>
+          {(statusFilter !== "all" || eraFilter !== "all" || searchQuery.trim()) && (
+            <button
+              onClick={() => {
+                setStatusFilter("all");
+                setEraFilter("all");
+                setSearchQuery("");
+              }}
+              className="rounded-full border border-white/10 px-3 py-2 text-text-secondary hover:text-white"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Player Count */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-xs text-text-muted">
-          {filteredPlayers.length} player{filteredPlayers.length !== 1 ? "s" : ""}
-        </span>
-        <div className="flex-1 h-px bg-border-subtle" />
-      </div>
-
-      {/* Player Grid */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${statusFilter}-${eraFilter}-${searchQuery}`}
@@ -116,19 +109,17 @@ export default function PlayerGrid() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          className="bento-grid"
         >
-          {filteredPlayers.map((player, i) => (
-            <PlayerCard key={player.id} player={player} index={i} />
+          {filteredPlayers.map((player, index) => (
+            <PlayerCard key={player.id} player={player} index={index} />
           ))}
         </motion.div>
       </AnimatePresence>
 
       {filteredPlayers.length === 0 && (
-        <div className="text-center py-20">
-          <span className="text-sm text-text-muted">
-            No players match the current filters.
-          </span>
+        <div className="py-20 text-center text-sm leading-7 text-text-muted">
+          No players match the current filters.
         </div>
       )}
     </div>

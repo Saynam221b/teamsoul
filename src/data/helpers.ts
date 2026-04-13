@@ -144,7 +144,7 @@ export function getStats() {
 // ---------------------------------------------------------------------------
 export function formatPrize(amount: number | null): string {
   if (amount === null || amount === 0) return "—";
-  return `$${amount.toLocaleString("en-US")}`;
+  return `~$${amount.toLocaleString("en-US")}`;
 }
 
 export function formatPlacement(placement: number | string): string {
