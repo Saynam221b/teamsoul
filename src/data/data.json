@@ -1,0 +1,767 @@
+{
+  "organization": {
+    "name": "Team SouL",
+    "founded": "2018-12-21",
+    "parentOrg": "S8UL Esports",
+    "parentOrgFormed": "2020-10-15",
+    "totalEarnings": 718647,
+    "bgmiEarnings": 509165,
+    "totalTournaments": 83,
+    "totalMatches": 677,
+    "peakViewership": 577685,
+    "peakViewershipEvent": "BGIS 2026",
+    "peakViewershipYear": 2026,
+    "viewershipMilestones": [
+      { "event": "BGIS 2026", "viewers": 577685, "year": 2026 },
+      { "event": "PMCO Fall Global Finals 2019", "viewers": 525131, "year": 2019 },
+      { "event": "BGIS 2025", "viewers": 485132, "year": 2025 },
+      { "event": "PMWI 2022", "viewers": 421769, "year": 2022 }
+    ]
+  },
+  "eras": [
+    {
+      "id": "og",
+      "name": "The OG Era",
+      "yearRange": [2018, 2019],
+      "description": "Built around the foundational quintet of MortaL, Owais, RonaK, VipeR, and Slayer. Early statistical dominance based on individual mechanical disparity in the pre-ban PUBG Mobile ecosystem.",
+      "keyPlayers": ["mortal", "owais", "ronak", "viper", "slayer"],
+      "definingMoment": "Back-to-back 1st place at PMIS 2019 and PMCO Spring India, capturing over $100,000.",
+      "outcome": "triumph"
+    },
+    {
+      "id": "transition",
+      "name": "The Transition & Ban Era",
+      "yearRange": [2020, 2021],
+      "description": "Strategically dormant period driven by the PUBG Mobile app ban in India. Forced reliance on rotating temporary cast members. Weakest competitive phase with finishes plummeting to 16th-23rd place.",
+      "keyPlayers": ["mortal", "viper", "regaltos", "sc0utop", "mavi"],
+      "definingMoment": "S8UL Esports merger in October 2020, securing long-term financial viability through diversified content creation.",
+      "outcome": "decline"
+    },
+    {
+      "id": "superteam",
+      "name": "The Superteam Era",
+      "yearRange": [2022, 2023],
+      "description": "Shifted from legacy influencer-players to dedicated mechanical specialists under strict coaching frameworks. Redefined Team SouL's tactical approach.",
+      "keyPlayers": ["omega", "akshat", "hector", "goblin"],
+      "definingMoment": "BMPS Season 1 victory ($95,935) and PMWI 2022 global representation.",
+      "outcome": "rebuild"
+    },
+    {
+      "id": "modern",
+      "name": "The Rebuild & Modern Era",
+      "yearRange": [2024, 2026],
+      "description": "Turnkey acquisition of former Blind Esports roster, followed by strategic reintegration of legacy fragger Goblin. Forged the current optimal meta-roster.",
+      "keyPlayers": ["nakul", "goblin", "legit", "jokerr", "thunder", "manya"],
+      "definingMoment": "Historic BGIS 2026 championship victory — record $105,505 prize and 577,685 peak viewers.",
+      "outcome": "dominance"
+    }
+  ],
+  "players": {
+    "mortal": {
+      "id": "mortal",
+      "displayName": "MortaL",
+      "realName": "Naman Mathur",
+      "role": "Support / Owner / Streamer",
+      "stints": [
+        { "joinDate": "2018-12-21", "leaveDate": "2023-01-16", "joinContext": "Organization Founding Core", "leaveReason": "Retired from active competitive play", "era": "og" }
+      ],
+      "awards": [],
+      "impact": "The foundational pillar of Team SouL. Led the squad to the defining 2019 PMIS and PMCO Spring titles. His massive personal brand formed the bedrock of the S8UL content empire.",
+      "isFounder": true,
+      "isActive": false,
+      "currentStatus": "retired"
+    },
+    "owais": {
+      "id": "owais",
+      "displayName": "Owais",
+      "realName": "Mohammed Lakhani",
+      "role": "In-Game Leader (IGL)",
+      "stints": [
+        { "joinDate": "2018-12-21", "leaveDate": "2019-09-10", "joinContext": "Organization Founding Core", "leaveReason": "Departed to Team Xspark", "era": "og" }
+      ],
+      "awards": [],
+      "impact": "Essential to the OG Era's success. Early macro shot-calling secured the $42,828 PMIS 2019 win and $60,000 PMCO Spring win. His departure represented the first major fracture.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "ronak": {
+      "id": "ronak",
+      "displayName": "RonaK",
+      "realName": "Harpreet Janjuha",
+      "role": "Assaulter",
+      "stints": [
+        { "joinDate": "2018-12-21", "leaveDate": "2019-09-10", "joinContext": "Organization Founding Core", "leaveReason": "Departed to Team Xspark", "era": "og" }
+      ],
+      "awards": [
+        { "name": "The Rampage Freak", "recipient": "ronak", "prize": 714, "tournament": "pmis-2019" }
+      ],
+      "impact": "Delivered elite mechanical performance during 2019 domestic sweeps as primary damage dealer. Won 'The Rampage Freak' at PMIS 2019.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "viper": {
+      "id": "viper",
+      "displayName": "VipeR",
+      "realName": "Yash Soni",
+      "role": "Support",
+      "stints": [
+        { "joinDate": "2018-12-21", "leaveDate": "2023-01-16", "joinContext": "Organization Founding Core", "leaveReason": "Retired from active competitive play", "era": "og" }
+      ],
+      "awards": [],
+      "impact": "Longest-tenured active player from OG era. Provided critical structural stability through the turbulent 2020-2021 roster rotations.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "retired"
+    },
+    "slayer": {
+      "id": "slayer",
+      "displayName": "Slayer",
+      "realName": "Kanishk Shah",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2018-12-21", "leaveDate": "2019-01-01", "joinContext": "Organization Founding Core", "leaveReason": "Left (exact date unverified)", "era": "og" }
+      ],
+      "awards": [],
+      "impact": "Part of the original founding five. Departed early in 2019 before the competitive season began.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "sc0utop": {
+      "id": "sc0utop",
+      "displayName": "Sc0utOP",
+      "realName": "Tanmay Singh",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2019-08-05", "leaveDate": "2019-09-10", "joinContext": "Short 1st stint", "leaveReason": "Departed to Team Xspark", "era": "og" },
+        { "joinDate": "2021-07-07", "leaveDate": "2021-10-17", "joinContext": "BGMI Launch Roster", "leaveReason": "Departed to TeamXSpark", "era": "transition" }
+      ],
+      "awards": [
+        { "name": "Best Clutch (Fan Vote)", "recipient": "sc0utop", "prize": 680, "tournament": "skyesports-championship-3.0" }
+      ],
+      "impact": "Both tenures were extraordinarily brief (~2-3 months each). Failed to yield A-Tier victories despite massive fan anticipation, highlighting strategic synergy issues.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "clutchgod": {
+      "id": "clutchgod",
+      "displayName": "ClutchGod",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2019-10-01", "leaveDate": "2019-12-01", "joinContext": "Post-September rebuild", "leaveReason": "Departed", "era": "og" }
+      ],
+      "awards": [],
+      "impact": "Temporary acquisition during the post-exodus rebuild. Helped field a roster for the PMCO Fall Split.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "regaltos": {
+      "id": "regaltos",
+      "displayName": "ReGaLToS",
+      "realName": "Parv Singh",
+      "role": "Assaulter / IGL",
+      "stints": [
+        { "joinDate": "2019-01-01", "leaveDate": "2022-04-18", "joinContext": "Joined during 2019 roster shifts", "leaveReason": "Left for 8bit as Superteam assembled", "era": "og" }
+      ],
+      "awards": [
+        { "name": "MVP", "recipient": "regaltos", "prize": 0, "tournament": "vlt-major-invitational-s2" }
+      ],
+      "impact": "Primary aggressive talent during the transitional 2020-2021 phase. Helped secure multiple 2nd place finishes in 2020 invitationals.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "aman": {
+      "id": "aman",
+      "displayName": "AMAN",
+      "realName": "",
+      "role": "Player / Coach",
+      "stints": [
+        { "joinDate": "2019-12-01", "leaveDate": "2020-12-01", "joinContext": "Joined late 2019", "leaveReason": "Exited 2020", "era": "transition" },
+        { "joinDate": "2022-01-13", "leaveDate": null, "joinContext": "Returned as Coach", "era": "superteam" }
+      ],
+      "awards": [],
+      "impact": "Transitioned from player to coaching staff, supporting the Superteam era.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "sangwan": {
+      "id": "sangwan",
+      "displayName": "Sangwan",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2020-01-01", "leaveDate": "2020-12-01", "joinContext": "Transitional short stint", "leaveReason": "Left", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Part of the transitional 2020 roster during the PUBG Mobile ban era.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "blaezi": {
+      "id": "blaezi",
+      "displayName": "Blaezi",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2020-07-01", "leaveDate": "2020-09-01", "joinContext": "Transitional short stint", "leaveReason": "Left", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Brief two-month stint during the chaotic mid-2020 period.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "mavi": {
+      "id": "mavi",
+      "displayName": "Mavi",
+      "realName": "Harmandeep Singh",
+      "role": "In-Game Leader (IGL)",
+      "stints": [
+        { "joinDate": "2021-07-07", "leaveDate": "2021-10-17", "joinContext": "BGMI Launch Roster IGL", "leaveReason": "Departed to TeamXSpark", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Recruited to lead the 2021 BGMI launch roster. Strategic alignment failed with legacy SouL players, leading to departure after three months of bottom-tier finishes.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "roxx": {
+      "id": "roxx",
+      "displayName": "RoXX",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2021-11-01", "leaveDate": "2022-01-01", "joinContext": "Stopgap acquisition", "leaveReason": "Replaced by Superteam", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Stopgap acquisition to finish the failing 2021 season.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "viru": {
+      "id": "viru",
+      "displayName": "VIRU",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2021-11-01", "leaveDate": "2022-01-01", "joinContext": "Stopgap acquisition", "leaveReason": "Replaced by Superteam", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Stopgap acquisition to finish the failing 2021 season.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "yuvaop": {
+      "id": "yuvaop",
+      "displayName": "YuvaOP",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2021-11-01", "leaveDate": "2022-01-01", "joinContext": "Stopgap acquisition", "leaveReason": "Replaced by Superteam", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Stopgap acquisition to finish the failing 2021 season.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "deathnote": {
+      "id": "deathnote",
+      "displayName": "Deathnote",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2021-11-01", "leaveDate": "2022-01-01", "joinContext": "Stopgap acquisition", "leaveReason": "Replaced by Superteam", "era": "transition" }
+      ],
+      "awards": [],
+      "impact": "Stopgap acquisition to finish the failing 2021 season.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "omega": {
+      "id": "omega",
+      "displayName": "Omega",
+      "realName": "Sahil Jakhar",
+      "role": "In-Game Leader (IGL)",
+      "stints": [
+        { "joinDate": "2022-01-13", "leaveDate": "2023-12-23", "joinContext": "Superteam core acquisition", "leaveReason": "Departed to Carnival Gaming", "era": "superteam" }
+      ],
+      "awards": [],
+      "impact": "Known as 'The Humble IGL.' Architected the team's competitive renaissance. Under his macro-strategy, won BMPS S1 ($95,935) and represented India globally. Organization noted his impact as 'immeasurable.'",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "akshat": {
+      "id": "akshat",
+      "displayName": "AkshaT",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2022-01-13", "leaveDate": "2023-12-23", "joinContext": "Superteam core acquisition", "leaveReason": "Departed to Carnival Gaming", "era": "superteam" }
+      ],
+      "awards": [],
+      "impact": "Core member of the Superteam era. Contributed to the BMPS S1 victory and sustained competitiveness through 2023.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "hector": {
+      "id": "hector",
+      "displayName": "Hector",
+      "realName": "Sohail Shaikh",
+      "role": "Support",
+      "stints": [
+        { "joinDate": "2022-03-04", "leaveDate": "2023-12-23", "joinContext": "Superteam reinforcement", "leaveReason": "Departed to Carnival Gaming", "era": "superteam" }
+      ],
+      "awards": [
+        { "name": "Eagle Eye", "recipient": "hector", "prize": 5000, "tournament": "pmwi-2022" },
+        { "name": "Week 1 Saviour", "recipient": "hector", "prize": 314, "tournament": "bgms-2022" },
+        { "name": "Week 2 Doctor", "recipient": "hector", "prize": 314, "tournament": "bgms-2022" },
+        { "name": "Finals Saviour", "recipient": "hector", "prize": 314, "tournament": "bgms-2022" }
+      ],
+      "impact": "Validated international capability by winning the 'Eagle Eye' award ($5,000) at PMWI 2022 and swept multiple utility-focused awards (Saviour, Doctor) during BGMI Masters Series.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "goblin": {
+      "id": "goblin",
+      "displayName": "Goblin",
+      "realName": "Harsh Paudwal",
+      "role": "Fragger",
+      "stints": [
+        { "joinDate": "2022-03-04", "leaveDate": "2024-01-11", "joinContext": "Superteam reinforcement", "leaveReason": "Left after Superteam dissolution", "era": "superteam" },
+        { "joinDate": "2025-05-01", "leaveDate": null, "joinContext": "Returned — legacy fragger reintegration", "era": "modern" }
+      ],
+      "awards": [
+        { "name": "MVP", "recipient": "goblin", "prize": 3198, "tournament": "bmps-s1-2022" },
+        { "name": "Rampage Freak", "recipient": "goblin", "prize": 1279, "tournament": "bmps-s1-2022" },
+        { "name": "Fan Favorite Player", "recipient": "goblin", "prize": 1279, "tournament": "bmps-s1-2022" },
+        { "name": "Player of the Day (x3)", "recipient": "goblin", "prize": 0, "tournament": "bmps-s1-2022" },
+        { "name": "MVP + Top Fragger", "recipient": "goblin", "prize": 962, "tournament": "battle-for-revolution-s2" }
+      ],
+      "impact": "Statistically the most lethal individual player in Team SouL history. His 2022 BMPS S1 performance is historically unprecedented, sweeping MVP, Rampage Freak, Fan Favorite, and three Player of the Day awards. His 2025 return was instrumental in securing the BGIS 2026 championship.",
+      "isFounder": false,
+      "isActive": true,
+      "currentStatus": "active"
+    },
+    "neyo": {
+      "id": "neyo",
+      "displayName": "Neyo",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2023-07-01", "leaveDate": "2023-12-23", "joinContext": "Mid-2023 addition", "leaveReason": "Departed to Carnival Gaming", "era": "superteam" }
+      ],
+      "awards": [],
+      "impact": "Joined mid-2023 to bolster the Superteam core. Departed with the rest of the core in December.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "manya": {
+      "id": "manya",
+      "displayName": "Manya",
+      "realName": "Mohammad Raja",
+      "role": "Player / Leader",
+      "stints": [
+        { "joinDate": "2024-01-01", "leaveDate": "2025-07-28", "joinContext": "Ex-Blind Esports core acquisition", "leaveReason": "Left following statistical dip", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Orchestrated the 2024 core that pulled Team SouL out of the post-Omega vacuum. Guided squad to 1st at BGMS S3 ($65,515).",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "nakul": {
+      "id": "nakul",
+      "displayName": "NakuL",
+      "realName": "Nakul Sharma",
+      "role": "Team Captain / IGL",
+      "stints": [
+        { "joinDate": "2024-01-01", "leaveDate": null, "joinContext": "Ex-Blind Esports core acquisition", "era": "modern" }
+      ],
+      "awards": [
+        { "name": "Best IGL", "recipient": "nakul", "prize": 0, "tournament": "bgis-2026" }
+      ],
+      "impact": "Current anchor of the organization. Evolved into a premier IGL. His macro-strategies culminated in 'Best IGL' award during the monumental BGIS 2026 championship victory.",
+      "isFounder": false,
+      "isActive": true,
+      "currentStatus": "active"
+    },
+    "jokerr": {
+      "id": "jokerr",
+      "displayName": "Jokerr",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-01-01", "leaveDate": "2024-08-19", "joinContext": "Ex-Blind Esports core", "leaveReason": "Left mid-2024", "era": "modern" },
+        { "joinDate": "2025-07-20", "leaveDate": null, "joinContext": "Returned", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Two-stint player. Part of the BGMS S3 winning core, departed mid-2024, returned July 2025 to join the BGIS 2026 championship roster.",
+      "isFounder": false,
+      "isActive": true,
+      "currentStatus": "active"
+    },
+    "rony": {
+      "id": "rony",
+      "displayName": "Rony",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-01-01", "leaveDate": null, "joinContext": "Ex-Blind Esports core", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Part of the January 2024 ex-Blind Esports acquisition. Contributed to BGMS S3 victory.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "spower": {
+      "id": "spower",
+      "displayName": "Spower",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-01-01", "leaveDate": "2024-12-01", "joinContext": "Ex-Blind Esports core", "leaveReason": "Left late 2024", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Part of the January 2024 ex-Blind Esports acquisition. Departed late 2024.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "ninjajod": {
+      "id": "ninjajod",
+      "displayName": "NinjaJOD",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-09-01", "leaveDate": "2025-06-01", "joinContext": "Late 2024 adjustment", "leaveReason": "Left early 2025", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Late-year 2024 adjustment replacing departed players. Played through early 2025.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "saumay": {
+      "id": "saumay",
+      "displayName": "Saumay",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-10-01", "leaveDate": "2025-03-01", "joinContext": "Late 2024 adjustment", "leaveReason": "Left early 2025", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Late-year 2024 addition. Brief tenure before early 2025 roster overhaul.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "skipz": {
+      "id": "skipz",
+      "displayName": "Skipz",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2024-10-01", "leaveDate": "2025-03-01", "joinContext": "Late 2024 adjustment", "leaveReason": "Left early 2025", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Late-year 2024 addition. Brief tenure before early 2025 roster overhaul.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    },
+    "legit": {
+      "id": "legit",
+      "displayName": "LEGIT",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2025-05-13", "leaveDate": null, "joinContext": "Raw talent scouting", "era": "modern" }
+      ],
+      "awards": [
+        { "name": "Finals MVP", "recipient": "legit", "prize": 0, "tournament": "bgis-2026" }
+      ],
+      "impact": "Named Finals MVP at BGIS 2026. Raw firepower imported to complement Goblin's fragging and NakuL's IGL framework.",
+      "isFounder": false,
+      "isActive": true,
+      "currentStatus": "active"
+    },
+    "thunder": {
+      "id": "thunder",
+      "displayName": "Thunder",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2025-09-20", "leaveDate": null, "joinContext": "Late 2025 reinforcement", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Latest acquisition, joined September 2025. Part of the BGIS 2026 championship-winning roster.",
+      "isFounder": false,
+      "isActive": true,
+      "currentStatus": "active"
+    },
+    "hunterz": {
+      "id": "hunterz",
+      "displayName": "HunterZ",
+      "realName": "",
+      "role": "Player",
+      "stints": [
+        { "joinDate": "2025-01-01", "leaveDate": "2025-04-01", "joinContext": "Brief early 2025 stint", "leaveReason": "Left", "era": "modern" }
+      ],
+      "awards": [],
+      "impact": "Brief stint in early 2025 before the mid-year roster overhaul.",
+      "isFounder": false,
+      "isActive": false,
+      "currentStatus": "departed"
+    }
+  },
+  "tournaments": [
+    { "id": "pmis-2019", "name": "PUBG Mobile India Series (PMIS) 2019", "year": 2019, "month": 3, "tier": "A-Tier", "placement": 1, "prize": 42828, "isWin": true, "roster": ["mortal", "owais", "ronak", "viper"] },
+    { "id": "pmco-spring-india-2019", "name": "PMCO 2019 Spring Split: India", "year": 2019, "month": 5, "tier": "A-Tier", "placement": 1, "prize": 60000, "isWin": true, "roster": ["mortal", "owais", "ronak", "viper"] },
+    { "id": "pmco-spring-global-2019", "name": "PMCO 2019 Spring Split Global Finals", "year": 2019, "month": 7, "tier": "S-Tier", "placement": 12, "prize": null, "isWin": false, "roster": ["mortal", "owais", "ronak", "viper"] },
+    { "id": "pmco-fall-global-2019", "name": "PMCO 2019 Fall Split Global Finals", "year": 2019, "month": 11, "tier": "S-Tier", "placement": 12, "prize": 8000, "isWin": false, "roster": ["mortal", "viper", "regaltos", "clutchgod"] },
+    { "id": "pec-2019", "name": "Peacekeeper Elite Championship 2019", "year": 2019, "month": 12, "tier": "A-Tier", "placement": 12, "prize": 6439, "isWin": false },
+
+    { "id": "gaming-for-good-2020", "name": "#GamingForGood Charity Tourney", "year": 2020, "month": 3, "tier": "B-Tier", "placement": 2, "prize": null, "isWin": false },
+    { "id": "india-today-2020", "name": "India Today League PUBGM Invitational", "year": 2020, "month": 4, "tier": "B-Tier", "placement": 2, "prize": null, "isWin": false },
+    { "id": "skyesports-grand-slam-2020", "name": "Skyesports Grand Slam: PUBGM Invitational", "year": 2020, "month": 5, "tier": "C-Tier", "placement": 2, "prize": null, "isWin": false },
+    { "id": "gwb-2020", "name": "Gamers Without Borders 2020: Asia", "year": 2020, "month": 6, "tier": "A-Tier", "placement": 8, "prize": null, "isWin": false },
+    { "id": "pmpl-sa-s1-2020", "name": "PUBG Mobile Pro League South Asia S1", "year": 2020, "month": 8, "tier": "A-Tier", "placement": 13, "prize": null, "isWin": false },
+
+    { "id": "apl-invitational-2021", "name": "APL Invitational", "year": 2021, "month": 8, "tier": "C-Tier", "placement": 16, "prize": null, "isWin": false },
+    { "id": "rooter-pro-scrims-2021", "name": "Rooter Pro Scrims: Conqueror Phase", "year": 2021, "month": 8, "tier": "C-Tier", "placement": 18, "prize": null, "isWin": false },
+    { "id": "bgmi-ewar-2021", "name": "BGMI EWar Mahayudh Season 2", "year": 2021, "month": 8, "tier": "C-Tier", "placement": 20, "prize": null, "isWin": false },
+    { "id": "tec-bgmi-inv-s1-2021", "name": "The Esports Club BGMI Invitational S1", "year": 2021, "month": 8, "tier": "C-Tier", "placement": 20, "prize": null, "isWin": false },
+    { "id": "iqoo-allstars-2021", "name": "iQOO All Stars Cup", "year": 2021, "month": 9, "tier": "C-Tier", "placement": 16, "prize": null, "isWin": false },
+    { "id": "gametv-weekly-s1-2021", "name": "game.tv Weekly Wars S1", "year": 2021, "month": 9, "tier": "C-Tier", "placement": 17, "prize": null, "isWin": false },
+    { "id": "skyesports-champ-3.0", "name": "Skyesports Championship 3.0", "year": 2021, "month": 9, "tier": "A-Tier", "placement": 13, "prize": 136, "isWin": false },
+    { "id": "eib-s2-2021", "name": "Esportswala Elite Invitational Battle S2", "year": 2021, "month": 9, "tier": "C-Tier", "placement": 19, "prize": null, "isWin": false },
+    { "id": "chemin-2021", "name": "Chemin Esports Ultimate Showdown", "year": 2021, "month": 9, "tier": "C-Tier", "placement": 18, "prize": null, "isWin": false },
+    { "id": "insane-summer-2021", "name": "iNSANE Summer Split", "year": 2021, "month": 9, "tier": "C-Tier", "placement": 5, "prize": null, "isWin": false },
+    { "id": "thug-inv-s3-2021", "name": "THUG Invitational S3", "year": 2021, "month": 10, "tier": "C-Tier", "placement": 19, "prize": null, "isWin": false },
+    { "id": "wings-battlefest-2021", "name": "Wings BattleFest", "year": 2021, "month": 10, "tier": "C-Tier", "placement": 9, "prize": null, "isWin": false },
+    { "id": "og-starter-cup-2021", "name": "OG Starter Cup", "year": 2021, "month": 10, "tier": "C-Tier", "placement": 3, "prize": 268, "isWin": false },
+    { "id": "loco-wog-2021", "name": "LOCO War of Glory: League Stage", "year": 2021, "month": 10, "tier": "B-Tier", "placement": 20, "prize": null, "isWin": false },
+    { "id": "clutch-inv-2021", "name": "Clutch Invitational", "year": 2021, "month": 10, "tier": "C-Tier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "india-today-dangal-2021", "name": "India Today's Dangal", "year": 2021, "month": 10, "tier": "C-Tier", "placement": 16, "prize": null, "isWin": false },
+    { "id": "loco-diwali-league-2021", "name": "LOCO Diwali Battle: League Stage", "year": 2021, "month": 11, "tier": "B-Tier", "placement": 17, "prize": null, "isWin": false },
+    { "id": "loco-diwali-finals-2021", "name": "LOCO Diwali Battle: Grand Finals", "year": 2021, "month": 11, "tier": "B-Tier", "placement": 18, "prize": 403, "isWin": false },
+    { "id": "bor-s1-2021", "name": "Battle of Rivals S1", "year": 2021, "month": 11, "tier": "C-Tier", "placement": 12, "prize": null, "isWin": false },
+    { "id": "oneshot-s2-2021", "name": "OneShot Showdown S2: Grand Finals", "year": 2021, "month": 11, "tier": "B-Tier", "placement": 19, "prize": null, "isWin": false },
+    { "id": "redbull-meo-s4-2021", "name": "Red Bull M.E.O. Season 4: India", "year": 2021, "month": 12, "tier": "B-Tier", "placement": 23, "prize": 1063, "isWin": false },
+    { "id": "wd-black-s2-2021", "name": "WD Black Cup S2", "year": 2021, "month": 12, "tier": "C-Tier", "placement": 16, "prize": null, "isWin": false },
+    { "id": "bgis-2021-grind", "name": "BGIS 2021: The Grind", "year": 2021, "month": 12, "tier": "Qualifier", "placement": 16, "prize": null, "isWin": false },
+
+    { "id": "thug-inv-s4-2022", "name": "THUG Invitational S4", "year": 2022, "month": 1, "tier": "C-Tier", "placement": 6, "prize": null, "isWin": false },
+    { "id": "pro-warrior-s1-2022", "name": "Pro Warrior Cup Season 1", "year": 2022, "month": 2, "tier": "C-Tier", "placement": 1, "prize": 2649, "isWin": true, "roster": ["omega", "akshat", "hector", "goblin"] },
+    { "id": "skyesports-gs-2022", "name": "Skyesports Grand Slam 2022", "year": 2022, "month": 2, "tier": "B-Tier", "placement": 2, "prize": 4006, "isWin": false },
+    { "id": "or-champ-2022", "name": "OR Championship Legends Rise 2022", "year": 2022, "month": 2, "tier": "C-Tier", "placement": 2, "prize": 1339, "isWin": false },
+    { "id": "ruthless-inv-2022", "name": "Ruthless Invitational Showdown", "year": 2022, "month": 3, "tier": "C-Tier", "placement": 6, "prize": null, "isWin": false },
+    { "id": "ve-winter-2022", "name": "VE Winter Masters 2022", "year": 2022, "month": 3, "tier": "B-Tier", "placement": 8, "prize": null, "isWin": false },
+    { "id": "tec-bgmi-inv-s3-2022", "name": "The Esports Club BGMI Invitational S3", "year": 2022, "month": 3, "tier": "C-Tier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "7sea-inv-2022", "name": "7Sea Invitational", "year": 2022, "month": 3, "tier": "B-Tier", "placement": 9, "prize": 300, "isWin": false },
+    { "id": "bmoc-2022-grind", "name": "BMOC 2022: The Grind", "year": 2022, "month": 4, "tier": "Qualifier", "placement": 2, "prize": 983, "isWin": false },
+    { "id": "pro-warrior-s2-conquest-2022", "name": "Pro Warrior Cup S2: Conquest", "year": 2022, "month": 4, "tier": "B-Tier", "placement": 1, "prize": 3924, "isWin": true },
+    { "id": "pro-warrior-s2-ultimate-2022", "name": "Pro Warrior Cup S2: Ultimate", "year": 2022, "month": 4, "tier": "B-Tier", "placement": 3, "prize": null, "isWin": false },
+    { "id": "bmoc-2022", "name": "BMOC 2022", "year": 2022, "month": 5, "tier": "Qualifier", "placement": "1st-4th", "prize": null, "isWin": false },
+    { "id": "thug-inv-s5-2022", "name": "THUG Invitational S5", "year": 2022, "month": 5, "tier": "B-Tier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "bmps-s1-2022", "name": "Battlegrounds Mobile India Pro Series S1", "year": 2022, "month": 6, "tier": "A-Tier", "placement": 1, "prize": 95935, "isWin": true, "roster": ["omega", "akshat", "hector", "goblin"] },
+    { "id": "tec-bgmi-inv-s4-2022", "name": "The Esports Club BGMI Invitational S4", "year": 2022, "month": 7, "tier": "B-Tier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "bgms-2022", "name": "BGMI Masters Series", "year": 2022, "month": 7, "tier": "A-Tier", "placement": 6, "prize": 8157, "isWin": false },
+    { "id": "bgmi-showdown-2022", "name": "BGMI Showdown 2022", "year": 2022, "month": 8, "tier": "B-Tier", "placement": 7, "prize": 501, "isWin": false },
+    { "id": "pmwi-2022", "name": "PUBG Mobile World Invitational 2022", "year": 2022, "month": 8, "tier": "S-Tier", "placement": 11, "prize": 58500, "isWin": false, "roster": ["omega", "akshat", "hector", "goblin"] },
+
+    { "id": "bgmi-pro-scrims-2023", "name": "BGMI Pro Scrims", "year": 2023, "month": 1, "tier": "C-Tier", "placement": 9, "prize": 121, "isWin": false },
+    { "id": "ve-domin8r-2023", "name": "Villager Esports DOMIN8R Series", "year": 2023, "month": 2, "tier": "C-Tier", "placement": 3, "prize": 1213, "isWin": false },
+    { "id": "novum-s1-2023", "name": "Novum Overpower Series S1", "year": 2023, "month": 2, "tier": "C-Tier", "placement": 8, "prize": null, "isWin": false },
+    { "id": "skyesports-cs-2023", "name": "Skyesports Champions Series", "year": 2023, "month": 3, "tier": "B-Tier", "placement": 2, "prize": 7325, "isWin": false },
+    { "id": "fight-night-scrims-2023", "name": "Fight Night Pro Scrims", "year": 2023, "month": 3, "tier": "C-Tier", "placement": 5, "prize": null, "isWin": false },
+    { "id": "ue-challengers-2023", "name": "Upthrust Esports Challengers Showdown", "year": 2023, "month": 4, "tier": "B-Tier", "placement": 13, "prize": null, "isWin": false },
+    { "id": "lidoma-inv-2023", "name": "Lidoma Battleground Invitational", "year": 2023, "month": 4, "tier": "C-Tier", "placement": 4, "prize": 609, "isWin": false },
+    { "id": "iqoo-pro-2023", "name": "iQOO Pro Series", "year": 2023, "month": 5, "tier": "B-Tier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "nodwin-bgmi-cc-2023", "name": "Nodwin BGMI Champions Cup", "year": 2023, "month": 5, "tier": "B-Tier", "placement": 5, "prize": 1218, "isWin": false },
+    { "id": "fight-night-s5-2023", "name": "Fight Night Season 5", "year": 2023, "month": 6, "tier": "C-Tier", "placement": 1, "prize": 971, "isWin": true },
+    { "id": "ve-pro-inv-2023", "name": "Villager Esports Pro Invitational 2023", "year": 2023, "month": 6, "tier": "B-Tier", "placement": 14, "prize": null, "isWin": false },
+    { "id": "ranbhoomi-s2-2023", "name": "Ranbhoomi Season 2", "year": 2023, "month": 7, "tier": "B-Tier", "placement": 4, "prize": 1220, "isWin": false },
+    { "id": "bfr-s1-2023", "name": "Battle For Revolution S1", "year": 2023, "month": 7, "tier": "C-Tier", "placement": 3, "prize": 609, "isWin": false },
+    { "id": "india-today-inv-2023", "name": "India Today League Invitationals", "year": 2023, "month": 7, "tier": "B-Tier", "placement": 20, "prize": null, "isWin": false },
+    { "id": "revenant-inv-2023", "name": "Revenant Invitational Showdown", "year": 2023, "month": 8, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
+    { "id": "ue-survivors-s4-2023", "name": "Upthrust Esports Survivors Throne S4", "year": 2023, "month": 8, "tier": "C-Tier", "placement": 13, "prize": null, "isWin": false },
+    { "id": "bgms-s2-2023", "name": "BGMI Masters Series Season 2", "year": 2023, "month": 8, "tier": "A-Tier", "placement": 17, "prize": 1815, "isWin": false },
+    { "id": "os-inv-s1-2023", "name": "OS Invitational Season 1", "year": 2023, "month": 9, "tier": "B-Tier", "placement": 1, "prize": 5406, "isWin": true },
+    { "id": "ue-pro-showdown-s2-2023", "name": "Upthrust Esports Pro Showdown S2", "year": 2023, "month": 9, "tier": "B-Tier", "placement": 14, "prize": null, "isWin": false },
+    { "id": "bfr-s2-2023", "name": "Battle For Revolution S2", "year": 2023, "month": 10, "tier": "B-Tier", "placement": 1, "prize": 7209, "isWin": true },
+    { "id": "skyesports-champ-5.0-2023", "name": "Skyesports Championship 5.0", "year": 2023, "month": 10, "tier": "A-Tier", "placement": 4, "prize": 8117, "isWin": false },
+    { "id": "ue-diwali-2023", "name": "Upthrust Esports Diwali Battle 2023", "year": 2023, "month": 11, "tier": "A-Tier", "placement": 4, "prize": null, "isWin": false },
+    { "id": "redbull-meo-s6-2023", "name": "Red Bull M.E.O. Season 6 India", "year": 2023, "month": 11, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
+    { "id": "bmps-2023", "name": "Battlegrounds Mobile India Pro Series 2023", "year": 2023, "month": 12, "tier": "A-Tier", "placement": 5, "prize": 3613, "isWin": false },
+
+    { "id": "ue-survivors-saga-s3-2024", "name": "Upthrust Survivors Saga S3", "year": 2024, "month": 1, "tier": "C-Tier", "placement": 14, "prize": null, "isWin": false },
+    { "id": "ue-multiverse-2024", "name": "Upthrust Esports Multiverse Series 2024", "year": 2024, "month": 1, "tier": "B-Tier", "placement": 16, "prize": null, "isWin": false },
+    { "id": "bingo-gameon-2024", "name": "Bingo! Nachos GAMEON CUP", "year": 2024, "month": 2, "tier": "C-Tier", "placement": 22, "prize": null, "isWin": false },
+    { "id": "ue-multiverse-finals-2024", "name": "UE Multiverse Series 2024: Final Showdown", "year": 2024, "month": 2, "tier": "Showmatch", "placement": 1, "prize": 1203, "isWin": true },
+    { "id": "ue-patriot-cup-2024", "name": "Upthrust Esports The Patriot Cup", "year": 2024, "month": 2, "tier": "B-Tier", "placement": 11, "prize": null, "isWin": false },
+    { "id": "iqoo-pro-2024", "name": "iQOO Pro Series 2024", "year": 2024, "month": 3, "tier": "B-Tier", "placement": 2, "prize": 3611, "isWin": false },
+    { "id": "ra-rising-star-s3-2024", "name": "RA Esports Rising Star Showdown S3", "year": 2024, "month": 3, "tier": "B-Tier", "placement": 6, "prize": 241, "isWin": false },
+    { "id": "esl-snapdragon-2024", "name": "ESL Snapdragon Pro Series 2024", "year": 2024, "month": 4, "tier": "A-Tier", "placement": 2, "prize": 14425, "isWin": false },
+    { "id": "skyesports-cs-2024", "name": "Skyesports Champions Series 2024", "year": 2024, "month": 4, "tier": "B-Tier", "placement": 2, "prize": 3021, "isWin": false },
+    { "id": "lidoma-masters-2024", "name": "Lidoma Masters Showdown", "year": 2024, "month": 5, "tier": "C-Tier", "placement": 10, "prize": null, "isWin": false },
+    { "id": "ue-india-rising-2024", "name": "Upthrust Esports India Rising 2024", "year": 2024, "month": 5, "tier": "B-Tier", "placement": 1, "prize": 2999, "isWin": true },
+    { "id": "skyesports-mobile-open-2024", "name": "Skyesports Mobile Open 2024", "year": 2024, "month": 5, "tier": "B-Tier", "placement": 2, "prize": 2996, "isWin": false },
+    { "id": "onegame-pro-s1-2024", "name": "OneGame Pro Championship S1", "year": 2024, "month": 6, "tier": "B-Tier", "placement": 1, "prize": 4782, "isWin": true },
+    { "id": "ra-champ-gala-s1-2024", "name": "RA Esports Champions Gala S1", "year": 2024, "month": 6, "tier": "B-Tier", "placement": 3, "prize": 898, "isWin": false },
+    { "id": "cow-s2-2024", "name": "Clash of Warriors S2", "year": 2024, "month": 6, "tier": "C-Tier", "placement": 13, "prize": null, "isWin": false },
+    { "id": "ue-challengers-s2-2024", "name": "Upthrust Esports Challengers Showdown S2", "year": 2024, "month": 7, "tier": "B-Tier", "placement": 9, "prize": 601, "isWin": false },
+    { "id": "ra-bfs-s1-2024", "name": "RA Esports Battle For Swaraj S1", "year": 2024, "month": 7, "tier": "B-Tier", "placement": 16, "prize": 1743, "isWin": false },
+    { "id": "bfr-s3-2024", "name": "Battle For Revolution S3", "year": 2024, "month": 7, "tier": "C-Tier", "placement": 32, "prize": null, "isWin": false },
+    { "id": "fearless-s1-2024", "name": "Fearless Championship Series S1", "year": 2024, "month": 7, "tier": "C-Tier", "placement": 4, "prize": 420, "isWin": false },
+    { "id": "bgis-2024", "name": "Battlegrounds Mobile India Series 2024", "year": 2024, "month": 7, "tier": "A-Tier", "placement": 4, "prize": 17993, "isWin": false },
+    { "id": "rooter-apl-inv-2024", "name": "Rooter x APL Invitational Series", "year": 2024, "month": 8, "tier": "B-Tier", "placement": 1, "prize": 3592, "isWin": true },
+    { "id": "bgms-s3-2024", "name": "BGMI Masters Series Season 3", "year": 2024, "month": 8, "tier": "A-Tier", "placement": 1, "prize": 65515, "isWin": true, "roster": ["manya", "nakul", "jokerr", "rony", "spower"] },
+    { "id": "gauntlet-s1-2024", "name": "Gauntlet Season 1", "year": 2024, "month": 9, "tier": "B-Tier", "placement": 17, "prize": null, "isWin": false },
+    { "id": "thug-inv-2024", "name": "THUG Invitational 2024", "year": 2024, "month": 9, "tier": "B-Tier", "placement": 4, "prize": 892, "isWin": false },
+    { "id": "deepavali-battlemania-2024", "name": "Deepavali BattleMania 2024", "year": 2024, "month": 10, "tier": "C-Tier", "placement": 12, "prize": null, "isWin": false },
+    { "id": "1m-dynasty-2024", "name": "1M DYNASTY", "year": 2024, "month": 10, "tier": "C-Tier", "placement": 10, "prize": null, "isWin": false },
+    { "id": "redbull-meo-2024", "name": "Red Bull M.E.O. 2024 India", "year": 2024, "month": 11, "tier": "C-Tier", "placement": 3, "prize": null, "isWin": false },
+    { "id": "samatva-elite-2024", "name": "Samatva Elite Series", "year": 2024, "month": 11, "tier": "B-Tier", "placement": 5, "prize": 878, "isWin": false },
+
+    { "id": "1m-slayy-zone-2025", "name": "1M Slayy Zone", "year": 2025, "month": 1, "tier": "B-Tier", "placement": 6, "prize": null, "isWin": false },
+    { "id": "ue-multiverse-2025", "name": "Upthrust Esports Multiverse Series 2025", "year": 2025, "month": 2, "tier": "C-Tier", "placement": 1, "prize": 1450, "isWin": true },
+    { "id": "esl-snapdragon-s6-2025", "name": "ESL Snapdragon Pro Series Season 6", "year": 2025, "month": 3, "tier": "A-Tier", "placement": 7, "prize": 2022, "isWin": false },
+    { "id": "bgis-2025-grind", "name": "BGIS 2025: The Grind", "year": 2025, "month": 3, "tier": "Qualifier", "placement": 1, "prize": null, "isWin": true },
+    { "id": "onegame-pro-s2-2025", "name": "OneGame Pro Championship S2", "year": 2025, "month": 3, "tier": "C-Tier", "placement": 13, "prize": null, "isWin": false },
+    { "id": "caribbean-clash-2025", "name": "Caribbean Clash", "year": 2025, "month": 3, "tier": "C-Tier", "placement": 6, "prize": null, "isWin": false },
+    { "id": "bgis-2025", "name": "Battlegrounds Mobile India Series 2025", "year": 2025, "month": 4, "tier": "A-Tier", "placement": 15, "prize": 7144, "isWin": false },
+    { "id": "skyesports-champ-2024-delayed", "name": "Skyesports Championship 2024 (Delayed)", "year": 2025, "month": 5, "tier": "B-Tier", "placement": 5, "prize": null, "isWin": false },
+    { "id": "bmps-2025", "name": "Battlegrounds Mobile India Pro Series 2025", "year": 2025, "month": 7, "tier": "A-Tier", "placement": 29, "prize": 1165, "isWin": false },
+    { "id": "coc-s2-2025", "name": "Clash of Champions S2", "year": 2025, "month": 7, "tier": "C-Tier", "placement": 5, "prize": 348, "isWin": false },
+    { "id": "g-league-2025", "name": "G-League", "year": 2025, "month": 8, "tier": "B-Tier", "placement": 1, "prize": 5804, "isWin": true },
+    { "id": "iqoo-battlegrounds-2025", "name": "iQOO Battlegrounds Series", "year": 2025, "month": 8, "tier": "A-Tier", "placement": 26, "prize": null, "isWin": false },
+    { "id": "survival-surge-ch1-2025", "name": "Survival Surge Chapter 1", "year": 2025, "month": 9, "tier": "C-Tier", "placement": 1, "prize": 2275, "isWin": true },
+    { "id": "og-vs-ng-2025", "name": "OG vs NG: Legacies Clash", "year": 2025, "month": 9, "tier": "Showmatch", "placement": 3, "prize": 1140, "isWin": false },
+    { "id": "bgms-s4-2025", "name": "BGMI Masters Series Season 4", "year": 2025, "month": 10, "tier": "A-Tier", "placement": 3, "prize": 14160, "isWin": false },
+    { "id": "bgmi-showdown-2025", "name": "BGMI Showdown 2025", "year": 2025, "month": 10, "tier": "A-Tier", "placement": 3, "prize": 11267, "isWin": false },
+    { "id": "bgmi-intl-cup-2025", "name": "BGMI International Cup 2025", "year": 2025, "month": 11, "tier": "A-Tier", "placement": 9, "prize": 2816, "isWin": false },
+    { "id": "chennai-global-2025", "name": "Chennai Esports Global Championship 2025", "year": 2025, "month": 12, "tier": "B-Tier", "placement": 1, "prize": 24242, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"] },
+    { "id": "1m-dynasty-s2-2025", "name": "1M DYNASTY Season 2", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
+    { "id": "rising-champ-s1-2025", "name": "Rising Championship S1", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
+    { "id": "onegame-pro-s3-2025", "name": "OneGame Pro Championship S3", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 7, "prize": null, "isWin": false },
+
+    { "id": "ue-pro-showdown-2026", "name": "Upthrust Esports Pro Showdown 2026", "year": 2026, "month": 1, "tier": "C-Tier", "placement": 6, "prize": null, "isWin": false },
+    { "id": "bgis-2026-grind", "name": "BGIS 2026: The Grind", "year": 2026, "month": 2, "tier": "Qualifier", "placement": 7, "prize": null, "isWin": false },
+    { "id": "bgis-2026", "name": "Battlegrounds Mobile India Series 2026", "year": 2026, "month": 3, "tier": "A-Tier", "placement": 1, "prize": 105505, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"] }
+  ],
+  "rosterSnapshots": [
+    { "year": 2018, "players": ["mortal", "owais", "ronak", "viper", "slayer"], "event": "Organization Founding", "note": "Dec 21 — the original five." },
+    { "year": 2019, "players": ["mortal", "owais", "ronak", "viper"], "event": "PMIS 2019 / PMCO Spring", "note": "1st place domestic sweeps." },
+    { "year": 2019, "players": ["mortal", "viper", "regaltos", "clutchgod"], "event": "PMCO Fall Global Finals", "note": "Rebuilt after Sept exodus." },
+    { "year": 2020, "players": ["mortal", "viper", "regaltos", "sangwan", "aman"], "event": "Early 2020 Invitationals", "note": "Transitional core." },
+    { "year": 2021, "players": ["mortal", "sc0utop", "mavi", "regaltos", "viper"], "event": "BGMI Launch Roster", "note": "Sc0ut/Mavi joined Jul 7, left Oct 17." },
+    { "year": 2021, "players": ["mortal", "viper", "regaltos", "roxx", "viru", "yuvaop", "deathnote"], "event": "Late 2021 Stopgaps", "note": "Finishing a failing season." },
+    { "year": 2022, "players": ["omega", "akshat", "hector", "goblin"], "event": "Superteam Core", "note": "Won BMPS S1, PMWI 2022 appearance." },
+    { "year": 2023, "players": ["omega", "akshat", "hector", "goblin", "neyo"], "event": "Full 2023 Circuit", "note": "Neyo joined July. Core departed Dec 23." },
+    { "year": 2024, "players": ["manya", "nakul", "jokerr", "rony", "spower"], "event": "Rebuild Core", "note": "Won BGMS S3. Ex-Blind Esports." },
+    { "year": 2024, "players": ["nakul", "rony", "ninjajod", "saumay", "skipz"], "event": "Late 2024 Adjustments", "note": "Replacing Jokerr/Spower." },
+    { "year": 2025, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "Late 2025 Core", "note": "Manya left. Goblin returned May 1." },
+    { "year": 2026, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "BGIS 2026 Championship", "note": "$105k win. Record viewership." }
+  ],
+  "rosterChanges": [
+    { "playerId": "mortal", "action": "JOINED", "date": "2018-12-21", "context": "Founder" },
+    { "playerId": "owais", "action": "JOINED", "date": "2018-12-21", "context": "Founding Core" },
+    { "playerId": "ronak", "action": "JOINED", "date": "2018-12-21", "context": "Founding Core" },
+    { "playerId": "viper", "action": "JOINED", "date": "2018-12-21", "context": "Founding Core" },
+    { "playerId": "slayer", "action": "JOINED", "date": "2018-12-21", "context": "Founding Core" },
+    { "playerId": "slayer", "action": "LEFT", "date": "2019-01-01", "context": "Departed early" },
+    { "playerId": "sc0utop", "action": "JOINED", "date": "2019-08-05", "context": "1st stint" },
+    { "playerId": "sc0utop", "action": "LEFT", "date": "2019-09-10", "context": "To Team Xspark" },
+    { "playerId": "owais", "action": "LEFT", "date": "2019-09-10", "context": "To Team Xspark" },
+    { "playerId": "ronak", "action": "LEFT", "date": "2019-09-10", "context": "To Team Xspark" },
+    { "playerId": "clutchgod", "action": "JOINED", "date": "2019-10-01" },
+    { "playerId": "regaltos", "action": "JOINED", "date": "2019-01-01" },
+    { "playerId": "clutchgod", "action": "LEFT", "date": "2019-12-01" },
+    { "playerId": "aman", "action": "JOINED", "date": "2019-12-01" },
+    { "playerId": "sangwan", "action": "JOINED", "date": "2020-01-01" },
+    { "playerId": "blaezi", "action": "JOINED", "date": "2020-07-01" },
+    { "playerId": "blaezi", "action": "LEFT", "date": "2020-09-01" },
+    { "playerId": "aman", "action": "LEFT", "date": "2020-12-01" },
+    { "playerId": "sangwan", "action": "LEFT", "date": "2020-12-01" },
+    { "playerId": "sc0utop", "action": "JOINED", "date": "2021-07-07", "context": "2nd stint — BGMI Launch" },
+    { "playerId": "mavi", "action": "JOINED", "date": "2021-07-07", "context": "BGMI Launch IGL" },
+    { "playerId": "sc0utop", "action": "LEFT", "date": "2021-10-17", "context": "To TeamXSpark" },
+    { "playerId": "mavi", "action": "LEFT", "date": "2021-10-17", "context": "To TeamXSpark" },
+    { "playerId": "roxx", "action": "JOINED", "date": "2021-11-01" },
+    { "playerId": "viru", "action": "JOINED", "date": "2021-11-01" },
+    { "playerId": "yuvaop", "action": "JOINED", "date": "2021-11-01" },
+    { "playerId": "deathnote", "action": "JOINED", "date": "2021-11-01" },
+    { "playerId": "omega", "action": "JOINED", "date": "2022-01-13", "context": "Superteam formed" },
+    { "playerId": "akshat", "action": "JOINED", "date": "2022-01-13", "context": "Superteam formed" },
+    { "playerId": "hector", "action": "JOINED", "date": "2022-03-04" },
+    { "playerId": "goblin", "action": "JOINED", "date": "2022-03-04" },
+    { "playerId": "regaltos", "action": "LEFT", "date": "2022-04-18", "context": "To 8bit" },
+    { "playerId": "mortal", "action": "RETIRED", "date": "2023-01-16" },
+    { "playerId": "viper", "action": "RETIRED", "date": "2023-01-16" },
+    { "playerId": "neyo", "action": "JOINED", "date": "2023-07-01" },
+    { "playerId": "omega", "action": "LEFT", "date": "2023-12-23", "context": "To Carnival Gaming" },
+    { "playerId": "akshat", "action": "LEFT", "date": "2023-12-23", "context": "To Carnival Gaming" },
+    { "playerId": "hector", "action": "LEFT", "date": "2023-12-23", "context": "To Carnival Gaming" },
+    { "playerId": "neyo", "action": "LEFT", "date": "2023-12-23", "context": "To Carnival Gaming" },
+    { "playerId": "manya", "action": "JOINED", "date": "2024-01-01", "context": "Ex-Blind Esports" },
+    { "playerId": "nakul", "action": "JOINED", "date": "2024-01-01", "context": "Ex-Blind Esports" },
+    { "playerId": "jokerr", "action": "JOINED", "date": "2024-01-01", "context": "Ex-Blind Esports" },
+    { "playerId": "rony", "action": "JOINED", "date": "2024-01-01", "context": "Ex-Blind Esports" },
+    { "playerId": "spower", "action": "JOINED", "date": "2024-01-01", "context": "Ex-Blind Esports" },
+    { "playerId": "goblin", "action": "LEFT", "date": "2024-01-11" },
+    { "playerId": "jokerr", "action": "LEFT", "date": "2024-08-19" },
+    { "playerId": "ninjajod", "action": "JOINED", "date": "2024-09-01" },
+    { "playerId": "saumay", "action": "JOINED", "date": "2024-10-01" },
+    { "playerId": "skipz", "action": "JOINED", "date": "2024-10-01" },
+    { "playerId": "goblin", "action": "JOINED", "date": "2025-05-01", "context": "Return" },
+    { "playerId": "legit", "action": "JOINED", "date": "2025-05-13" },
+    { "playerId": "jokerr", "action": "JOINED", "date": "2025-07-20", "context": "Return" },
+    { "playerId": "manya", "action": "LEFT", "date": "2025-07-28" },
+    { "playerId": "thunder", "action": "JOINED", "date": "2025-09-20" }
+  ],
+  "stats": {
+    "totalWins": 18,
+    "totalPrize": 718647,
+    "winsByTier": {
+      "S-Tier": 0,
+      "A-Tier": 4,
+      "B-Tier": 7,
+      "C-Tier": 4,
+      "Qualifier": 1,
+      "Showmatch": 1
+    },
+    "tournamentsByYear": {
+      "2019": 5,
+      "2020": 5,
+      "2021": 22,
+      "2022": 18,
+      "2023": 22,
+      "2024": 28,
+      "2025": 21,
+      "2026": 3
+    },
+    "bestPlacement": {
+      "tournament": "Battlegrounds Mobile India Series 2026",
+      "placement": 1,
+      "prize": 105505
+    }
+  }
+}

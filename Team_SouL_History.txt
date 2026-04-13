@@ -1,0 +1,1354 @@
+Comprehensive Historical Analysis of Team SouL (2018–2026): Roster Evolution, Competitive Performance, and Ecosystem Impact in PUBG Mobile and BGMI
+1. Overview
+Team SouL stands as a foundational institution within the South Asian mobile esports ecosystem. Originating in India, the organization has exerted profound influence over the competitive and commercial trajectories of PlayerUnknown's Battlegrounds Mobile (PUBG Mobile) and its regional successor, Battlegrounds Mobile India (BGMI).1 Formally established on December 21, 2018, the team was founded by Naman "MortaL" Mathur alongside Animesh "Thug" Agarwal and Lokesh "Goldy" Jain.1 Operating currently under the parent corporate entity S8UL Esports—a conglomerate formed via the strategic merger of Team SouL and 8bit Creatives—the organization operates dual divisions of high-tier competitive esports and mass-market gaming content creation.4
+The timeline scope of this analysis encompasses the organization's inception in late 2018 through the culmination of the first quarter of 2026. This period is critical for understanding the maturation of mobile esports in India, as it covers the original PUBG Mobile boom (2018–2019), the systemic disruption caused by the Indian government's ban on the application (2020), the transitional revival marked by the launch of BGMI (2021), and the highly structured, high-capital modern competitive era (2022–2026).5
+Data indicates that Team SouL is among the most commercially successful and widely viewed mobile esports franchises globally. The organization has amassed approximately $718,647 in cumulative competitive winnings across its history, with $509,165 of that total derived specifically from BGMI tournaments since the game's introduction.1 To date, the BGMI division has participated in 83 verified tournaments, playing 677 official matches with a format distribution of 70% online and 30% offline play.1
+Beyond competitive prize pools, Team SouL's strategic value is deeply tied to its viewership metrics, which regularly eclipse those of traditional sporting events in the region. Verified viewership records demonstrate massive audience retention across multiple titles and years. The team's all-time peak viewership record stands at 577,685 concurrent viewers, achieved during the Battlegrounds Mobile India Series 2026.1 Historical peaks include 525,131 viewers during the PUBG Mobile Club Open Fall Split Global Finals (2019), 485,132 viewers during the Battlegrounds Mobile India Series 2025, and 421,769 viewers at the S-Tier PUBG Mobile World Invitational 2022.1 Supported by premier sponsors such as IQOO, the organization operates a highly sophisticated ecosystem where competitive success directly feeds content engagement, mitigating financial risks associated with the inherent volatility of esports tournament outcomes.1
+This document provides a strictly analytical, fact-checked, and source-verified historical record of Team SouL, explicitly tracking every confirmed roster iteration, tournament placement, and strategic pivot from 2018 to 2026.
+2. Year-by-Year Timeline
+Year: 2018
+The foundation of Team SouL occurred during the nascent stages of the Indian mobile esports ecosystem, prior to the establishment of multi-million dollar domestic prize pools. The organization was officially incorporated on December 21, 2018.2
+Active Rosters
+Player Name
+Role
+Event / Context
+Naman "MortaL" Mathur
+Player / Owner / Streamer
+Organization Founding Core
+Mohammed "Owais" Lakhani
+In-Game Leader (IGL) / Player
+Organization Founding Core
+Harpreet "RonaK" Janjuha
+Player / Assaulter
+Organization Founding Core
+Yash "VipeR" Soni
+Player / Support
+Organization Founding Core
+Kanishk "Slayer" Shah
+Player
+Organization Founding Core
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+MortaL
+JOINED
+December 21, 2018
+2
+Owais
+JOINED
+December 21, 2018
+7
+RonaK
+JOINED
+December 21, 2018
+8
+Slayer
+JOINED
+December 21, 2018
+9
+VipeR
+JOINED
+December 21, 2018
+2
+Goldy
+JOINED (Co-owner)
+December 21, 2018
+2
+Thug
+JOINED (Co-owner)
+December 21, 2018
+2
+Tournaments Played
+Verified data detailing specific tournament placements and prize pools is not available for the final ten days of 2018. This period served purely as the administrative and structural foundation for the squad.
+Major Highlights
+	•	Turning Points: The establishment of the roster on December 21 set the architectural stage for the 2019 competitive circuit. By consolidating highly ranked regional mechanical players like MortaL, Owais, and RonaK, the management structure created an immediate baseline for domestic dominance.2
+Year: 2019
+The 2019 competitive calendar represented Team SouL’s breakout year, characterized by major A-Tier domestic victories, international representation, and intense internal roster volatility that fractured the foundational lineup.
+Active Rosters
+Player Name
+Role
+Event / Context
+MortaL, Owais, RonaK, VipeR
+Core Lineup
+PUBG Mobile India Series (PMIS) 2019
+MortaL, Owais, RonaK, VipeR
+Core Lineup
+PMCO 2019 Spring Split: India
+MortaL, VipeR, ReGaLToS, ClutchGod
+Restructured Lineup
+PMCO 2019 Fall Split Global Finals
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Slayer
+LEFT
+2019 (Exact date unverified)
+9
+Sc0utOP
+JOINED
+August 5, 2019
+2
+Sc0utOP
+LEFT
+September 10, 2019
+2
+Owais
+LEFT
+September 10, 2019
+7
+RonaK
+LEFT
+September 10, 2019
+8
+ClutchGod
+JOINED
+October 2019
+2
+ReGaLToS
+JOINED
+2019 (Exact date unverified)
+11
+ClutchGod
+LEFT
+December 2019
+2
+AMAN
+JOINED
+December 2019
+2
+Conflict Resolution Note: Documentation suggests MortaL briefly stepped back into an inactive status in August 2019, which prompted the short-lived acquisition of Sc0utOP. Upon MortaL's return to the active roster in September, an internal schism occurred, resulting in the simultaneous departure of Sc0utOP, Owais, and RonaK on September 10, 2019, to form/join Team Xspark.2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+PUBG Mobile India Series (PMIS) 2019
+A-Tier
+1st
+$42,828
+7
+PMCO - 2019 Spring Split: India
+A-Tier
+1st
+$60,000
+7
+PMCO - 2019 Spring Split Global Finals
+S-Tier
+12th
+-
+14
+PMCO - 2019 Fall Split Global Finals
+S-Tier
+12th
+$8,000
+11
+Peacekeeper Elite Championship 2019
+A-Tier
+12th
+$6,439
+11
+Major Highlights
+	•	Wins: The back-to-back victories at PMIS 2019 and the PMCO Spring Split India established Team SouL as the premier squad in the region, capturing over $100,000 in combined prize pools in the first half of the year.7 RonaK further achieved individual recognition at PMIS, winning "The Rampage Freak" award, which carried an additional $714 bounty.8
+	•	Turning Points: The September 10 mass exodus of IGL Owais, primary fragger RonaK, and Sc0utOP fractured the original championship core. This forced organizational management to rely on temporary acquisitions like ClutchGod and emerging domestic talent like ReGaLToS to field a viable roster for the PMCO Fall Split. The restructured roster struggled to match the mechanical output of global peers, resulting in a modest 12th-place global finish.2
+Year: 2020
+The 2020 season was defined by organizational restructuring and immense geopolitical disruption. The Indian government's regulatory ban on PUBG Mobile halted domestic esports progression, forcing organizations into a holding pattern and necessitating the rapid diversification of revenue streams.
+Active Rosters
+Player Name
+Role
+Event / Context
+MortaL, VipeR, ReGaLToS, Sangwan, AMAN
+Transitional Core
+Early to Mid 2020 Invitationals
+MortaL, VipeR, ReGaLToS, Blaezi
+Adjusted Core
+Mid to Late 2020 Events
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Sangwan
+JOINED
+January 2020
+2
+Sagar
+JOINED (Analyst)
+June 2020
+2
+Blaezi
+JOINED
+July 2020
+2
+Blaezi
+LEFT
+September 2020
+2
+AMAN
+LEFT
+2020 (Exact date unverified)
+2
+Sangwan
+LEFT
+2020 (Exact date unverified)
+2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+#GamingForGood - Charity Tourney
+B-Tier
+2nd
+-
+11
+India Today League PUBGM Invitational
+B-Tier
+2nd
+-
+11
+Skyesports Grand Slam: PUBGM Invitational
+C-Tier
+2nd
+-
+11
+Gamers Without Borders 2020: Asia
+A-Tier
+8th
+-
+11
+PUBG Mobile Pro League - South Asia S1
+A-Tier
+13th
+-
+11
+Major Highlights
+	•	Failures: The team struggled to convert its early 2019 dominance into 2020 A-Tier tournament victories. The roster consistently placed 2nd in smaller domestic invitationals (Skyesports, India Today) but fell to a disappointing 13th place in the major PMPL South Asia circuit, indicating structural vulnerabilities against rapidly improving regional opponents.11
+	•	Turning Points: To insulate against the catastrophic loss of domestic tournament revenue following the app ban, S8UL Esports was formally established as a parent company. Data Conflict Note: Source 4 states S8UL was "officially formed in 2020 as a result of the merger of the teams Team Soul and 8bit Creatives." However, source 2 lists the formal incorporation date specifically as October 15, 2020. This corporate structuring aimed to pivot the organization heavily into content creation, utilizing the massive personal brands of MortaL and VipeR to maintain audience engagement until competitive play could resume. ReGaLToS earned the MVP award at the VLT Major Invitational Tournament Season 2 on June 21, 2020, highlighting his rising individual stock during a stagnant team period.11
+Year: 2021
+In mid-2021, publisher Krafton successfully released Battlegrounds Mobile India (BGMI), reviving the regional competitive circuit. Team SouL launched a highly anticipated, star-studded roster but subsequently suffered severe statistical underperformance in B-Tier and C-Tier events, signaling an inability to adapt to the evolved meta.
+Active Rosters
+Player Name
+Role
+Event / Context
+MortaL, Sc0utOP, Mavi, ReGaLToS, VipeR
+Launch Core
+July–October 2021 (BGMI Launch)
+MortaL, VipeR, ReGaLToS, RoXX, VIRU, YuvaOP, Deathnote
+Secondary Core
+November–December 2021
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Sc0utOP
+JOINED
+July 7, 2021
+2
+Mavi
+JOINED
+July 7, 2021
+16
+Sid
+JOINED (Manager)
+August 2021
+2
+Sc0utOP
+LEFT
+October 17, 2021
+2
+Mavi
+LEFT
+October 17, 2021
+16
+RoXX
+JOINED
+November 2021
+2
+VIRU
+JOINED
+November 2021
+2
+YuvaOP
+JOINED
+November 2021
+2
+Deathnote
+JOINED
+November 2021
+2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+APL Invitational
+C-Tier
+16th
+-
+17
+Rooter Pro Scrims: Conqueror Phase
+C-Tier
+18th
+-
+17
+BGMI EWar Mahayudh Season 2
+C-Tier
+20th
+-
+17
+The Esports Club - BGMI Invitational S1
+C-Tier
+20th
+-
+17
+iQOO All Stars Cup
+C-Tier
+16th
+-
+17
+game.tv Weekly Wars: Season 1
+C-Tier
+17th
+-
+17
+Skyesports Championship 3.0
+A-Tier
+13th
+$136
+17
+Esportswala Elite Invitational Battle S2
+C-Tier
+19th
+-
+17
+Chemin Esports Ultimate Showdown
+C-Tier
+18th
+-
+17
+iNSANE Summer Split
+C-Tier
+5th
+-
+17
+THUG Invitational: Season 3
+C-Tier
+19th
+-
+17
+Wings BattleFest
+C-Tier
+9th
+-
+17
+OG Starter Cup
+C-Tier
+3rd
+$268
+17
+LOCO War of Glory: League Stage
+B-Tier
+20th
+-
+17
+Clutch Invitational
+C-Tier
+7th
+-
+17
+India Today's Dangal
+C-Tier
+16th
+-
+17
+LOCO Diwali Battle: League Stage
+B-Tier
+17th
+-
+17
+LOCO Diwali Battle: Grand Finals
+B-Tier
+18th
+$403
+17
+Battle of Rivals: Season 1
+C-Tier
+12th
+-
+17
+OneShot Showdown Season 2: Grand Finals
+B-Tier
+19th
+-
+17
+Red Bull M.E.O. Season 4: India
+B-Tier
+23rd
+$1,063
+17
+WD Black Cup: Season 2
+C-Tier
+16th
+-
+17
+Battlegrounds Mobile India Series 2021: The Grind
+Qualifier
+16th
+-
+17
+Major Highlights
+	•	Failures: The heralded return of Sc0utOP alongside elite IGL Mavi was expected to dominate the domestic circuit. Instead, the lineup suffered a catastrophic failure of synergy. Across over twenty verified C-Tier and B-Tier tournaments spanning August to December 2021, the team routinely finished in the bottom quartile of lobbies (e.g., 20th at BGMI EWar, 18th at Chemin Esports, 23rd at Red Bull M.E.O.).17 Sc0utOP did secure a "Best Clutch (Fan Vote)" award worth $680 at Skyesports Championship 3.0, but this was a rare individual highlight during a period of acute macro-level dysfunction.2
+	•	Turning Points: The dismal 16th-place finish at the crucial BGIS 2021: The Grind qualifier proved that the existing roster structure—which relied heavily on legacy talent from the 2019 era—was fundamentally incompatible with the evolved, mechanically demanding BGMI meta.17 This statistical collapse forced management to authorize a complete, high-capital roster overhaul executed in January 2022. Mavi and Sc0utOP departed the organization for TeamXSpark in mid-October following the failure of the initial experiment.2
+Year: 2022
+The 2022 season represented a critical strategic reset for S8UL management. By abandoning legacy roster constructs in favor of aggressive, highly scouted mechanical talent guided by a dedicated coaching staff, Team SouL entered its "Superteam" era, culminating in historic financial and competitive success.
+Active Rosters
+Player Name
+Role
+Event / Context
+Omega, AkshaT, Hector, Goblin
+Championship Core
+BMPS S1, PMWI 2022, All Major 2022 Events
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Omega
+JOINED
+January 13, 2022
+2
+AkshaT
+JOINED
+January 13, 2022
+2
+Amit
+JOINED (Coach)
+January 13, 2022
+2
+AMAN
+JOINED (Coach)
+January 13, 2022
+2
+Hector
+JOINED
+March 4, 2022
+20
+Goblin
+JOINED
+March 4, 2022
+19
+ReGaLToS
+LEFT
+April 18, 2022
+11
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+THUG Invitational: Season 4
+C-Tier
+6th
+-
+17
+Pro Warrior Cup Season 1
+C-Tier
+1st
+$2,649
+17
+Skyesports Grand Slam 2022
+B-Tier
+2nd
+$4,006
+17
+OR Championship - Legends Rise 2022
+C-Tier
+2nd
+$1,339
+17
+Ruthless Invitational Showdown
+C-Tier
+6th
+-
+17
+VE Winter Masters 2022
+B-Tier
+8th
+-
+17
+The Esports Club - BGMI Invitational S3
+C-Tier
+7th
+-
+17
+7Sea Invitational
+B-Tier
+9th
+$300
+17
+BMOC 2022: The Grind
+Qualifier
+2nd
+$983
+17
+Pro Warrior Cup S2: Conquest Round
+B-Tier
+1st
+$3,924
+17
+Pro Warrior Cup S2: Ultimate Round
+B-Tier
+3rd
+-
+17
+BMOC 2022
+Qualifier
+1st - 4th
+-
+17
+THUG Invitational: Season 5
+B-Tier
+7th
+-
+17
+Battlegrounds Mobile India Pro Series - S1
+A-Tier
+1st
+$95,935
+17
+The Esports Club - BGMI Invitational S4
+B-Tier
+7th
+-
+17
+BGMI Masters Series
+A-Tier
+6th
+$8,157
+17
+Battlegrounds Mobile India Showdown 2022
+B-Tier
+7th
+$501
+17
+PUBG Mobile World Invitational 2022
+S-Tier
+11th
+$58,500
+17
+Major Highlights
+	•	Wins: The acquisition of Omega as IGL fundamentally altered the team's trajectory. Termed "The Humble IGL," his macro-level shot-calling enabled the raw mechanical prowess of newly acquired entry fragger Goblin.18 This synergy peaked on June 12 at the A-Tier Battlegrounds Mobile India Pro Series (BMPS) Season 1, where the team decisively captured 1st place and $95,935.17 Goblin's individual performance during this tournament was historically dominant; he swept the award categories, securing MVP ($3,198), Rampage Freak ($1,279), Fan Favorite Player ($1,279), and three separate Player of the Day honors.19
+	•	Turning Points: Validating their domestic supremacy, the squad represented the region at the S-Tier PUBG Mobile World Invitational 2022. While finishing 11th overall ($58,500) amidst intense international competition, Hector demonstrated profound mechanical capability, winning the "Eagle Eye" award and its accompanying $5,000 prize.17 At the BGMI Masters Series in July, Hector further amassed utility-based honors, winning Week 1 Saviour, Week 2 Doctor, and Finals Saviour ($314 each).20
+Year: 2023
+Despite retaining the championship core established in 2022 for the entirety of the year, 2023 was characterized by a distinct plateau in A-Tier tournament performance. While the team secured numerous B-Tier and C-Tier victories, the year culminated in the official retirement of its legacy founders from active play and the mass departure of the Superteam core.
+Active Rosters
+Player Name
+Role
+Event / Context
+Omega, AkshaT, Hector, Goblin, Neyo
+Championship Core
+Full 2023 Circuit
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+MortaL
+RETIRED (Active Play)
+January 16, 2023
+2
+VipeR
+RETIRED (Active Play)
+January 16, 2023
+2
+Neyo
+JOINED
+July 2023
+2
+Omega
+LEFT
+December 23, 2023
+2
+AkshaT
+LEFT
+December 23, 2023
+2
+Hector
+LEFT
+December 23, 2023
+20
+Neyo
+LEFT
+December 23, 2023
+2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+BGMI Pro Scrims
+C-Tier
+9th
+$121
+17
+Villager Esports DOMIN8R Series
+C-Tier
+3rd
+$1,213
+17
+Novum Overpower Series Season 1
+C-Tier
+8th
+-
+17
+Skyesports Champions Series
+B-Tier
+2nd
+$7,325
+17
+Fight Night Pro Scrims
+C-Tier
+5th
+-
+17
+Upthrust Esports Challengers Showdown
+B-Tier
+13th
+-
+17
+Lidoma Battleground Invitational
+C-Tier
+4th
+$609
+17
+IQOO Pro Series
+B-Tier
+7th
+-
+17
+Nodwin BGMI Champions Cup
+B-Tier
+5th
+$1,218
+17
+Fight Night Season 5
+C-Tier
+1st
+$971
+17
+Villager Esports Pro Invitational 2023
+B-Tier
+14th
+-
+17
+Ranbhoomi Season 2
+B-Tier
+4th
+$1,220
+17
+Battle For Revolution Season 1
+C-Tier
+3rd
+$609
+17
+India Today League Invitationals
+B-Tier
+20th
+-
+17
+Revenant Invitational Showdown
+C-Tier
+11th
+-
+17
+Upthrust Esports Survivors Throne S4
+C-Tier
+13th
+-
+17
+BGMI Masters Series Season 2
+A-Tier
+17th
+$1,815
+17
+OS Invitational Season 1
+B-Tier
+1st
+$5,406
+17
+Upthrust Esports Pro Showdown S2
+B-Tier
+14th
+-
+17
+Battle For Revolution Season 2
+B-Tier
+1st
+$7,209
+17
+Skyesports Championship 5.0
+A-Tier
+4th
+$8,117
+17
+Upthrust Esports Diwali Battle 2023
+A-Tier
+4th
+-
+17
+Red Bull M.E.O. Season 6 - India
+C-Tier
+11th
+-
+17
+Battlegrounds Mobile India Pro Series 2023
+A-Tier
+5th
+$3,613
+17
+Major Highlights
+	•	Failures & Stagnation: While the team successfully farmed B-Tier and C-Tier events—securing 1st place at Fight Night Season 5, OS Invitational Season 1, and Battle For Revolution Season 2 (where Goblin secured MVP and Top Fragger awards worth $962 combined)—their performance in definitive A-Tier competitions regressed significantly.17 A disastrous 17th-place collapse at BGMS Season 2 and a middling 5th-place finish at BMPS 2023 highlighted a stagnation in tactical execution. Opposing teams had analyzed and countered Omega's rotational strategies, and the roster could no longer win purely on mechanical dominance.17
+	•	Turning Points: On January 16, founding members MortaL and VipeR officially retired from all active competitive play to focus exclusively on content and organizational management.2 Following the tactical stagnation in the latter half of the year, the core roster—Omega, AkshaT, Hector, and Neyo—departed the organization simultaneously on December 23, 2023, eventually transferring to Carnival Gaming. Team SouL released a formal statement acknowledging their "immeasurable" impact, closing the chapter on the Superteam era.2
+Year: 2024
+Faced with a complete vacuum in their competitive roster, Team SouL executed a high-profile, turnkey acquisition of the ex-Blind Esports core on January 1, 2024. This strategy bypassed the arduous process of organic roster building, instantly restoring the organization to championship status.
+Active Rosters
+Player Name
+Role
+Event / Context
+Manya, NakuL, Jokerr, Rony, Spower
+Rebuild Core
+Early to Mid 2024 (BGMS S3 Win)
+NakuL, Rony, NinjaJOD, Saumay, Skipz
+Adjusted Core
+Late 2024 Operations
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Manya
+JOINED
+January 1, 2024
+2
+NakuL
+JOINED
+January 1, 2024
+2
+Jokerr
+JOINED
+January 1, 2024
+2
+Rony
+JOINED
+January 1, 2024
+2
+Spower
+JOINED
+January 1, 2024
+2
+Mayavi
+JOINED (Coach)
+January 1, 2024
+2
+Ayogi
+JOINED (Analyst)
+January 1, 2024
+2
+Goblin
+LEFT
+January 11, 2024
+19
+Jokerr
+LEFT
+August 19, 2024
+22
+NinjaJOD
+JOINED
+2024 (Exact date unverified)
+2
+Spower
+LEFT
+2024 (Exact date unverified)
+2
+Saumay
+JOINED
+October 2024
+2
+Skipz
+JOINED
+October 2024
+2
+Sid
+ROLE CHANGE (Returned to Manager)
+October 4, 2024
+2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+Upthrust Survivors Saga Season 3
+C-Tier
+14th
+-
+17
+Upthrust Esports - The Multiverse Series 2024
+B-Tier
+16th
+-
+17
+Bingo! Nachos GAMEON CUP
+C-Tier
+22nd
+-
+17
+UE - The Multiverse Series 2024 : The Final Showdown
+Showmatch
+1st
+$1,203
+17
+Upthrust Esports - The Patriot Cup
+B-Tier
+11th
+-
+17
+iQOO Pro Series 2024
+B-Tier
+2nd
+$3,611
+17
+RA Esports - Rising Star Showdown Season 3
+B-Tier
+6th
+$241
+17
+ESL Snapdragon Pro Series: 2024 BGMI
+A-Tier
+2nd
+$14,425
+17
+Skyesports Champions Series 2024
+B-Tier
+2nd
+$3,021
+17
+Lidoma Masters Showdown
+C-Tier
+10th
+-
+17
+Upthrust Esports India Rising 2024
+B-Tier
+1st
+$2,999
+17
+Skyesports Mobile Open 2024
+B-Tier
+2nd
+$2,996
+17
+OneGame Pro Championship Season 1
+B-Tier
+1st
+$4,782
+17
+RA Esports - Champions Gala Season 1
+B-Tier
+3rd
+$898
+17
+Clash of Warriors Season 2
+C-Tier
+13th
+-
+17
+Upthrust Esports Challengers Showdown Season 2
+B-Tier
+9th
+$601
+17
+RA Esports - Battle For Swaraj Season 1
+B-Tier
+16th
+$1,743
+17
+Battle For Revolution Season 3
+C-Tier
+32nd
+-
+17
+Fearless Championship Series Season 1
+C-Tier
+4th
+$420
+17
+Battlegrounds Mobile India Series 2024
+A-Tier
+4th
+$17,993
+17
+Rooter x APL Invitational Series
+B-Tier
+1st
+$3,592
+17
+BGMI Masters Series Season 3
+A-Tier
+1st
+$65,515
+17
+Gauntlet Season 1
+B-Tier
+17th
+-
+17
+THUG Invitational 2024
+B-Tier
+4th
+$892
+17
+Deepavali BattleMania 2024
+C-Tier
+12th
+-
+17
+1M DYNASTY
+C-Tier
+10th
+-
+17
+Red Bull M.E.O. 2024 - India
+C-Tier
+3rd
+-
+17
+Samatva Elite Series
+B-Tier
+5th
+$878
+17
+Major Highlights
+	•	Wins: The acquisition of Manya and his squad generated immediate returns. The team demonstrated elite consistency early in the year, securing 2nd at the A-Tier ESL Snapdragon Pro Series 2024 ($14,425) and placing 4th at the highly competitive BGIS 2024 ($17,993).17 The pinnacle of the season occurred on August 11, when the Manya-led roster dominated the A-Tier BGMI Masters Series Season 3, capturing 1st place and $65,515.17
+	•	Turning Points: Despite the August victory, internal friction and meta-shifts prompted management to enact adjustments late in the year. The departures of Jokerr (August) and Spower necessitated the onboarding of NinjaJOD, Saumay, and Skipz to maintain competitive viability through the end-of-year B-Tier and C-Tier events.2 The sheer volume of 28 verified tournaments played in 2024 exemplifies the intense, grinding nature of the Indian BGMI circuit during this era.17
+Year: 2025
+The 2025 season witnessed significant early-year roster attrition, the departure of the 2024 core leader (Manya), and the high-profile return of legacy fragger Goblin. Despite substantial mid-year turbulence, the team restructured effectively to secure several high-value A-Tier and B-Tier victories in Q4.
+Active Rosters
+Player Name
+Role
+Event / Context
+NakuL, Rony, NinjaJOD, Saumay, Skipz
+Early Core
+Early 2025 Adjustments
+NakuL, Goblin, LEGIT, Jokerr, Thunder
+Late 2025 Core
+Q4 Events / Championship Precursors
+Source Reference: 2
+Roster Changes
+
+Player
+Action
+Date
+Source
+Skipz
+LEFT
+Early 2025 (Exact date unverified)
+2
+Saumay
+LEFT
+Early 2025 (Exact date unverified)
+2
+HunterZ
+LEFT
+Early 2025 (Join date unverified)
+2
+Goblin
+JOINED (Return)
+May 1, 2025
+19
+LEGIT
+JOINED
+May 13, 2025
+2
+Jokerr
+JOINED (Return)
+July 20, 2025
+22
+Manya
+LEFT
+July 28, 2025
+2
+Mayavi
+LEFT (Coach)
+July 2025
+2
+Ayogi
+ROLE CHANGE (Promoted to Coach)
+July 28, 2025
+2
+Thunder
+JOINED
+September 20, 2025
+2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+1M Slayy Zone
+B-Tier
+6th
+-
+17
+Upthrust Esports - The Multiverse Series 2025
+C-Tier
+1st
+$1,450
+17
+ESL Snapdragon Pro Series Season 6: BGMI
+A-Tier
+7th
+$2,022
+17
+BGIS 2025: The Grind
+Qualifier
+1st
+-
+17
+OneGame Pro Championship Season 2
+C-Tier
+13th
+-
+17
+Caribbean Clash
+C-Tier
+6th
+-
+17
+Battlegrounds Mobile India Series 2025
+A-Tier
+15th
+$7,144
+17
+Skyesports Championship 2024 (Delayed)
+B-Tier
+5th
+-
+17
+Battlegrounds Mobile India Pro Series 2025
+A-Tier
+29th
+$1,165
+17
+Clash of Champions Season 2
+C-Tier
+5th
+$348
+17
+G-League
+B-Tier
+1st
+$5,804
+17
+iQOO Battlegrounds Series
+A-Tier
+26th
+-
+17
+Survival Surge Chapter 1
+C-Tier
+1st
+$2,275
+17
+OG vs NG: Legacies Clash
+Showmatch
+3rd
+$1,140
+17
+BGMI Masters Series Season 4
+A-Tier
+3rd
+$14,160
+17
+Battlegrounds Mobile India Showdown 2025
+A-Tier
+3rd
+$11,267
+17
+Battlegrounds Mobile India International Cup 2025
+A-Tier
+9th
+$2,816
+17
+Chennai Esports Global Championship 2025
+B-Tier
+1st
+$24,242
+17
+1M DYNASTY Season 2
+C-Tier
+11th
+-
+17
+Rising Championship Season 1
+C-Tier
+11th
+-
+17
+OneGame Pro Championship Season 3
+C-Tier
+7th
+-
+17
+Major Highlights
+	•	Failures & Rebuilding: The team critically underperformed at the A-Tier BGIS 2025 in April, finishing 15th despite winning the qualifier.17 A devastating 29th-place finish at BMPS 2025 in July confirmed the core’s expiration. This statistical failure was the catalyst for the mid-year roster overhaul that saw team captain Manya leave the organization on July 28.2
+	•	Wins: In response, S8UL management orchestrated the highly publicized return of Goblin in May and Jokerr in July, while importing raw firepower in LEGIT and Thunder.3 Under the guidance of newly promoted Coach Ayogi and the stabilizing IGL presence of NakuL, the adjusted squad found synergy by Q4. They clinched 1st place at the Chennai Esports Global Championship 2025 ($24,242) and maintained rigorous consistency by placing 3rd at both the BGMS S4 and BGMI Showdown 2025 events, earning over $25,000 combined.17
+Year: 2026 (Present)
+Entering the first quarter of 2026, Team SouL capitalized on the late-2025 roster stabilization, culminating in the highest financial and viewership triumph in the organization's documented history.
+Active Rosters
+Player Name
+Role
+Event / Context
+NakuL, Goblin, LEGIT, Jokerr, Thunder
+Championship Core
+BGIS 2026 Circuit
+Source Reference: 2
+Roster Changes
+Verified data indicates no major active roster changes between Q4 2025 and Q1 2026. The NakuL-led core remained intact, supported by Coach Ayogi and Manager Sid.2
+Tournaments Played
+
+Tournament Name
+Tier
+Placement
+Prize
+Source
+Upthrust Esports Pro Showdown 2026
+C-Tier
+6th
+-
+17
+BGIS 2026: The Grind
+Qualifier
+7th
+-
+17
+Battlegrounds Mobile India Series 2026
+A-Tier
+1st
+$105,505
+17
+Major Highlights
+	•	Wins: The victory at the A-Tier Battlegrounds Mobile India Series (BGIS) 2026 definitively validated the current roster iteration. Occurring on March 29, the $105,505 prize stands as the organization's largest single documented payout.17 Individual accolades reinforced this systemic dominance: NakuL was awarded Best IGL, proving his transition out of Manya's shadow, while newly acquired talent LEGIT was named Finals MVP.2
+	•	Turning Points: The commercial impact of this victory was equally historic. The BGIS 2026 event set an all-time peak viewership record for Team SouL at 577,685 concurrent viewers, inextricably linking their competitive success with the S8UL brand's overarching audience capture strategy.1 This dual commercial and competitive peak defines the modern state of the organization.
+3. Key Eras
+The chronological and statistical data organically segregates Team SouL's history into four distinct strategic eras, characterized by their roster architecture, competitive output, and organizational response to external market conditions.
+1. The OG Era (2018–2019)
+Built around the foundational quintet of MortaL, Owais, RonaK, VipeR, and Slayer, this period defined the infancy of Indian mobile esports.2 Operating in the pre-ban PUBG Mobile ecosystem, this era was marked by early statistical dominance based largely on individual mechanical disparity rather than advanced macro-rotational strategies. The squad yielded 1st-place victories at PMIS 2019 and PMCO Spring India, capturing over $100,000.7 The era concluded abruptly on September 10, 2019, when internal friction led to the fractured departure of Owais, RonaK, and Sc0utOP.2
+2. The Transition & Ban Era (2020–2021)
+A strategically dormant and highly volatile period driven directly by the geopolitical PUBG Mobile app ban in India. The team was forced to rely heavily on rotating, temporary cast members (Sangwan, Blaezi, AMAN, Mavi) to tread water.2 Statistically, this was the organization's weakest competitive phase, evidenced by late 2021 results plummeting to 16th–23rd place finishes in standard B and C-Tier lobbies (e.g., Red Bull M.E.O., BGMI EWar).17 However, the primary success of this era was corporate rather than competitive: the 2020 strategic merger forming S8UL Esports, which successfully secured the brand's long-term financial viability through diversified content creation.4
+3. The Superteam Era (2022–2023)
+Triggered by the January 13, 2022, acquisition of Omega and AkshaT, followed subsequently by Goblin and Hector, this era redefined Team SouL's tactical approach.2 The organization shifted from fielding legacy influencer-players to employing dedicated mechanical specialists operating under strict coaching frameworks. The apex of this period was the June 2022 BMPS Season 1 victory ($95,935) and PMWI 2022 global representation.17 However, severe tactical stagnation in late 2023 against an evolving domestic meta led to the complete, synchronized dissolution of this core on December 23, 2023.2
+4. The Rebuild & Modern Era (2024–2026)
+Following the December 2023 exodus, S8UL management utilized significant capital to acquire the highly cohesive former Blind Esports roster (Manya, NakuL, Jokerr, Rony, Spower) on January 1, 2024.2 This turnkey approach immediately restored A-Tier dominance with a BGMS Season 3 victory.17 Further iterations across 2025—which involved shedding Manya, reintegrating the historic fragger Goblin, and scouting raw talents like LEGIT and Thunder—forged the current optimal meta-roster. This culminated in the historic BGIS 2026 championship victory, generating record prize money ($105,505) and peak viewership (577,685).1
+4. Complete Roster History Table
+
+Year
+Players
+Event / Note
+Source
+2018
+MortaL, Owais, RonaK, VipeR, Slayer
+Organization Founding (Dec 21).
+2
+2019
+MortaL, Owais, RonaK, VipeR
+PMIS 2019, PMCO Spring. 1st place domestic sweeps.
+7
+2019
+Sc0utOP
+Short 1st stint (Aug 5 - Sept 10).
+2
+2019
+MortaL, VipeR, ReGaLToS, ClutchGod
+PMCO Fall Global Finals. Rebuilt after Sept exodus.
+2
+2019
+AMAN
+Joined late 2019, exited in 2020.
+2
+2020
+Sangwan, Blaezi
+Transitional short stints (Jan, Jul-Sep).
+2
+2021
+MortaL, Sc0utOP, Mavi, ReGaLToS, VipeR
+BGMI Launch Roster. Sc0ut/Mavi joined Jul 7, left Oct 17.
+2
+2021
+RoXX, VIRU, YuvaOP, Deathnote
+Stopgap acquisitions (Nov) to finish a failing season.
+2
+2022
+Omega, AkshaT, Hector, Goblin
+"Superteam" core. Won BMPS S1, PMWI 2022 appearance.
+2
+2023
+Omega, AkshaT, Hector, Goblin, Neyo
+Full 2023 circuit. Neyo joined July. Core departed Dec 23.
+2
+2024
+Manya, NakuL, Jokerr, Rony, Spower
+Rebuild Core (Joined Jan 1). Won BGMS S3.
+2
+2024
+NinjaJOD, Saumay, Skipz
+Late year adjustments replacing Jokerr/Spower.
+2
+2025
+NakuL, Goblin, LEGIT, Thunder, Jokerr
+Late 2025 Core. Manya left. Goblin returned May 1.
+2
+2026
+NakuL, Goblin, LEGIT, Jokerr, Thunder
+BGIS 2026 Championship roster ($105k win).
+2
+5. Player History Tracking
+Naman "MortaL" Mathur
+	•	Join Date: December 21, 2018 (Founder) 2
+	•	Leave Date: Retired from active competitive play January 16, 2023.2
+	•	Role: Support / Streamer / Owner
+	•	Impact: The foundational pillar of Team SouL. He led the squad to the defining 2019 PMIS and PMCO Spring titles. His massive personal brand formed the bedrock of the S8UL content empire, ultimately sustaining the organization's commercial visibility during extended periods of competitive weakness.4
+Yash "VipeR" Soni
+	•	Join Date: December 21, 2018 (Original Squad) 2
+	•	Leave Date: Retired from active competitive play January 16, 2023.2
+	•	Role: Player / Support
+	•	Impact: The longest-tenured active player from the OG era. VipeR provided critical structural stability through the highly turbulent 2020-2021 roster rotations, acting as a reliable support element until his dual retirement alongside MortaL in early 2023.
+Mohammed "Owais" Lakhani
+	•	Join Date: December 21, 2018 7
+	•	Leave Date: September 10, 2019 7
+	•	Role: In-Game Leader (IGL) 7
+	•	Impact: Essential to the OG Era's success, his early macro shot-calling secured the $42,828 PMIS 2019 win and the $60,000 PMCO Spring win. His departure to Xspark represented the first major fracture in the team's early dynasty and forced a massive organizational pivot.7
+Harpreet "RonaK" Janjuha
+	•	Join Date: December 21, 2018 8
+	•	Leave Date: September 10, 2019 8
+	•	Role: Player / Assaulter
+	•	Impact: Delivered elite mechanical performance during the 2019 domestic sweeps, functioning as the primary damage dealer. He won "The Rampage Freak" individual award at PMIS 2019 before leaving synchronously with Owais.8
+Tanmay "Sc0utOP" Singh
+	•	Join Date: August 5, 2019 (1st Stint), July 7, 2021 (2nd Stint) 2
+	•	Leave Date: September 10, 2019 (1st Stint), October 17, 2021 (2nd Stint) 2
+	•	Role: Player
+	•	Impact: Though highly anticipated by the fan base, both of Sc0utOP’s tenures were extraordinarily brief, lasting roughly two and three months, respectively. While he won the "Best Clutch" fan vote at Skyesports Championship 3.0, his presence on the roster failed to yield A-Tier tournament victories, highlighting a lack of strategic synergy.2
+Harmandeep "Mavi" Singh
+	•	Join Date: July 7, 2021 16
+	•	Leave Date: October 17, 2021 16
+	•	Role: In-Game Leader (IGL) 16
+	•	Impact: Recruited specifically to lead the 2021 BGMI launch roster, Mavi's strategic alignment did not effectively interface with the legacy SouL players. This friction led to a mutually agreed departure alongside Sc0utOP to TeamXSpark after just three months of persistent bottom-tier finishes.16
+Parv "ReGaLToS" Singh
+	•	Join Date: 2019 (Exact date unverified) 11
+	•	Leave Date: April 18, 2022 11
+	•	Role: Assaulter / IGL 11
+	•	Impact: Acted as the primary aggressive talent during the transitional 2020–2021 phase. He helped secure 2nd place finishes in multiple 2020 invitationals and transitioned effectively into a content creator for S8UL before leaving for 8bit as the "Superteam" core was fully assembled.11
+Sahil "Omega" Jakhar
+	•	Join Date: January 13, 2022 2
+	•	Leave Date: December 23, 2023 2
+	•	Role: In-Game Leader (IGL) 18
+	•	Impact: Known colloquially as "The Humble IGL," Omega architected the team's competitive renaissance. Under his macro-strategy, the team won BMPS Season 1 ($95,935) and represented India globally. The organization officially noted his impact as "immeasurable" upon his late-2023 departure.18
+Sohail "Hector" Shaikh
+	•	Join Date: March 4, 2022 20
+	•	Leave Date: December 23, 2023 20
+	•	Role: Player / Support
+	•	Impact: A critical foundational component of the 2022–2023 core. He validated his international capability by winning the highly coveted "Eagle Eye" award ($5,000) at PMWI 2022 and swept multiple utility-focused awards (Saviour, Doctor) during the BGMI Masters Series.20
+Harsh "Goblin" Paudwal
+	•	Join Date: March 4, 2022 (1st Stint) 19, May 1, 2025 (2nd Stint) 2
+	•	Leave Date: January 11, 2024 (1st Stint) 19
+	•	Role: Fragger 19
+	•	Impact: Statistically the most lethal individual player in Team SouL history. His 2022 BMPS Season 1 performance is historically unprecedented, sweeping MVP, Rampage Freak, Fan Favorite, and three Player of the Day awards. His 2025 return was instrumental in securing the BGIS 2026 championship.17
+Mohammad "Manya" Raja
+	•	Join Date: January 1, 2024 2
+	•	Leave Date: July 28, 2025 2
+	•	Role: Player / Leader
+	•	Impact: Orchestrated the 2024 core that pulled Team SouL out of the post-Omega vacuum. He guided the newly acquired squad to a 1st place finish at BGMS Season 3 ($65,515) before departing mid-2025 following a dip in statistical form.2
+Nakul "NakuL" Sharma
+	•	Join Date: January 1, 2024 2
+	•	Leave Date: Present (Active)
+	•	Role: Team Captain / IGL 2
+	•	Impact: The current anchor of the organization. NakuL's leadership stabilized the highly turbulent 2025 roster shifts. Evolving into a premier IGL, his macro-strategies culminated in his "Best IGL" award during the monumental BGIS 2026 championship victory, cementing his status as a cornerstone asset.2
+6. Sources Section
+	•	Liquipedia - Team SouL Complete Roster History, Active Lineups, & Timeline Data: https://liquipedia.net/pubgmobile/Team_SouL
+	•	Liquipedia - Team SouL Detailed Tournament Results (Placements & Prizes 2021-2026): https://liquipedia.net/pubgmobile/Team_SouL/Results
+	•	Esports Charts - Team SouL BGMI Viewership Metrics & Tournament Earnings: https://escharts.com/teams/bgmi/soul
+	•	Esports Charts - General BGMI Teams Statistics (Match Data): https://escharts.com/teams/bgmi
+	•	Esports Charts - PMCO 2019 Fall Split Global Finals Peak Viewership and Results: https://escharts.com/tournaments/pubg-mobile/pubg-mobile-club-open-2019-fall-split-global-finals
+	•	Esports Earnings - PMIS 2019 Detailed Tournament Records: https://www.esportsearnings.com/tournaments/53464-pmis-2019
+	•	Liquipedia - PUBG Mobile India Series 2019 Results: https://liquipedia.net/pubgmobile/PUBG_Mobile_India_Series/2019
+	•	Liquipedia - PUBG Mobile Club Open 2019 Fall Split Results: https://liquipedia.net/pubgmobile/PUBG_Mobile_Club_Open/2019/Fall
+	•	Wikipedia - S8UL Esports Merger & Corporate History: https://en.wikipedia.org/wiki/S8UL_Esports
+	•	Wikipedia - MortaL (Naman Mathur) Biography: https://en.wikipedia.org/wiki/Mortal_(gamer)
+	•	Esportz.in - Team SouL announces BGMI Roster 2021 (Sc0utOP/Mavi Acquisition): https://esportz.in/team-soul-announces-battlegrounds-mobile-india-roster
+	•	Inshorts - Team SouL announces new BGMI lineup (Manya Core Acquisition): https://inshorts.com/en/news/team-soul-announces-new-bgmi-lineup-featuring-former-blind-esports-1704171934023
+	•	Liquipedia - Slayer Profile & Team History: https://liquipedia.net/pubgmobile/Slayer
+	•	Liquipedia - Jokerr Profile & Transfer Data: https://liquipedia.net/pubgmobile/Jokerr
+	•	Liquipedia - Omega Profile, Strategy, & Team SouL Tenure: https://liquipedia.net/pubgmobile/Omega
+	•	Liquipedia - Owais Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/Owais
+	•	Liquipedia - Ronak Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/Ronak
+	•	Liquipedia - Mavi Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/Mavi
+	•	Liquipedia - ReGaLToS Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/ReGaLToS
+	•	Liquipedia - Goblin Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/Goblin
+	•	Liquipedia - Hector Profile & Team SouL Tenure: https://liquipedia.net/pubgmobile/Hector
+	•	Liquipedia - Manya Profile & Transfer Data: https://liquipedia.net/pubgmobile/Manya
+Works cited
+	•	Team SouL BGMI (SouL) Team Overview and Viewers Statistics - Esports Charts, accessed April 13, 2026, https://escharts.com/teams/bgmi/soul
+	•	Sc0utOP - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Sc0utOP
+	•	Team SouL - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Team_SouL
+	•	S8UL Esports - Wikipedia, accessed April 13, 2026, https://en.wikipedia.org/wiki/S8UL_Esports
+	•	Team SouL announces Battlegrounds Mobile India Roster - ESPORTZ, accessed April 13, 2026, https://esportz.in/team-soul-announces-battlegrounds-mobile-india-roster
+	•	BGMI Esports Teams - Statistics and Analytics, accessed April 13, 2026, https://escharts.com/teams/bgmi
+	•	Owais - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Owais
+	•	RonaK - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Ronak
+	•	Slayer - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Slayer
+	•	PUBG Mobile India Series 2019 - Tournament Results & Prize Money - Esports Earnings, accessed April 13, 2026, https://www.esportsearnings.com/tournaments/53464-pmis-2019
+	•	ReGaLToS - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/ReGaLToS
+	•	PUBG Mobile Club Open - 2019 Fall Split Global Finals - Esports Charts, accessed April 13, 2026, https://escharts.com/tournaments/pubg-mobile/pubg-mobile-club-open-2019-fall-split-global-finals
+	•	PUBG Mobile India Series 2019 - Liquipedia, accessed April 13, 2026, https://liquipedia.net/pubgmobile/PUBG_Mobile_India_Series/2019
+	•	Mortal (gamer) - Wikipedia, accessed April 13, 2026, https://en.wikipedia.org/wiki/Mortal_(gamer)
+	•	PUBG Mobile Club Open - 2019 Fall Split Global Finals - Liquipedia, accessed April 13, 2026, https://liquipedia.net/pubgmobile/PUBG_Mobile_Club_Open/2019/Fall
+	•	Mavi - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Mavi
+	•	Team SouL: Results - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Team_SouL/Results
+	•	Omega - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Omega
+	•	Goblin - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Goblin
+	•	Hector - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Hector
+	•	Team SouL announces new BGMI lineup featuring former Blind eSports, accessed April 13, 2026, https://inshorts.com/en/news/team-soul-announces-new-bgmi-lineup-featuring-former-blind-esports-1704171934023
+	•	Jokerr - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Jokerr
+	•	Manya - Liquipedia PUBG Mobile Wiki, accessed April 13, 2026, https://liquipedia.net/pubgmobile/Manya
