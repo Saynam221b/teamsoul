@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAdminRequest, unauthorizedAdminResponse } from "@/lib/adminAuth";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
@@ -17,12 +18,6 @@ const EXTRA_TABLES = [
   "roster_changes",
   "aggregate_stats",
 ] as const;
-
-function isAuthorized(request: Request) {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return false;
-  return request.headers.get("x-admin-password") === adminPassword;
-}
 
 async function getTableCount(
   table: string
@@ -44,8 +39,8 @@ async function getTableCount(
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isAdminRequest(request)) {
+    return unauthorizedAdminResponse();
   }
 
   if (!isSupabaseConfigured()) {

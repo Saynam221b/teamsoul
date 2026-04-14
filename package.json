@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "upload:bgmi-assets": "node scripts/upload_blob_assets.mjs",
+    "upload:era-story-images": "node scripts/upload_era_story_images.mjs",
     "db:apply-schema:supabase": "node scripts/apply_schema_to_postgres.mjs",
     "db:migrate:supabase": "node scripts/migrate_data_to_supabase.mjs"
   },

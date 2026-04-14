@@ -8,6 +8,7 @@ import type {
   Tournament,
   Player,
   Era,
+  StaffMember,
   RosterSnapshot,
   RosterChange,
 } from "./types";
@@ -99,6 +100,18 @@ export function getPlayersByEra(eraId: string): Player[] {
   );
 }
 
+export function getAllStaff(): StaffMember[] {
+  return Object.values(data.staff);
+}
+
+export function getStaffById(id: string): StaffMember | undefined {
+  return data.staff[id];
+}
+
+export function getStaffByEra(eraId: string): StaffMember[] {
+  return Object.values(data.staff).filter((member) => member.eras.includes(eraId));
+}
+
 // ---------------------------------------------------------------------------
 // Eras
 // ---------------------------------------------------------------------------
@@ -154,12 +167,35 @@ export function formatPlacement(placement: number | string): string {
   return `${placement}${suffix}`;
 }
 
+function isDateOnlyString(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function parseDateOnly(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return { year, month, day };
+}
+
+export function getYearFromDateString(dateStr: string): number {
+  if (isDateOnlyString(dateStr)) {
+    return parseDateOnly(dateStr).year;
+  }
+
+  return new Date(dateStr).getUTCFullYear();
+}
+
 export function formatDate(dateStr: string): string {
+  if (isDateOnlyString(dateStr)) {
+    const { year, month, day } = parseDateOnly(dateStr);
+    return `${getMonthName(month)} ${day}, ${year}`;
+  }
+
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   });
 }
 

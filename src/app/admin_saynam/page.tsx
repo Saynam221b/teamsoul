@@ -1,39 +1,17 @@
 "use client";
 
-import Image from "next/image";
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Navbar from "@/components/layout/Navbar";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Footer from "@/components/layout/Footer";
-
-const ROOT_PREFIX = "BGMI_2026_current_with_higglist_bgis";
-const DB_TABLES = [
-  "organizations",
-  "viewership_milestones",
-  "eras",
-  "era_key_players",
-  "players",
-  "player_stints",
-  "tournaments",
-  "tournament_rosters",
-  "awards",
-  "roster_snapshots",
-  "roster_snapshot_players",
-  "roster_changes",
-  "aggregate_stats",
-] as const;
-
-type BlobAssetsFile = {
-  generatedAt: string;
-  totalFiles: number;
-  files: Record<string, string>;
-};
-
-type EditorState = {
-  key: string;
-  newKey: string;
-  url: string;
-  mode: "create" | "update";
-};
+import Navbar from "@/components/layout/Navbar";
+import { formatDate, formatPrize, getMonthName } from "@/data/helpers";
+import type {
+  AdminPlayerOption,
+  AdminTournament,
+  CompleteTournamentInput,
+  CreateUpcomingTournamentInput,
+  Tournament,
+  UpdateTournamentInput,
+} from "@/data/types";
 
 type DbHealth = {
   schemaReady: boolean;
@@ -49,39 +27,439 @@ type DbHealth = {
   error?: string;
 };
 
-const INITIAL_EDITOR: EditorState = {
-  key: "",
-  newKey: "",
-  url: "",
-  mode: "create",
+type AdminFilter = "upcoming" | "live" | "completed";
+type ModalMode = "create" | "edit" | "complete";
+
+type TournamentFormState = {
+  status: "upcoming" | "live";
+  name: string;
+  tier: Tournament["tier"];
+  year: string;
+  month: string;
+  eventDate: string;
+  location: string;
+  approxPrize: string;
+  details: string;
+  placement: string;
+  isWin: boolean;
+  rosterIds: string[];
 };
 
-type AdminView = "assets" | "database";
+const TIER_OPTIONS: Tournament["tier"][] = [
+  "S-Tier",
+  "A-Tier",
+  "B-Tier",
+  "C-Tier",
+  "Qualifier",
+  "Showmatch",
+];
 
-function getFolderFromKey(key: string) {
-  const idx = key.lastIndexOf("/");
-  return idx === -1 ? ROOT_PREFIX : key.slice(0, idx);
+const EMPTY_FORM: TournamentFormState = {
+  status: "upcoming",
+  name: "",
+  tier: "S-Tier",
+  year: "",
+  month: "",
+  eventDate: "",
+  location: "",
+  approxPrize: "",
+  details: "",
+  placement: "",
+  isWin: false,
+  rosterIds: [],
+};
+
+function toFormState(tournament: AdminTournament): TournamentFormState {
+  return {
+    status: tournament.status === "live" ? "live" : "upcoming",
+    name: tournament.name,
+    tier: tournament.tier,
+    year: String(tournament.year),
+    month: tournament.month ? String(tournament.month) : "",
+    eventDate: tournament.eventDate ?? "",
+    location: tournament.location ?? "",
+    approxPrize:
+      tournament.approxPrize === null || tournament.approxPrize === undefined
+        ? ""
+        : String(tournament.approxPrize),
+    details: tournament.details ?? "",
+    placement: tournament.placement ?? "",
+    isWin: tournament.isWin,
+    rosterIds: tournament.rosterIds ?? [],
+  };
+}
+
+function buildBasePayload(
+  form: TournamentFormState
+): Omit<CreateUpcomingTournamentInput, "name" | "tier" | "year"> & {
+  name: string;
+  tier: Tournament["tier"];
+  year: number;
+} {
+  return {
+    name: form.name.trim(),
+    tier: form.tier,
+    year: Number(form.year || "0"),
+    status: form.status,
+    month: form.month ? Number(form.month) : null,
+    eventDate: form.eventDate.trim() || null,
+    location: form.location.trim() || null,
+    approxPrize: form.approxPrize.trim() ? Number(form.approxPrize) : null,
+    details: form.details.trim() || null,
+  };
+}
+
+function tournamentStamp(tournament: AdminTournament) {
+  if (tournament.eventDate) {
+    return formatDate(tournament.eventDate);
+  }
+
+  if (tournament.month) {
+    return `${getMonthName(tournament.month)} ${tournament.year}`;
+  }
+
+  return String(tournament.year);
+}
+
+function getStatusTone(status: AdminFilter | NonNullable<Tournament["status"]>) {
+  if (status === "live") {
+    return "border-energy/30 bg-energy/10 text-energy";
+  }
+
+  if (status === "upcoming") {
+    return "border-accent/30 bg-accent/10 text-accent";
+  }
+
+  return "border-gold/30 bg-gold/10 text-gold";
+}
+
+function getStatusLabel(status: NonNullable<Tournament["status"]> | AdminFilter) {
+  return status === "live" ? "ongoing" : status;
+}
+
+function getPlayerTone(player: AdminPlayerOption, selected: boolean) {
+  if (selected) {
+    return "border-accent/30 bg-accent/10 text-white";
+  }
+
+  if (player.isActive) {
+    return "border-white/10 bg-white/[0.03] text-text-primary";
+  }
+
+  return "border-white/8 bg-black/15 text-text-secondary";
+}
+
+function TournamentModal({
+  mode,
+  form,
+  players,
+  includeCompletionFields,
+  saving,
+  onClose,
+  onSubmit,
+  onChange,
+}: {
+  mode: ModalMode;
+  form: TournamentFormState;
+  players: AdminPlayerOption[];
+  includeCompletionFields: boolean;
+  saving: boolean;
+  onClose: () => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onChange: <K extends keyof TournamentFormState>(
+    key: K,
+    value: TournamentFormState[K]
+  ) => void;
+}) {
+  const requiresResults = includeCompletionFields;
+  const creationLabel = form.status === "live" ? "Ongoing" : "Upcoming";
+  const title =
+    mode === "create"
+      ? `Add New ${creationLabel} Tournament`
+      : mode === "complete"
+        ? "Complete Tournament"
+        : includeCompletionFields
+          ? "Edit Completed Tournament"
+          : `Edit ${form.status === "live" ? "Ongoing" : "Upcoming"} Tournament`;
+
+  return (
+    <div className="fixed inset-0 z-[140] bg-black/75 px-4 py-8 backdrop-blur-sm md:px-6">
+      <div className="mx-auto max-h-full w-full max-w-5xl overflow-auto rounded-[30px] border border-white/10 bg-[#07111b] shadow-[0_30px_80px_rgba(0,0,0,0.42)]">
+        <form onSubmit={onSubmit} className="p-5 md:p-7">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/8 pb-4 md:pb-5">
+            <div>
+              <p className="section-kicker mb-2">Tournament control</p>
+              <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+                {title}
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-text-secondary">
+                {mode === "create"
+                  ? `Create a ${creationLabel.toLowerCase()} event through form inputs only. The system generates the tournament ID and stores the normalized payload in Supabase.`
+                  : mode === "complete"
+                    ? "Add placement and roster details, then move the event from upcoming or ongoing into completed results in one save."
+                    : "Update tournament details through the same form-driven flow. No raw JSON editing is exposed."}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full border border-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-text-secondary transition-colors hover:text-white"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-5 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+            <section className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Tournament Name
+                  </span>
+                  <input
+                    value={form.name}
+                    onChange={(event) => onChange("name", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    required
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Tier
+                  </span>
+                  <select
+                    value={form.tier}
+                    onChange={(event) =>
+                      onChange("tier", event.target.value as Tournament["tier"])
+                    }
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                  >
+                    {TIER_OPTIONS.map((tier) => (
+                      <option key={tier} value={tier}>
+                        {tier}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Event Date
+                  </span>
+                  <input
+                    type="date"
+                    value={form.eventDate}
+                    onChange={(event) => onChange("eventDate", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Year
+                  </span>
+                  <input
+                    type="number"
+                    value={form.year}
+                    onChange={(event) => onChange("year", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    min="2018"
+                    max="2100"
+                    required={!form.eventDate}
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Month
+                  </span>
+                  <input
+                    type="number"
+                    value={form.month}
+                    onChange={(event) => onChange("month", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    min="1"
+                    max="12"
+                    placeholder="Optional"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Location
+                  </span>
+                  <input
+                    value={form.location}
+                    onChange={(event) => onChange("location", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    placeholder="Online or venue"
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Approx Prize (USD)
+                  </span>
+                  <input
+                    type="number"
+                    value={form.approxPrize}
+                    onChange={(event) => onChange("approxPrize", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    min="0"
+                    step="1"
+                  />
+                </label>
+              </div>
+
+              <label className="block space-y-2">
+                <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                  Notes
+                </span>
+                <textarea
+                  value={form.details}
+                  onChange={(event) => onChange("details", event.target.value)}
+                  className="min-h-32 w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                  placeholder="Optional context, schedule notes, or completion summary"
+                />
+              </label>
+            </section>
+
+            <section className="space-y-4">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 md:p-5">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-text-muted">
+                  Save behavior
+                </p>
+                <p className="mt-3 text-sm leading-7 text-text-secondary">
+                  {requiresResults
+                    ? "This save updates the tournament row and keeps its normalized data in Supabase."
+                    : `This save creates the tournament as ${creationLabel.toLowerCase()} with a generated ID, no placement, and no roster links yet.`}
+                </p>
+              </div>
+
+              {requiresResults ? (
+                <>
+                  <label className="space-y-2">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                      Placement
+                    </span>
+                    <input
+                      value={form.placement}
+                      onChange={(event) => onChange("placement", event.target.value)}
+                      className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                      placeholder="1 or 7th or Finals"
+                      required
+                    />
+                  </label>
+
+                  <label className="flex items-center gap-3 rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-text-primary">
+                    <input
+                      type="checkbox"
+                      checked={form.isWin}
+                      onChange={(event) => onChange("isWin", event.target.checked)}
+                      className="h-4 w-4 rounded border-white/20 bg-transparent"
+                    />
+                    Mark this event as a title win
+                  </label>
+
+                  <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 md:p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Roster
+                        </p>
+                        <p className="mt-2 text-sm text-text-secondary">
+                          Select the players tied to this completed tournament.
+                        </p>
+                      </div>
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                        {form.rosterIds.length} selected
+                      </span>
+                    </div>
+
+                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                      {players.map((player) => {
+                        const selected = form.rosterIds.includes(player.id);
+                        return (
+                          <label
+                            key={player.id}
+                            className={`flex cursor-pointer items-start gap-3 rounded-[18px] border px-3 py-3 transition-colors ${getPlayerTone(
+                              player,
+                              selected
+                            )}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selected}
+                              onChange={(event) => {
+                                const nextIds = event.target.checked
+                                  ? [...form.rosterIds, player.id]
+                                  : form.rosterIds.filter((id) => id !== player.id);
+                                onChange("rosterIds", nextIds);
+                              }}
+                              className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-white">{player.displayName}</p>
+                              <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-text-muted">
+                                {player.role}
+                              </p>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </section>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-white/8 pt-5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="button-secondary px-5 text-sm"
+            >
+              Cancel
+            </button>
+            <button type="submit" disabled={saving} className="button-primary px-5 text-sm">
+              {saving
+                ? "Saving..."
+                : mode === "create"
+                  ? `Create ${creationLabel} Tournament`
+                  : mode === "complete"
+                    ? "Save And Move To Completed"
+                    : "Save Tournament Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default function AdminSaynamPage() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState("");
   const [authorized, setAuthorized] = useState(false);
-  const [activeView, setActiveView] = useState<AdminView>("assets");
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
-  const [mapping, setMapping] = useState<BlobAssetsFile | null>(null);
-  const [selectedFolder, setSelectedFolder] = useState<string>(`${ROOT_PREFIX}/BGIS 2026`);
-  const [uploadFolder, setUploadFolder] = useState<string>(`${ROOT_PREFIX}/Uploads`);
-  const [editor, setEditor] = useState<EditorState>(INITIAL_EDITOR);
-  const [selectedTable, setSelectedTable] = useState<string>("tournaments");
-  const [dbRows, setDbRows] = useState<Array<Record<string, unknown>>>([]);
-  const [selectedRowId, setSelectedRowId] = useState<string>("");
-  const [rowEditor, setRowEditor] = useState<string>("{}");
-  const [dbMode, setDbMode] = useState<"create" | "update">("create");
+  const [filter, setFilter] = useState<AdminFilter>("upcoming");
+  const [players, setPlayers] = useState<AdminPlayerOption[]>([]);
+  const [tournaments, setTournaments] = useState<AdminTournament[]>([]);
   const [dbHealth, setDbHealth] = useState<DbHealth | null>(null);
+  const [modalMode, setModalMode] = useState<ModalMode | null>(null);
+  const [activeTournament, setActiveTournament] = useState<AdminTournament | null>(null);
+  const [form, setForm] = useState<TournamentFormState>(EMPTY_FORM);
+  const [statusActionId, setStatusActionId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedAuth = window.sessionStorage.getItem("admin_saynam_auth");
@@ -92,194 +470,134 @@ export default function AdminSaynamPage() {
     }
   }, []);
 
-  const loadMapping = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    setNotice("");
-    try {
-      const response = await fetch("/api/admin/blob-mapping", {
-        headers: { "x-admin-password": password },
-      });
-      if (!response.ok) {
-        throw new Error("Could not load mappings");
-      }
-      const data = (await response.json()) as BlobAssetsFile;
-      setMapping(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Request failed");
-    } finally {
-      setLoading(false);
-    }
-  }, [password]);
+  const authHeaders = useMemo(() => ({ "x-admin-password": password }), [password]);
 
-  useEffect(() => {
+  const loadAdminData = useCallback(async () => {
     if (!authorized) return;
-    void loadMapping();
-  }, [authorized, loadMapping]);
 
-  const loadDbRows = useCallback(async () => {
     setLoading(true);
     setError("");
-    setNotice("");
+
     try {
-      const response = await fetch(`/api/admin/db/${selectedTable}`, {
-        headers: { "x-admin-password": password },
-      });
-      const data = (await response.json()) as { rows?: Array<Record<string, unknown>>; error?: string };
-      if (!response.ok) {
-        throw new Error(data.error || "Could not load database rows");
+      const [healthResponse, tournamentsResponse, playersResponse] = await Promise.all([
+        fetch("/api/admin/db-health", { headers: authHeaders }),
+        fetch("/api/admin/tournaments", { headers: authHeaders }),
+        fetch("/api/admin/players", { headers: authHeaders }),
+      ]);
+
+      const [healthData, tournamentsData, playersData] = await Promise.all([
+        healthResponse.json() as Promise<DbHealth & { error?: string }>,
+        tournamentsResponse.json() as Promise<{ tournaments?: AdminTournament[]; error?: string }>,
+        playersResponse.json() as Promise<{ players?: AdminPlayerOption[]; error?: string }>,
+      ]);
+
+      if (!healthResponse.ok) {
+        throw new Error(healthData.error || "Could not load database health");
       }
-      setDbRows(data.rows ?? []);
+      if (!tournamentsResponse.ok) {
+        throw new Error(tournamentsData.error || "Could not load tournaments");
+      }
+      if (!playersResponse.ok) {
+        throw new Error(playersData.error || "Could not load players");
+      }
+
+      setDbHealth(healthData);
+      setTournaments(tournamentsData.tournaments ?? []);
+      setPlayers(playersData.players ?? []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Request failed");
     } finally {
       setLoading(false);
     }
-  }, [password, selectedTable]);
+  }, [authHeaders, authorized]);
 
-  const loadDbHealth = useCallback(async () => {
+  useEffect(() => {
+    void loadAdminData();
+  }, [loadAdminData]);
+
+  const upcomingCount = useMemo(
+    () => tournaments.filter((item) => item.status === "upcoming").length,
+    [tournaments]
+  );
+  const ongoingCount = useMemo(
+    () => tournaments.filter((item) => item.status === "live").length,
+    [tournaments]
+  );
+  const completedCount = useMemo(
+    () => tournaments.filter((item) => item.status === "completed").length,
+    [tournaments]
+  );
+
+  const filteredTournaments = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return tournaments.filter((item) => {
+      if (item.status !== filter) return false;
+      if (!term) return true;
+      return item.name.toLowerCase().includes(term);
+    });
+  }, [filter, search, tournaments]);
+
+  const sortedPlayers = useMemo(
+    () =>
+      [...players].sort((a, b) => {
+        if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+        return a.displayName.localeCompare(b.displayName);
+      }),
+    [players]
+  );
+
+  function resetModal() {
+    setModalMode(null);
+    setActiveTournament(null);
+    setForm(EMPTY_FORM);
+  }
+
+  function openCreateModal(status: "upcoming" | "live") {
+    setNotice("");
     setError("");
-    try {
-      const response = await fetch("/api/admin/db-health", {
-        headers: { "x-admin-password": password },
-      });
-      const data = (await response.json()) as DbHealth & { error?: string };
-      if (!response.ok) {
-        throw new Error(data.error || "Could not load database health");
-      }
-      setDbHealth(data);
-    } catch (err) {
-      setDbHealth(null);
-      setError(err instanceof Error ? err.message : "Request failed");
-    }
-  }, [password]);
+    setActiveTournament(null);
+    setForm({ ...EMPTY_FORM, status });
+    setModalMode("create");
+  }
 
-  useEffect(() => {
-    if (!authorized || activeView !== "database") return;
-    void loadDbRows();
-    void loadDbHealth();
-  }, [authorized, activeView, loadDbRows, loadDbHealth]);
+  function openEditModal(tournament: AdminTournament) {
+    setNotice("");
+    setError("");
+    setActiveTournament(tournament);
+    setForm(toFormState(tournament));
+    setModalMode("edit");
+  }
 
-  const allEntries = useMemo(() => {
-    if (!mapping) return [];
-    return Object.entries(mapping.files).sort(([a], [b]) => a.localeCompare(b));
-  }, [mapping]);
+  function openCompleteModal(tournament: AdminTournament) {
+    setNotice("");
+    setError("");
+    setActiveTournament(tournament);
+    setForm(toFormState(tournament));
+    setModalMode("complete");
+  }
 
-  const folders = useMemo(() => {
-    const set = new Set<string>();
-    for (const [key] of allEntries) {
-      set.add(getFolderFromKey(key));
-    }
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [allEntries]);
-
-  useEffect(() => {
-    if (!folders.length) return;
-    if (folders.includes(selectedFolder)) return;
-    setSelectedFolder(folders[0]);
-  }, [folders, selectedFolder]);
-
-  const visibleEntries = useMemo(() => {
-    const filteredByFolder = allEntries.filter(([key]) => getFolderFromKey(key) === selectedFolder);
-    if (!search.trim()) return filteredByFolder;
-    const term = search.toLowerCase();
-    return filteredByFolder.filter(
-      ([key, url]) => key.toLowerCase().includes(term) || url.toLowerCase().includes(term)
-    );
-  }, [allEntries, selectedFolder, search]);
-
-  async function mutateMapping(
-    action: "create" | "update" | "delete",
-    payload: Partial<EditorState> & { key?: string }
+  function updateForm<K extends keyof TournamentFormState>(
+    key: K,
+    value: TournamentFormState[K]
   ) {
-    setLoading(true);
-    setError("");
-    setNotice("");
-    try {
-      const response = await fetch("/api/admin/blob-mapping", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-admin-password": password,
-        },
-        body: JSON.stringify({
-          action,
-          key: payload.key,
-          newKey: payload.newKey,
-          url: payload.url,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = (await response.json()) as { error?: string };
-        throw new Error(data.error || "Update failed");
-      }
-
-      const data = (await response.json()) as BlobAssetsFile;
-      setMapping(data);
-      setEditor(INITIAL_EDITOR);
-      setNotice(`Mapping ${action} successful.`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Request failed");
-    } finally {
-      setLoading(false);
-    }
+    setForm((current) => ({ ...current, [key]: value }));
   }
 
-  async function uploadFiles(event: FormEvent) {
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!fileInputRef.current?.files?.length) {
-      setError("Select at least one file.");
-      return;
-    }
-
     setLoading(true);
     setError("");
     setNotice("");
 
-    try {
-      const formData = new FormData();
-      formData.append("folder", uploadFolder.trim() || `${ROOT_PREFIX}/Uploads`);
-      Array.from(fileInputRef.current.files).forEach((file) => {
-        formData.append("files", file);
-      });
-
-      const response = await fetch("/api/admin/blob-upload", {
-        method: "POST",
-        headers: {
-          "x-admin-password": password,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const data = (await response.json()) as { error?: string };
-        throw new Error(data.error || "Upload failed");
-      }
-
-      const data = (await response.json()) as BlobAssetsFile & { uploaded?: Array<{ key: string }> };
-      setMapping(data);
-      if (uploadFolder.trim()) setSelectedFolder(uploadFolder.trim());
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      setNotice(`Uploaded ${data.uploaded?.length ?? 0} file(s).`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleLogin(event: FormEvent) {
-    event.preventDefault();
-    setLoading(true);
-    setError("");
     try {
       const response = await fetch("/api/admin/db-health", {
         headers: { "x-admin-password": password },
       });
+      const data = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error("Wrong password.");
+        throw new Error(data.error || "Wrong password.");
       }
+
       window.sessionStorage.setItem("admin_saynam_auth", "1");
       window.sessionStorage.setItem("admin_saynam_pwd", password);
       setAuthorized(true);
@@ -295,564 +613,508 @@ export default function AdminSaynamPage() {
     window.sessionStorage.removeItem("admin_saynam_pwd");
     setAuthorized(false);
     setPassword("");
-    setMapping(null);
-    setEditor(INITIAL_EDITOR);
-    setDbRows([]);
-    setRowEditor("{}");
-    setSelectedRowId("");
-    setNotice("");
+    setPlayers([]);
+    setTournaments([]);
+    setDbHealth(null);
     setError("");
+    setNotice("");
+    resetModal();
   }
 
-  function handleSaveMapping(event: FormEvent) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!editor.key.trim() || !editor.url.trim()) {
-      setError("Key and URL are required.");
-      return;
-    }
-    void mutateMapping(editor.mode, editor);
-  }
+    if (!modalMode) return;
 
-  function selectRow(row: Record<string, unknown>) {
-    setDbMode("update");
-    setSelectedRowId(String(row.id ?? ""));
-    setRowEditor(JSON.stringify(row, null, 2));
-  }
-
-  function startCreateRow() {
-    setDbMode("create");
-    setSelectedRowId("");
-    setRowEditor("{\n  \"id\": \"\"\n}");
-  }
-
-  async function saveDbRow(event: FormEvent) {
-    event.preventDefault();
-    let row: Record<string, unknown>;
-    try {
-      row = JSON.parse(rowEditor) as Record<string, unknown>;
-    } catch {
-      setError("Invalid JSON in row editor.");
-      return;
-    }
-
-    setLoading(true);
+    setSaving(true);
     setError("");
     setNotice("");
 
     try {
-      const response = await fetch(`/api/admin/db/${selectedTable}`, {
-        method: "POST",
+      const basePayload = buildBasePayload(form);
+      let response: Response;
+
+      if (modalMode === "create") {
+        const payload: CreateUpcomingTournamentInput = basePayload;
+        response = await fetch("/api/admin/tournaments", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            ...authHeaders,
+          },
+          body: JSON.stringify(payload),
+        });
+      } else if (modalMode === "complete" && activeTournament) {
+        const payload: CompleteTournamentInput = {
+          ...basePayload,
+          placement: form.placement.trim(),
+          isWin: form.isWin,
+          rosterIds: form.rosterIds,
+        };
+        response = await fetch(`/api/admin/tournaments/${activeTournament.id}/complete`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            ...authHeaders,
+          },
+          body: JSON.stringify(payload),
+        });
+      } else if (activeTournament) {
+        const payload: UpdateTournamentInput = {
+          ...basePayload,
+          placement: form.placement.trim() || null,
+          isWin: form.isWin,
+          rosterIds: form.rosterIds,
+        };
+        response = await fetch(`/api/admin/tournaments/${activeTournament.id}`, {
+          method: "PATCH",
+          headers: {
+            "content-type": "application/json",
+            ...authHeaders,
+          },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        throw new Error("No active tournament selected");
+      }
+
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "Save failed");
+      }
+
+      await loadAdminData();
+      setNotice(
+        modalMode === "create"
+          ? `${form.status === "live" ? "Ongoing" : "Upcoming"} tournament created.`
+          : modalMode === "complete"
+            ? "Tournament completed and moved into results."
+            : "Tournament updated."
+      );
+      resetModal();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleMoveToOngoing(tournament: AdminTournament) {
+    setStatusActionId(tournament.id);
+    setError("");
+    setNotice("");
+
+    try {
+      const payload: UpdateTournamentInput = {
+        ...buildBasePayload(toFormState(tournament)),
+        status: "live",
+        placement: tournament.placement,
+        isWin: tournament.isWin,
+        rosterIds: tournament.rosterIds,
+      };
+
+      const response = await fetch(`/api/admin/tournaments/${tournament.id}`, {
+        method: "PATCH",
         headers: {
           "content-type": "application/json",
-          "x-admin-password": password,
+          ...authHeaders,
         },
-        body: JSON.stringify({
-          action: dbMode,
-          row,
-          id: selectedRowId,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(data.error || "Failed to save row");
+        throw new Error(data.error || "Could not move tournament to ongoing");
       }
-      setNotice(`Row ${dbMode} successful in ${selectedTable}.`);
-      await loadDbRows();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Request failed");
-    } finally {
-      setLoading(false);
-    }
-  }
 
-  async function deleteDbRow() {
-    if (!selectedRowId) {
-      setError("Pick a row first.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-    setNotice("");
-    try {
-      const response = await fetch(`/api/admin/db/${selectedTable}`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-admin-password": password,
-        },
-        body: JSON.stringify({
-          action: "delete",
-          id: selectedRowId,
-        }),
-      });
-      const data = (await response.json()) as { error?: string };
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to delete row");
-      }
-      setNotice(`Row deleted from ${selectedTable}.`);
-      startCreateRow();
-      await loadDbRows();
+      await loadAdminData();
+      setNotice("Tournament moved to ongoing.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Request failed");
+      setError(err instanceof Error ? err.message : "Could not move tournament to ongoing");
     } finally {
-      setLoading(false);
+      setStatusActionId(null);
     }
   }
 
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary">
-                Admin Console
-              </h1>
-              <p className="mt-2 text-sm text-text-secondary">
-                Manage files and database records in one place.
-              </p>
-            </div>
-            {authorized && (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="px-3 py-2 rounded-lg bg-surface-card border border-border-subtle text-xs text-text-secondary"
-              >
-                Logout
-              </button>
-            )}
-          </div>
+      <main id="main-content" className="flex-1 pt-28 md:pt-32">
+        <section className="archive-section !pt-0">
+          <div className="page-wrap space-y-6">
+            <div className="inner-hero rounded-[32px] px-5 py-7 md:px-10 md:py-10">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="section-kicker">Admin control</p>
+                  <h1 className="section-title">Tournament command board</h1>
+                  <p className="section-copy">
+                    Add upcoming or ongoing tournaments, then move them through completion with
+                    structured form inputs only. Raw JSON row editing stays out of the loop.
+                  </p>
+                </div>
 
-          {!authorized ? (
-            <form
-              onSubmit={handleLogin}
-              className="max-w-md bg-surface-card border border-border-subtle rounded-2xl p-6 space-y-4"
-            >
-              <p className="text-xs text-text-muted">
-                URL: <code>/admin_saynam</code>
-              </p>
-              <label className="block text-sm text-text-secondary">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-sm"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-lg bg-accent-dim text-accent text-sm border border-accent/20"
-              >
-                Enter Admin
-              </button>
-              {error && <p className="text-xs text-rose-400">{error}</p>}
-            </form>
-          ) : (
-            <div className="space-y-6">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveView("assets")}
-                  className={`px-3 py-2 rounded-lg text-xs border ${
-                    activeView === "assets"
-                      ? "bg-accent-dim text-accent border-accent/30"
-                      : "bg-surface-card text-text-secondary border-border-subtle"
-                  }`}
-                >
-                  Assets
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveView("database")}
-                  className={`px-3 py-2 rounded-lg text-xs border ${
-                    activeView === "database"
-                      ? "bg-accent-dim text-accent border-accent/30"
-                      : "bg-surface-card text-text-secondary border-border-subtle"
-                  }`}
-                >
-                  Database
-                </button>
+                {authorized ? (
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => openCreateModal("upcoming")}
+                      className="button-primary"
+                    >
+                      Add New Upcoming Tournament
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openCreateModal("live")}
+                      className="button-secondary"
+                    >
+                      Add Ongoing Tournament
+                    </button>
+                    <button type="button" onClick={handleLogout} className="button-secondary">
+                      Logout
+                    </button>
+                  </div>
+                ) : null}
               </div>
+            </div>
 
-              {activeView === "assets" ? (
-                <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr] gap-4">
-                  <aside className="bg-surface-card border border-border-subtle rounded-2xl p-3">
-                    <h2 className="font-display text-lg text-text-primary mb-3">Folders</h2>
-                    <div className="max-h-[60vh] overflow-auto space-y-1">
-                      {folders.map((folder) => (
-                        <button
-                          key={folder}
-                          type="button"
-                          onClick={() => {
-                            setSelectedFolder(folder);
-                            setUploadFolder(folder);
-                          }}
-                          className={`w-full text-left px-2 py-2 rounded-md text-xs break-all ${
-                            folder === selectedFolder
-                              ? "bg-accent-dim text-accent border border-accent/20"
-                              : "text-text-secondary hover:bg-surface-elevated"
-                          }`}
-                        >
-                          {folder}
-                        </button>
-                      ))}
-                      {folders.length === 0 && (
-                        <p className="text-xs text-text-muted">No folders found.</p>
-                      )}
-                    </div>
-                  </aside>
+            {!authorized ? (
+              <form
+                onSubmit={handleLogin}
+                className="archive-panel mx-auto max-w-lg rounded-[28px] p-6 md:p-7"
+              >
+                <p className="section-kicker">Access</p>
+                <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+                  Enter Admin Password
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-text-secondary">
+                  This password gates the tournament control center and the supporting admin APIs.
+                </p>
 
-                  <section className="space-y-4">
-                    <div className="bg-surface-card border border-border-subtle rounded-2xl p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <form onSubmit={uploadFiles} className="space-y-3">
-                        <h3 className="font-display text-lg text-text-primary">Upload Files to Blob</h3>
-                        <input
-                          value={uploadFolder}
-                          onChange={(e) => setUploadFolder(e.target.value)}
-                          className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                          placeholder={`${ROOT_PREFIX}/BGIS 2026`}
-                        />
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                        />
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className="px-4 py-2 rounded-lg bg-accent-dim text-accent text-xs border border-accent/20"
-                        >
-                          {loading ? "Uploading..." : "Upload Selected Files"}
-                        </button>
-                      </form>
+                <label className="mt-6 block space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Password
+                  </span>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    required
+                  />
+                </label>
 
-                      <form onSubmit={handleSaveMapping} className="space-y-3">
-                        <h3 className="font-display text-lg text-text-primary">
-                          {editor.mode === "create" ? "Create Mapping" : "Edit Mapping"}
-                        </h3>
-                        <input
-                          value={editor.key}
-                          onChange={(e) => setEditor((prev) => ({ ...prev, key: e.target.value }))}
-                          className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                          placeholder="Mapping key (relative path)"
-                        />
-                        {editor.mode === "update" && (
-                          <input
-                            value={editor.newKey}
-                            onChange={(e) => setEditor((prev) => ({ ...prev, newKey: e.target.value }))}
-                            className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                            placeholder="Optional new key"
-                          />
-                        )}
-                        <input
-                          value={editor.url}
-                          onChange={(e) => setEditor((prev) => ({ ...prev, url: e.target.value }))}
-                          className="w-full rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                          placeholder="Blob URL"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            type="submit"
-                            disabled={loading}
-                            className="px-4 py-2 rounded-lg bg-accent-dim text-accent text-xs border border-accent/20"
-                          >
-                            {editor.mode === "create" ? "Create" : "Update"}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setEditor(INITIAL_EDITOR)}
-                            className="px-4 py-2 rounded-lg bg-surface-elevated text-text-secondary text-xs border border-border-subtle"
-                          >
-                            Reset
-                          </button>
-                        </div>
-                      </form>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button type="submit" disabled={loading} className="button-primary">
+                    {loading ? "Checking..." : "Enter Admin"}
+                  </button>
+                </div>
+
+                {error ? <p className="mt-4 text-sm text-rose-300">{error}</p> : null}
+              </form>
+            ) : (
+              <>
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                  <article className="archive-panel rounded-[24px] p-5">
+                    <p className="section-kicker">Ongoing</p>
+                    <p className="font-display text-4xl uppercase leading-none text-energy md:text-5xl">
+                      {ongoingCount}
+                    </p>
+                  </article>
+                  <article className="archive-panel rounded-[24px] p-5">
+                    <p className="section-kicker">Upcoming</p>
+                    <p className="font-display text-4xl uppercase leading-none text-accent md:text-5xl">
+                      {upcomingCount}
+                    </p>
+                  </article>
+                  <article className="archive-panel rounded-[24px] p-5">
+                    <p className="section-kicker">Completed</p>
+                    <p className="font-display text-4xl uppercase leading-none text-gold md:text-5xl">
+                      {completedCount}
+                    </p>
+                  </article>
+                  <article className="archive-panel rounded-[24px] p-5">
+                    <p className="section-kicker">Players</p>
+                    <p className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                      {players.length}
+                    </p>
+                  </article>
+                  <article className="archive-panel rounded-[24px] p-5">
+                    <p className="section-kicker">Schema</p>
+                    <p className="font-display text-3xl uppercase leading-none text-white md:text-4xl">
+                      {dbHealth?.schemaReady ? "Ready" : "Pending"}
+                    </p>
+                  </article>
+                </div>
+
+                <section className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+                  <div className="archive-panel rounded-[28px] p-5 md:p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="section-kicker">Setup</p>
+                        <h2 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                          Database Health
+                        </h2>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void loadAdminData()}
+                        className="button-secondary px-4 text-xs"
+                      >
+                        {loading ? "Refreshing..." : "Refresh"}
+                      </button>
                     </div>
 
-                    <div className="bg-surface-card border border-border-subtle rounded-2xl p-4">
-                      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                        <h3 className="font-display text-lg text-text-primary">Files</h3>
-                        <div className="flex items-center gap-2">
-                          <input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs"
-                            placeholder="Search current folder"
-                          />
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${
+                          dbHealth?.schemaReady
+                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                            : "border-amber-500/30 bg-amber-500/10 text-amber-300"
+                        }`}
+                      >
+                        Schema {dbHealth?.schemaReady ? "Ready" : "Missing"}
+                      </span>
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${
+                          dbHealth?.seeded
+                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                            : "border-amber-500/30 bg-amber-500/10 text-amber-300"
+                        }`}
+                      >
+                        Seed {dbHealth?.seeded ? "Ready" : "Pending"}
+                      </span>
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.18em] ${
+                          dbHealth?.fallbackActive
+                            ? "border-sky-500/30 bg-sky-500/10 text-sky-300"
+                            : "border-white/10 bg-white/[0.03] text-text-secondary"
+                        }`}
+                      >
+                        Fallback {dbHealth?.fallbackActive ? "Active" : "Off"}
+                      </span>
+                    </div>
+
+                    <ul className="mt-5 space-y-2 text-sm text-text-secondary">
+                      <li>
+                        {dbHealth?.setupChecklist?.schemaApplied ? "✅" : "⬜"} Apply
+                        <code className="mx-1">supabase/schema.sql</code>
+                      </li>
+                      <li>
+                        {dbHealth?.setupChecklist?.seedRun ? "✅" : "⬜"} Run
+                        <code className="mx-1">npm run db:migrate:supabase</code>
+                      </li>
+                      <li>
+                        {dbHealth?.setupChecklist?.keyTablesReady ? "✅" : "⬜"} Verify tournaments,
+                        players, and eras
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="archive-panel rounded-[28px] p-5 md:p-6">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="section-kicker">Tournament flow</p>
+                        <h2 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                          Manage By Status
+                        </h2>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {(["live", "upcoming", "completed"] as AdminFilter[]).map((value) => (
                           <button
+                            key={value}
                             type="button"
-                            onClick={() => void loadMapping()}
-                            className="px-3 py-2 rounded-lg bg-surface-elevated text-text-secondary text-xs border border-border-subtle"
+                            onClick={() => setFilter(value)}
+                            className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.18em] transition-colors ${
+                              filter === value
+                                ? getStatusTone(value)
+                                : "border-white/10 bg-white/[0.03] text-text-secondary"
+                            }`}
                           >
-                            Refresh
+                            {getStatusLabel(value)}
                           </button>
-                        </div>
-                      </div>
-
-                      <div className="text-xs text-text-muted mb-4">
-                        Total files: {mapping?.totalFiles ?? 0} • Current folder: {selectedFolder}
-                      </div>
-
-                      {error && <p className="text-xs text-rose-400 mb-2">{error}</p>}
-                      {notice && <p className="text-xs text-emerald-400 mb-2">{notice}</p>}
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                        {visibleEntries.map(([key, url]) => (
-                          <article
-                            key={key}
-                            className="border border-border-subtle bg-surface-elevated rounded-xl overflow-hidden"
-                          >
-                            <div className="relative h-40 bg-black/20">
-                              <Image
-                                src={url}
-                                alt={key}
-                                fill
-                                className="object-contain object-top"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                              />
-                            </div>
-                            <div className="p-3 space-y-2">
-                              <p className="text-[11px] text-text-primary break-all">{key}</p>
-                              <p className="text-[10px] text-text-muted break-all">{url}</p>
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setEditor({
-                                      key,
-                                      newKey: key,
-                                      url,
-                                      mode: "update",
-                                    })
-                                  }
-                                  className="px-2 py-1 rounded border border-border-subtle bg-surface-card text-text-secondary text-[11px]"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => void mutateMapping("delete", { key })}
-                                  className="px-2 py-1 rounded border border-rose-500/30 bg-rose-500/10 text-rose-400 text-[11px]"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          </article>
                         ))}
                       </div>
-
-                      {visibleEntries.length === 0 && (
-                        <p className="text-xs text-text-muted">No files in this folder.</p>
-                      )}
                     </div>
-                  </section>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 xl:grid-cols-[260px_1fr] gap-4">
-                  <aside className="bg-surface-card border border-border-subtle rounded-2xl p-3">
-                    <h2 className="font-display text-lg text-text-primary mb-3">Tables</h2>
-                    <div className="space-y-1">
-                      {DB_TABLES.map((table) => (
+
+                    <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Search tournaments
+                        </span>
+                        <input
+                          value={search}
+                          onChange={(event) => setSearch(event.target.value)}
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                          placeholder="Filter by tournament name"
+                        />
+                      </label>
+
+                      <div className="grid gap-3 md:grid-cols-2">
                         <button
-                          key={table}
                           type="button"
-                          onClick={() => {
-                            setSelectedTable(table);
-                            setSelectedRowId("");
-                            setDbMode("create");
-                            setRowEditor("{\n  \"id\": \"\"\n}");
-                          }}
-                          className={`w-full text-left px-2 py-2 rounded-md text-xs ${
-                            table === selectedTable
-                              ? "bg-accent-dim text-accent border border-accent/20"
-                              : "text-text-secondary hover:bg-surface-elevated"
-                          }`}
+                          onClick={() => openCreateModal("upcoming")}
+                          className="button-primary w-full"
                         >
-                          {table}
+                          Add New Upcoming Tournament
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => openCreateModal("live")}
+                          className="button-secondary w-full"
+                        >
+                          Add Ongoing Tournament
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {error ? (
+                  <div className="archive-panel rounded-[24px] border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-200">
+                    {error}
+                  </div>
+                ) : null}
+                {notice ? (
+                  <div className="archive-panel rounded-[24px] border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+                    {notice}
+                  </div>
+                ) : null}
+
+                <section className="archive-panel rounded-[28px] p-5 md:p-6">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="section-kicker">{getStatusLabel(filter)}</p>
+                      <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+                        {filter === "live"
+                          ? "Ongoing Right Now"
+                          : filter === "upcoming"
+                            ? "Upcoming Queue"
+                            : "Completed Results"}
+                      </h2>
+                    </div>
+
+                    <span className="rounded-full border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                      {filteredTournaments.length} tournament
+                      {filteredTournaments.length === 1 ? "" : "s"}
+                    </span>
+                  </div>
+
+                  {filteredTournaments.length > 0 ? (
+                    <div className="grid gap-4 lg:grid-cols-2">
+                      {filteredTournaments.map((tournament) => (
+                        <article
+                          key={tournament.id}
+                          className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span
+                                  className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.16em] ${getStatusTone(
+                                    tournament.status
+                                  )}`}
+                                >
+                                  {getStatusLabel(tournament.status)}
+                                </span>
+                                <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-text-secondary">
+                                  {tournament.tier}
+                                </span>
+                              </div>
+
+                              <h3 className="mt-4 font-display text-3xl uppercase leading-[0.9] text-white md:text-4xl">
+                                {tournament.name}
+                              </h3>
+                            </div>
+
+                            <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                              {tournamentStamp(tournament)}
+                            </span>
+                          </div>
+
+                          {tournament.details ? (
+                            <p className="mt-4 text-sm leading-7 text-text-secondary">
+                              {tournament.details}
+                            </p>
+                          ) : null}
+
+                          <div className="mt-5 grid gap-3 border-t border-white/8 pt-4 sm:grid-cols-2">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
+                                Placement
+                              </p>
+                              <p className="mt-2 font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                                {tournament.placement ??
+                                  (tournament.status === "completed" ? "—" : "TBD")}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
+                                Approx Prize
+                              </p>
+                              <p className="mt-2 font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                                {formatPrize(tournament.approxPrize)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-5 flex flex-wrap gap-3">
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(tournament)}
+                              className="button-secondary px-4 text-xs"
+                            >
+                              {tournament.status === "completed" ? "Edit Completed" : "Edit Details"}
+                            </button>
+                            {tournament.status === "upcoming" ? (
+                              <button
+                                type="button"
+                                onClick={() => void handleMoveToOngoing(tournament)}
+                                disabled={statusActionId === tournament.id}
+                                className="button-secondary px-4 text-xs"
+                              >
+                                {statusActionId === tournament.id ? "Moving..." : "Mark Ongoing"}
+                              </button>
+                            ) : null}
+                            {tournament.status !== "completed" ? (
+                              <button
+                                type="button"
+                                onClick={() => openCompleteModal(tournament)}
+                                className="button-primary px-4 text-xs"
+                              >
+                                Mark Completed
+                              </button>
+                            ) : null}
+                          </div>
+                        </article>
                       ))}
                     </div>
-                  </aside>
-
-                  <section className="space-y-4">
-                    <div className="bg-surface-card border border-border-subtle rounded-2xl p-4 flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => void loadDbRows()}
-                        className="px-3 py-2 rounded-lg bg-surface-elevated text-text-secondary text-xs border border-border-subtle"
-                      >
-                        Refresh Rows
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void loadDbHealth()}
-                        className="px-3 py-2 rounded-lg bg-surface-elevated text-text-secondary text-xs border border-border-subtle"
-                      >
-                        Refresh Health
-                      </button>
-                      <button
-                        type="button"
-                        onClick={startCreateRow}
-                        className="px-3 py-2 rounded-lg bg-accent-dim text-accent text-xs border border-accent/20"
-                      >
-                        New Row
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void deleteDbRow()}
-                        className="px-3 py-2 rounded-lg bg-rose-500/10 text-rose-400 text-xs border border-rose-500/30"
-                      >
-                        Delete Selected
-                      </button>
+                  ) : (
+                    <div className="rounded-[24px] border border-dashed border-white/10 bg-black/10 px-5 py-16 text-center text-sm text-text-muted">
+                      No tournaments match the current status filter and search.
                     </div>
-
-                    {error && <p className="text-xs text-rose-400">{error}</p>}
-                    {notice && <p className="text-xs text-emerald-400">{notice}</p>}
-
-                    <div className="bg-surface-card border border-border-subtle rounded-2xl p-4">
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <h3 className="font-display text-lg text-text-primary">DB Setup Checklist</h3>
-                        <div className="flex gap-2">
-                          <span
-                            className={`px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider border ${
-                              dbHealth?.schemaReady
-                                ? "border-emerald-500/30 text-emerald-300 bg-emerald-500/10"
-                                : "border-amber-500/30 text-amber-300 bg-amber-500/10"
-                            }`}
-                          >
-                            Schema {dbHealth?.schemaReady ? "Ready" : "Missing"}
-                          </span>
-                          <span
-                            className={`px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider border ${
-                              dbHealth?.seeded
-                                ? "border-emerald-500/30 text-emerald-300 bg-emerald-500/10"
-                                : "border-amber-500/30 text-amber-300 bg-amber-500/10"
-                            }`}
-                          >
-                            Seed {dbHealth?.seeded ? "Ready" : "Pending"}
-                          </span>
-                          <span
-                            className={`px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider border ${
-                              dbHealth?.fallbackActive
-                                ? "border-sky-500/30 text-sky-300 bg-sky-500/10"
-                                : "border-border-subtle text-text-muted bg-surface-elevated"
-                            }`}
-                          >
-                            Fallback {dbHealth?.fallbackActive ? "Active" : "Off"}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                        <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
-                          <p className="text-[11px] text-text-muted uppercase tracking-wider">tournaments</p>
-                          <p className="font-display text-2xl text-text-primary">
-                            {dbHealth?.tableCounts?.tournaments ?? 0}
-                          </p>
-                        </div>
-                        <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
-                          <p className="text-[11px] text-text-muted uppercase tracking-wider">players</p>
-                          <p className="font-display text-2xl text-text-primary">
-                            {dbHealth?.tableCounts?.players ?? 0}
-                          </p>
-                        </div>
-                        <div className="rounded-xl border border-border-subtle bg-surface-elevated p-3">
-                          <p className="text-[11px] text-text-muted uppercase tracking-wider">eras</p>
-                          <p className="font-display text-2xl text-text-primary">
-                            {dbHealth?.tableCounts?.eras ?? 0}
-                          </p>
-                        </div>
-                      </div>
-
-                      <ul className="space-y-1.5 text-xs text-text-secondary">
-                        <li>
-                          {dbHealth?.setupChecklist?.schemaApplied ? "✅" : "⬜"} Apply
-                          <code className="mx-1">supabase/schema.sql</code> in Supabase SQL editor.
-                        </li>
-                        <li>
-                          {dbHealth?.setupChecklist?.seedRun ? "✅" : "⬜"} Run
-                          <code className="mx-1">npm run db:migrate:supabase</code>.
-                        </li>
-                        <li>
-                          {dbHealth?.setupChecklist?.keyTablesReady ? "✅" : "⬜"} Verify rows in
-                          key tables.
-                        </li>
-                      </ul>
-
-                      {!!dbHealth?.tableErrors && Object.keys(dbHealth.tableErrors).length > 0 && (
-                        <div className="mt-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3">
-                          <p className="text-xs text-rose-300 mb-2">Table errors</p>
-                          <div className="space-y-1">
-                            {Object.entries(dbHealth.tableErrors).map(([table, tableError]) => (
-                              <p key={table} className="text-[11px] text-rose-200 break-all">
-                                <span className="text-rose-300">{table}:</span> {tableError}
-                              </p>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <div className="bg-surface-card border border-border-subtle rounded-2xl p-4">
-                        <h3 className="font-display text-lg text-text-primary mb-3">
-                          Rows ({dbRows.length}) • {selectedTable}
-                        </h3>
-                        <div className="max-h-[55vh] overflow-auto space-y-1">
-                          {dbRows.map((row, index) => (
-                            <button
-                              key={String(row.id ?? `${selectedTable}-${index}`)}
-                              type="button"
-                              onClick={() => selectRow(row)}
-                              className={`w-full text-left px-3 py-2 rounded-md border text-xs ${
-                                String(row.id ?? "") === selectedRowId
-                                  ? "border-accent/30 bg-accent-dim text-accent"
-                                  : "border-border-subtle bg-surface-elevated text-text-secondary"
-                              }`}
-                            >
-                              <span className="block truncate">{String(row.id ?? "no-id")}</span>
-                            </button>
-                          ))}
-                          {dbRows.length === 0 && (
-                            <p className="text-xs text-text-muted">No rows found.</p>
-                          )}
-                        </div>
-                      </div>
-
-                      <form
-                        onSubmit={saveDbRow}
-                        className="bg-surface-card border border-border-subtle rounded-2xl p-4 space-y-3"
-                      >
-                        <h3 className="font-display text-lg text-text-primary">
-                          {dbMode === "create" ? "Create Row" : `Edit Row (${selectedRowId})`}
-                        </h3>
-                        <textarea
-                          value={rowEditor}
-                          onChange={(e) => setRowEditor(e.target.value)}
-                          className="w-full h-[420px] rounded-lg border border-border-subtle bg-surface-elevated px-3 py-2 text-xs font-mono"
-                        />
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className="px-4 py-2 rounded-lg bg-accent-dim text-accent text-xs border border-accent/20"
-                        >
-                          {dbMode === "create" ? "Create Row" : "Update Row"}
-                        </button>
-                      </form>
-                    </div>
-                  </section>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                  )}
+                </section>
+              </>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
+
+      {authorized && modalMode ? (
+        <TournamentModal
+          mode={modalMode}
+          form={form}
+          players={sortedPlayers}
+          includeCompletionFields={
+            modalMode === "complete" || activeTournament?.status === "completed"
+          }
+          saving={saving}
+          onClose={resetModal}
+          onSubmit={handleSubmit}
+          onChange={updateForm}
+        />
+      ) : null}
     </>
   );
 }

@@ -23,6 +23,7 @@ export default function EraCard({ era, index }: EraCardProps) {
       delay={Math.min(index * 0.06, 0.22)}
       distance={24}
       margin="-50px"
+      intensity="soft"
       className="timeline-era-row rounded-[24px] p-5 md:p-6"
     >
       <div className="grid gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">

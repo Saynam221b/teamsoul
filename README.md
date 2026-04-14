@@ -1,75 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Team SouL Archive
 
-## Getting Started
+Next.js 16 archive site for Team SouL covering legacy eras, roster history, tournament results, and the BGIS 2026 champions gallery.
 
-First, run the development server:
+## Local Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Set these in `.env.local`:
 
-## BGMI Blob Assets
+- `ADMIN_PASSWORD`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `BLOB_READ_WRITE_TOKEN`
 
-This repo includes a Vercel Blob upload flow for BGMI assets and a dedicated page at `/bgis-champions`.
-
-1. Set `BLOB_READ_WRITE_TOKEN` in `.env.local`
-2. Upload assets:
-
-```bash
-npm run upload:bgmi-assets
-```
-
-This generates `src/data/blob-assets.json`, which is consumed by the champions page.
+If the admin password was ever shared or committed previously, rotate it before deployment.
 
 ## Admin Console
 
-- URL: `/admin_saynam`
-- Password: `saynam1101`
+- Route: `/admin_saynam`
+- Focus: create upcoming tournaments, complete tournaments, and edit tournament details through UI forms
 
-You can:
-- manage Blob asset folders/files/uploads
-- manage PostgreSQL records with CRUD in Database mode
+The admin UI no longer supports raw JSON row editing or runtime blob-mapping writes.
 
-## Supabase Migration
+## Data Workflows
 
-1. Ensure Supabase/Postgres environment variables are present in `.env.local`.
-2. Apply schema:
+Apply the relational schema:
 
 ```bash
 npm run db:apply-schema:supabase
 ```
 
-3. Migrate static archive data:
+Seed archive data into Supabase:
 
 ```bash
 npm run db:migrate:supabase
 ```
 
-This seeds relational tables and creates upcoming tournaments used by the tournaments page.
+Upload the BGMI champions gallery assets:
 
-## Learn More
+```bash
+npm run upload:bgmi-assets
+```
 
-To learn more about Next.js, take a look at the following resources:
+Upload the 4 era story lineup images:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run upload:era-story-images
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Public tournament pages read from Supabase when configured.
+- The era story scroll uses Blob-hosted 16:9 lineup images.
+- Admin runtime persistence is Supabase + Blob only.

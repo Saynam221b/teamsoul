@@ -1,8 +1,13 @@
 "use client";
 
 import type { Tournament } from "@/data/types";
-import { formatPlacement, formatPrize, getPlayerById } from "@/data/helpers";
-import TierBadge from "../shared/TierBadge";
+import {
+  formatPlacement,
+  formatPrize,
+  getMonthName,
+  getPlayerById,
+  getStaffById,
+} from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface TrophyCardProps {
@@ -11,28 +16,108 @@ interface TrophyCardProps {
   featured?: boolean;
 }
 
+const TROPHY_CONTEXT: Record<
+  string,
+  { label: string; note: string; tone: "accent" | "gold" | "energy" }
+> = {
+  "pmis-2019": {
+    label: "Domestic breakthrough",
+    note: "The original four converted raw mechanics into SouL's first statement title and set the base standard for everything that followed.",
+    tone: "gold",
+  },
+  "pmco-spring-india-2019": {
+    label: "Back-to-back proof",
+    note: "The same OG core followed PMIS with another clean domestic finish, turning early hype into a repeatable title identity.",
+    tone: "accent",
+  },
+  "bmps-s1-2022": {
+    label: "Superteam payoff",
+    note: "Omega, AkshaT, Hector, and Goblin reset the ceiling in the first full superteam chapter and gave SouL a modern championship template.",
+    tone: "accent",
+  },
+  "bgms-s3-2024": {
+    label: "Rebuild lands immediately",
+    note: "Manya and NakuL's ex-Blind core hit on arrival, while Ayogi stayed inside the modern setup that carried forward into the next title phase.",
+    tone: "gold",
+  },
+  "bgis-2026": {
+    label: "Modern crown",
+    note: "The NakuL-led five closed the rebuild under Ayogi's coaching guidance and turned the modern chapter into SouL's biggest championship moment.",
+    tone: "energy",
+  },
+};
+
+const TONE_CLASS: Record<string, string> = {
+  accent: "border-accent/25 bg-accent/10 text-accent",
+  gold: "border-gold/25 bg-gold/10 text-gold",
+  energy: "border-energy/25 bg-energy/10 text-energy",
+};
+
+function getRoleLabel(role: string) {
+  const normalized = role.toLowerCase();
+
+  if (normalized.includes("captain") || normalized.includes("igl")) return "IGL";
+  if (normalized.includes("fragger")) return "Fragger";
+  if (normalized.includes("support")) return "Support";
+  if (normalized.includes("assaulter")) return "Assaulter";
+  if (normalized.includes("coach")) return "Coach";
+  if (normalized.includes("leader")) return "Leader";
+
+  return "Player";
+}
+
 export default function TrophyCard({ tournament, index, featured = false }: TrophyCardProps) {
+  const context = TROPHY_CONTEXT[tournament.id] ?? {
+    label: "Title run",
+    note: "One of the key wins that kept Team SouL in the championship conversation.",
+    tone: "accent" as const,
+  };
+  const roster = (tournament.roster ?? [])
+    .map((playerId) => getPlayerById(playerId))
+    .filter((player): player is NonNullable<typeof player> => Boolean(player));
+  const staff = (tournament.staff ?? [])
+    .map((staffId) => getStaffById(staffId))
+    .filter((member): member is NonNullable<typeof member> => Boolean(member));
+  const eventStamp = tournament.month ? `${getMonthName(tournament.month)} ${tournament.year}` : `${tournament.year}`;
+
   return (
     <RevealOnScroll
       as="article"
       delay={Math.min(index * 0.05, 0.22)}
       distance={24}
       margin="-40px"
-      className={`${featured ? "featured-span" : ""} trophy-card rounded-[24px] p-5 md:p-6`}
+      intensity="soft"
+      className={`${featured ? "major-win-featured" : ""} trophy-card major-win-card major-win-${context.tone} rounded-[28px] p-5 md:p-6`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <TierBadge tier={tournament.tier} size="md" />
-        <span className="text-xs uppercase tracking-[0.18em] text-text-muted">{tournament.year}</span>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] ${TONE_CLASS[context.tone]}`}>
+            {context.label}
+          </span>
+          <span className="rounded-full border border-border-subtle bg-white/[0.03] px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+            {tournament.tier}
+          </span>
+        </div>
+        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">{eventStamp}</span>
       </div>
 
-      <h3 className="mt-5 font-display text-4xl uppercase leading-[0.9] text-white md:text-5xl">
-        {tournament.name}
-      </h3>
+      <div className="mt-6 rounded-[20px] border border-white/8 bg-white/[0.02] px-4 py-3">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Competition context</p>
+        <p className="mt-3 text-sm leading-7 text-text-secondary">
+          {context.note}
+        </p>
+      </div>
+
+      <div className="mt-8 flex min-h-[7.5rem] flex-1 flex-col justify-start md:min-h-[8.5rem]">
+        <h3 className="font-display text-3xl uppercase leading-[0.88] tracking-[-0.05em] text-white md:text-4xl">
+          {tournament.name}
+        </h3>
+      </div>
 
       <div className="mt-6 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Placement</p>
-          <p className="mt-2 font-display text-5xl uppercase leading-none text-energy">
+          <p className="mt-2 font-display text-4xl uppercase leading-none text-white md:text-5xl">
             {typeof tournament.placement === "number"
               ? formatPlacement(tournament.placement)
               : tournament.placement}
@@ -40,31 +125,51 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
         </div>
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Approx prize</p>
-          <p className="mt-2 font-display text-4xl uppercase leading-none text-white">
+          <p className="mt-2 font-sans text-xl font-semibold uppercase leading-none tracking-[0.03em] text-text-primary md:text-2xl">
             {formatPrize(tournament.prize)}
           </p>
         </div>
       </div>
 
-      {tournament.roster && tournament.roster.length > 0 && (
-        <div className="mt-5 border-t border-border-subtle pt-5">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Winning roster</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {tournament.roster.map((playerId) => (
-              <span
-                key={playerId}
-                className="rounded-full border border-border-subtle px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-text-secondary"
+      {roster.length > 0 ? (
+        <div className="mt-6 border-t border-border-subtle pt-5">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Winning squad</p>
+            <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
+              {roster.length} players
+            </span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            {roster.map((player) => (
+              <div
+                key={player.id}
+                className="rounded-[18px] border border-white/8 bg-white/[0.03] px-3 py-2"
               >
-                {getPlayerById(playerId)?.displayName ?? playerId}
-              </span>
+                <p className="text-xs font-medium uppercase tracking-[0.08em] text-white">
+                  {player.displayName}
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-text-muted">
+                  {getRoleLabel(player.role)}
+                </p>
+              </div>
             ))}
           </div>
         </div>
-      )}
+      ) : null}
 
-      <div className="mt-5">
-        <span className="tag tag-won">Championship secured</span>
-      </div>
+      {staff.length > 0 ? (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Coaching lane</span>
+          {staff.map((member) => (
+            <span
+              key={member.id}
+              className="rounded-full border border-accent/18 bg-accent/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-accent"
+            >
+              {member.displayName} · {member.role}
+            </span>
+          ))}
+        </div>
+      ) : null}
     </RevealOnScroll>
   );
 }

@@ -1,64 +1,31 @@
 "use client";
 
-import { getWins } from "@/data/helpers";
+import { getMajorWins } from "@/data/helpers";
 import TrophyCard from "./TrophyCard";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 export default function TrophyRoom() {
-  const wins = getWins();
-  const headlineWins = wins.filter((w) => w.tier === "S-Tier" || w.tier === "A-Tier").slice(0, 3);
-  const archiveWins = wins.filter((w) => w.tier !== "S-Tier" && w.tier !== "A-Tier").slice(0, 4);
+  const majorWins = getMajorWins().slice(0, 5);
 
   return (
-    <section id="trophy-room" className="archive-section">
+    <section id="trophy-room" className="archive-section trophy-room-section">
       <div className="page-wrap">
-        <RevealOnScroll className="section-head">
+        <RevealOnScroll className="section-head max-w-3xl">
           <p className="section-kicker">Championship Wall</p>
-          <h2 className="section-title">Titles that made Team SOUL iconic</h2>
+          <h2 className="section-title">The Wins That Built The Standard</h2>
           <p className="section-copy">
-            Some wins become part of the record. Others become part of the identity. These are the
-            championships fans remember first.
+            Five title runs sit at the center of the archive. This pass puts the squad, the support lane,
+            and the competitive context back on the wall instead of reducing each win to a bare stat tile.
           </p>
         </RevealOnScroll>
 
-        <div className="space-y-12">
-          <div>
-            <RevealOnScroll className="mb-5 flex items-center justify-between gap-3">
-              <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
-                Headline titles
-              </h3>
-              <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
-                Curated
-              </span>
-            </RevealOnScroll>
-            <div className="results-grid">
-              {headlineWins.map((tournament, index) => (
-                <TrophyCard
-                  key={tournament.id}
-                  tournament={tournament}
-                  index={index}
-                  featured={index === 0}
-                />
-              ))}
-            </div>
+        <RevealOnScroll delay={0.08} distance={20} intensity="soft">
+          <div className="major-wins-stage">
+            {majorWins.map((tournament, index) => (
+              <TrophyCard key={tournament.id} tournament={tournament} index={index} featured={index < 2} />
+            ))}
           </div>
-
-          <div>
-            <RevealOnScroll className="mb-5 flex items-center justify-between gap-3">
-              <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
-                Further title runs
-              </h3>
-              <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
-                Selected
-              </span>
-            </RevealOnScroll>
-            <div className="bento-grid">
-              {archiveWins.map((tournament, index) => (
-                <TrophyCard key={tournament.id} tournament={tournament} index={index} />
-              ))}
-            </div>
-          </div>
-        </div>
+        </RevealOnScroll>
       </div>
     </section>
   );

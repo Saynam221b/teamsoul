@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Teko } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import AppLoader from "@/components/layout/AppLoader";
 
@@ -9,11 +9,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const teko = Teko({
-  variable: "--font-teko",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -49,13 +48,13 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${teko.variable} h-full antialiased`}
+      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       style={{ colorScheme: "dark" }}
     >
       <head>
-        <meta name="theme-color" content="#020305" />
+        <meta name="theme-color" content="#050912" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#020305] text-foreground">
+      <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>

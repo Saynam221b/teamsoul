@@ -7,6 +7,7 @@ export interface SoulArchive {
   organization: Organization;
   eras: Era[];
   players: Record<string, Player>;
+  staff: Record<string, StaffMember>;
   tournaments: Tournament[];
   rosterSnapshots: RosterSnapshot[];
   rosterChanges: RosterChange[];
@@ -40,6 +41,9 @@ export interface Era {
   yearRange: [number, number];
   description: string;
   keyPlayers: string[];
+  staff?: string[];
+  storyImageUrl?: string;
+  storyImageAlt?: string;
   definingMoment: string;
   outcome: "triumph" | "decline" | "rebuild" | "dominance";
 }
@@ -55,6 +59,18 @@ export interface Player {
   isFounder: boolean;
   isActive: boolean;
   currentStatus: "active" | "retired" | "departed";
+}
+
+export interface StaffMember {
+  id: string;
+  displayName: string;
+  realName: string;
+  role: string;
+  joinDate: string;
+  leaveDate?: string | null;
+  isActive: boolean;
+  impact: string;
+  eras: string[];
 }
 
 export interface PlayerStint {
@@ -79,6 +95,7 @@ export interface Tournament {
   location?: string;
   details?: string;
   roster?: string[];
+  staff?: string[];
   awards?: Award[];
 }
 
@@ -109,6 +126,62 @@ export interface AggregateStats {
   winsByTier: Record<string, number>;
   tournamentsByYear: Record<number, number>;
   bestPlacement: { tournament: string; placement: number; prize: number };
+}
+
+export interface CreateUpcomingTournamentInput {
+  name: string;
+  tier: Tournament["tier"];
+  year: number;
+  status?: "upcoming" | "live";
+  month?: number | null;
+  eventDate?: string | null;
+  location?: string | null;
+  approxPrize?: number | null;
+  details?: string | null;
+}
+
+export interface UpdateTournamentInput {
+  name: string;
+  tier: Tournament["tier"];
+  year: number;
+  status?: "upcoming" | "live" | "completed";
+  month?: number | null;
+  eventDate?: string | null;
+  location?: string | null;
+  approxPrize?: number | null;
+  details?: string | null;
+  placement?: string | null;
+  isWin?: boolean;
+  rosterIds?: string[];
+}
+
+export interface CompleteTournamentInput extends UpdateTournamentInput {
+  placement: string;
+  rosterIds: string[];
+}
+
+export interface AdminTournament {
+  id: string;
+  name: string;
+  year: number;
+  month: number | null;
+  tier: Tournament["tier"];
+  placement: string | null;
+  approxPrize: number | null;
+  isWin: boolean;
+  status: NonNullable<Tournament["status"]>;
+  eventDate: string | null;
+  location: string | null;
+  details: string | null;
+  rosterIds: string[];
+}
+
+export interface AdminPlayerOption {
+  id: string;
+  displayName: string;
+  role: string;
+  currentStatus: Player["currentStatus"];
+  isActive: boolean;
 }
 
 // Tier color mapping — muted professional palette

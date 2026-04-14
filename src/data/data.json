@@ -25,6 +25,8 @@
       "yearRange": [2018, 2019],
       "description": "Built around the foundational quintet of MortaL, Owais, RonaK, VipeR, and Slayer. Early statistical dominance based on individual mechanical disparity in the pre-ban PUBG Mobile ecosystem.",
       "keyPlayers": ["mortal", "owais", "ronak", "viper", "slayer"],
+      "storyImageUrl": "https://wwufzqo4xbqjbb0g.public.blob.vercel-storage.com/team-soul-era-story/the-og-era-XvfeEDIVzeVyoaDfyJADI2YsNR7xfA.jpg",
+      "storyImageAlt": "The OG Era lineup",
       "definingMoment": "Back-to-back 1st place at PMIS 2019 and PMCO Spring India, capturing over $100,000.",
       "outcome": "triumph"
     },
@@ -34,6 +36,8 @@
       "yearRange": [2020, 2021],
       "description": "Strategically dormant period driven by the PUBG Mobile app ban in India. Forced reliance on rotating temporary cast members. Weakest competitive phase with finishes plummeting to 16th-23rd place.",
       "keyPlayers": ["mortal", "viper", "regaltos", "sc0utop", "mavi"],
+      "storyImageUrl": "https://wwufzqo4xbqjbb0g.public.blob.vercel-storage.com/team-soul-era-story/the-transition-ban-era-Vb9OncyLM3dUOJf5h7zhIJH0adAJ8z.jpg",
+      "storyImageAlt": "The Transition and Ban Era lineup",
       "definingMoment": "S8UL Esports merger in October 2020, securing long-term financial viability through diversified content creation.",
       "outcome": "decline"
     },
@@ -43,6 +47,8 @@
       "yearRange": [2022, 2023],
       "description": "Shifted from legacy influencer-players to dedicated mechanical specialists under strict coaching frameworks. Redefined Team SouL's tactical approach.",
       "keyPlayers": ["omega", "akshat", "hector", "goblin"],
+      "storyImageUrl": "https://wwufzqo4xbqjbb0g.public.blob.vercel-storage.com/team-soul-era-story/the-superteam-era-blHCWOd1qkIjKtLEJc3WZ0PvuKPhEz.jpg",
+      "storyImageAlt": "The Superteam Era lineup",
       "definingMoment": "BMPS Season 1 victory ($95,935) and PMWI 2022 global representation.",
       "outcome": "rebuild"
     },
@@ -50,9 +56,12 @@
       "id": "modern",
       "name": "The Rebuild & Modern Era",
       "yearRange": [2024, 2026],
-      "description": "Turnkey acquisition of former Blind Esports roster, followed by strategic reintegration of legacy fragger Goblin. Forged the current optimal meta-roster.",
+      "description": "Opened with the ex-Blind Esports acquisition led by Manya and NakuL, then evolved through Ayogi's coaching guidance into the current title-winning structure. The era balances rebuild discipline with modern firepower.",
       "keyPlayers": ["nakul", "goblin", "legit", "jokerr", "thunder", "manya"],
-      "definingMoment": "Historic BGIS 2026 championship victory — record $105,505 prize and 577,685 peak viewers.",
+      "staff": ["ayogi"],
+      "storyImageUrl": "https://wwufzqo4xbqjbb0g.public.blob.vercel-storage.com/team-soul-era-story/the-rebuild-modern-era-B6YlLcQKahFDrMg7s0wcc8McWJEKM7.jpg",
+      "storyImageAlt": "The Rebuild and Modern Era lineup",
+      "definingMoment": "The Manya-NakuL rebuild foundation matured into an Ayogi-guided BGIS 2026 championship — record $105,505 prize and 577,685 peak viewers.",
       "outcome": "dominance"
     }
   ],
@@ -531,6 +540,19 @@
       "currentStatus": "departed"
     }
   },
+  "staff": {
+    "ayogi": {
+      "id": "ayogi",
+      "displayName": "Soul Ayogi",
+      "realName": "",
+      "role": "Coach",
+      "joinDate": "2024-01-01",
+      "leaveDate": null,
+      "isActive": true,
+      "impact": "Part of the modern rebuild from the Manya-NakuL acquisition onward. Stayed with the roster through the reshuffles, helped stabilize the late-2025 core, and remains the active coach behind the BGIS 2026 championship phase.",
+      "eras": ["modern"]
+    }
+  },
   "tournaments": [
     { "id": "pmis-2019", "name": "PUBG Mobile India Series (PMIS) 2019", "year": 2019, "month": 3, "tier": "A-Tier", "placement": 1, "prize": 42828, "isWin": true, "roster": ["mortal", "owais", "ronak", "viper"] },
     { "id": "pmco-spring-india-2019", "name": "PMCO 2019 Spring Split: India", "year": 2019, "month": 5, "tier": "A-Tier", "placement": 1, "prize": 60000, "isWin": true, "roster": ["mortal", "owais", "ronak", "viper"] },
@@ -633,7 +655,7 @@
     { "id": "fearless-s1-2024", "name": "Fearless Championship Series S1", "year": 2024, "month": 7, "tier": "C-Tier", "placement": 4, "prize": 420, "isWin": false },
     { "id": "bgis-2024", "name": "Battlegrounds Mobile India Series 2024", "year": 2024, "month": 7, "tier": "A-Tier", "placement": 4, "prize": 17993, "isWin": false },
     { "id": "rooter-apl-inv-2024", "name": "Rooter x APL Invitational Series", "year": 2024, "month": 8, "tier": "B-Tier", "placement": 1, "prize": 3592, "isWin": true },
-    { "id": "bgms-s3-2024", "name": "BGMI Masters Series Season 3", "year": 2024, "month": 8, "tier": "A-Tier", "placement": 1, "prize": 65515, "isWin": true, "roster": ["manya", "nakul", "jokerr", "rony", "spower"] },
+    { "id": "bgms-s3-2024", "name": "BGMI Masters Series Season 3", "year": 2024, "month": 8, "tier": "A-Tier", "placement": 1, "prize": 65515, "isWin": true, "roster": ["manya", "nakul", "jokerr", "rony", "spower"], "staff": ["ayogi"] },
     { "id": "gauntlet-s1-2024", "name": "Gauntlet Season 1", "year": 2024, "month": 9, "tier": "B-Tier", "placement": 17, "prize": null, "isWin": false },
     { "id": "thug-inv-2024", "name": "THUG Invitational 2024", "year": 2024, "month": 9, "tier": "B-Tier", "placement": 4, "prize": 892, "isWin": false },
     { "id": "deepavali-battlemania-2024", "name": "Deepavali BattleMania 2024", "year": 2024, "month": 10, "tier": "C-Tier", "placement": 12, "prize": null, "isWin": false },
@@ -658,14 +680,14 @@
     { "id": "bgms-s4-2025", "name": "BGMI Masters Series Season 4", "year": 2025, "month": 10, "tier": "A-Tier", "placement": 3, "prize": 14160, "isWin": false },
     { "id": "bgmi-showdown-2025", "name": "BGMI Showdown 2025", "year": 2025, "month": 10, "tier": "A-Tier", "placement": 3, "prize": 11267, "isWin": false },
     { "id": "bgmi-intl-cup-2025", "name": "BGMI International Cup 2025", "year": 2025, "month": 11, "tier": "A-Tier", "placement": 9, "prize": 2816, "isWin": false },
-    { "id": "chennai-global-2025", "name": "Chennai Esports Global Championship 2025", "year": 2025, "month": 12, "tier": "B-Tier", "placement": 1, "prize": 24242, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"] },
+    { "id": "chennai-global-2025", "name": "Chennai Esports Global Championship 2025", "year": 2025, "month": 12, "tier": "B-Tier", "placement": 1, "prize": 24242, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"], "staff": ["ayogi"] },
     { "id": "1m-dynasty-s2-2025", "name": "1M DYNASTY Season 2", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
     { "id": "rising-champ-s1-2025", "name": "Rising Championship S1", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 11, "prize": null, "isWin": false },
     { "id": "onegame-pro-s3-2025", "name": "OneGame Pro Championship S3", "year": 2025, "month": 12, "tier": "C-Tier", "placement": 7, "prize": null, "isWin": false },
 
     { "id": "ue-pro-showdown-2026", "name": "Upthrust Esports Pro Showdown 2026", "year": 2026, "month": 1, "tier": "C-Tier", "placement": 6, "prize": null, "isWin": false },
     { "id": "bgis-2026-grind", "name": "BGIS 2026: The Grind", "year": 2026, "month": 2, "tier": "Qualifier", "placement": 7, "prize": null, "isWin": false },
-    { "id": "bgis-2026", "name": "Battlegrounds Mobile India Series 2026", "year": 2026, "month": 3, "tier": "A-Tier", "placement": 1, "prize": 105505, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"] }
+    { "id": "bgis-2026", "name": "Battlegrounds Mobile India Series 2026", "year": 2026, "month": 3, "tier": "A-Tier", "placement": 1, "prize": 105505, "isWin": true, "roster": ["nakul", "goblin", "legit", "jokerr", "thunder"], "staff": ["ayogi"] }
   ],
   "rosterSnapshots": [
     { "year": 2018, "players": ["mortal", "owais", "ronak", "viper", "slayer"], "event": "Organization Founding", "note": "Dec 21 — the original five." },
@@ -676,10 +698,10 @@
     { "year": 2021, "players": ["mortal", "viper", "regaltos", "roxx", "viru", "yuvaop", "deathnote"], "event": "Late 2021 Stopgaps", "note": "Finishing a failing season." },
     { "year": 2022, "players": ["omega", "akshat", "hector", "goblin"], "event": "Superteam Core", "note": "Won BMPS S1, PMWI 2022 appearance." },
     { "year": 2023, "players": ["omega", "akshat", "hector", "goblin", "neyo"], "event": "Full 2023 Circuit", "note": "Neyo joined July. Core departed Dec 23." },
-    { "year": 2024, "players": ["manya", "nakul", "jokerr", "rony", "spower"], "event": "Rebuild Core", "note": "Won BGMS S3. Ex-Blind Esports." },
+    { "year": 2024, "players": ["manya", "nakul", "jokerr", "rony", "spower"], "event": "Rebuild Core", "note": "Won BGMS S3. Ex-Blind Esports foundation with Ayogi in the coaching setup." },
     { "year": 2024, "players": ["nakul", "rony", "ninjajod", "saumay", "skipz"], "event": "Late 2024 Adjustments", "note": "Replacing Jokerr/Spower." },
-    { "year": 2025, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "Late 2025 Core", "note": "Manya left. Goblin returned May 1." },
-    { "year": 2026, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "BGIS 2026 Championship", "note": "$105k win. Record viewership." }
+    { "year": 2025, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "Late 2025 Core", "note": "Manya left. Goblin returned May 1. Ayogi remained with the modern setup as coach." },
+    { "year": 2026, "players": ["nakul", "goblin", "legit", "jokerr", "thunder"], "event": "BGIS 2026 Championship", "note": "$105k win. Record viewership. NakuL-led five coached by Ayogi." }
   ],
   "rosterChanges": [
     { "playerId": "mortal", "action": "JOINED", "date": "2018-12-21", "context": "Founder" },

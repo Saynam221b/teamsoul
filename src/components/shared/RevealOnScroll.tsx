@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView, type UseInViewOptions } from "framer-motion";
+import { motion, useInView, useReducedMotion, type UseInViewOptions } from "framer-motion";
+import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 
 interface RevealOnScrollProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ interface RevealOnScrollProps {
   margin?: string;
   /** HTML tag to render */
   as?: "div" | "section" | "article" | "footer" | "header";
+  intensity?: "soft" | "medium" | "hero";
 }
 
 export default function RevealOnScroll({
@@ -23,21 +25,27 @@ export default function RevealOnScroll({
   distance = 30,
   margin = "-80px",
   as = "div",
+  intensity = "medium",
 }: RevealOnScrollProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const isInView = useInView(ref, { once: true, margin: margin as UseInViewOptions["margin"] });
 
   const Tag = motion[as];
+  const resolvedDistance =
+    prefersReducedMotion ? 0 : intensity === "soft" ? Math.min(distance, 18) : intensity === "hero" ? Math.max(distance, 36) : distance;
+  const resolvedDuration =
+    prefersReducedMotion ? MOTION_TIMINGS.fast : intensity === "soft" ? 0.42 : intensity === "hero" ? 0.68 : MOTION_TIMINGS.reveal;
 
   return (
     <Tag
       ref={ref}
-      initial={{ opacity: 0, y: distance }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: distance }}
+      initial={{ opacity: 0, y: resolvedDistance }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: resolvedDistance }}
       transition={{
-        duration: 0.6,
+        duration: resolvedDuration,
         delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
+        ease: EASE_PREMIUM,
       }}
       className={className}
     >

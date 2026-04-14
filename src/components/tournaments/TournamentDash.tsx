@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { getAllTournaments, getWins, getYears } from "@/data/helpers";
 import type { Tournament } from "@/data/types";
 import TournamentCard from "./TournamentCard";
+import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
+import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
 
 type TabId = "championships" | "all" | "by-year";
 
@@ -25,6 +27,7 @@ const TIER_FILTERS = [
 ] as const;
 
 export default function TournamentDash({ tournaments }: { tournaments?: Tournament[] }) {
+  const prefersReducedMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<TabId>("championships");
   const [tierFilter, setTierFilter] = useState<string>("All");
   const [yearFilter, setYearFilter] = useState<number | null>(null);
@@ -40,7 +43,12 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
   );
 
   const allTournaments = useMemo(
-    () => source.filter((item) => item.status !== "upcoming"),
+    () => source.filter((item) => item.status !== "upcoming" && item.status !== "live"),
+    [source]
+  );
+
+  const ongoingTournaments = useMemo(
+    () => source.filter((item) => item.status === "live"),
     [source]
   );
 
@@ -87,9 +95,55 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
       .map(([year, items]) => ({ year: Number(year), tournaments: items }));
   }, [activeTab, filteredTournaments]);
 
+  const summaryLabel = useMemo(() => {
+    const parts = [TABS.find((tab) => tab.id === activeTab)?.label ?? "Championships"];
+
+    if (tierFilter !== "All") {
+      parts.push(tierFilter);
+    }
+
+    if (yearFilter !== null) {
+      parts.push(String(yearFilter));
+    }
+
+    return `Active: ${parts.join(" / ")}`;
+  }, [activeTab, tierFilter, yearFilter]);
+
+  const hasActiveFilters = activeTab !== "championships" || tierFilter !== "All" || yearFilter !== null;
+
+  const resetFilters = () => {
+    setActiveTab("championships");
+    setTierFilter("All");
+    setYearFilter(null);
+  };
+
   return (
     <div>
-      <section className="archive-panel mb-6 rounded-[24px] p-4 md:mb-8 md:rounded-[32px] md:p-6">
+      <section className="archive-panel mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
+          <div>
+            <p className="section-kicker">Ongoing right now</p>
+            <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+              Live campaigns
+            </h2>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
+            {ongoingTournaments.length} active
+          </span>
+        </div>
+
+        {ongoingTournaments.length > 0 ? (
+          <div className="results-grid">
+            {ongoingTournaments.map((item, index) => (
+              <TournamentCard key={item.id} tournament={item} index={index} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm leading-7 text-text-muted">No ongoing right now.</p>
+        )}
+      </section>
+
+      <section className="archive-panel mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
           <div>
             <p className="section-kicker">Upcoming events</p>
@@ -113,48 +167,65 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
         )}
       </section>
 
-      <section className="utility-panel sticky top-4 z-40 mb-6 rounded-[28px] p-3 md:top-6 md:mb-8 md:p-4">
-        <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-3">
-          <div className="filter-scroll">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setTierFilter("All");
-                  setYearFilter(null);
-                }}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition-colors md:px-4 md:py-2 md:text-xs md:tracking-[0.18em] ${
-                  activeTab === tab.id
-                    ? "bg-white text-black"
-                    : "border border-white/10 text-text-secondary hover:text-white"
-                }`}
-              >
-                {tab.label}
+      <DynamicFilterDock
+        summaryLabel={summaryLabel}
+        resultsLabel={`${filteredTournaments.length} result${filteredTournaments.length !== 1 ? "s" : ""}`}
+        footer={
+          <>
+            <p className="filter-footnote">
+              View, tier, and year stay pinned so the archive can be scanned without losing context.
+            </p>
+            {hasActiveFilters ? (
+              <button onClick={resetFilters} className="filter-reset">
+                Clear filters
               </button>
-            ))}
+            ) : null}
+          </>
+        }
+      >
+        <div className="filter-layout">
+          <div className="filter-field filter-field-wide">
+            <span className="filter-label">View</span>
+            <div className="filter-scroll">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setTierFilter("All");
+                    setYearFilter(null);
+                  }}
+                  className={`filter-pill ${activeTab === tab.id ? "filter-pill-active" : "filter-pill-muted"}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="filter-scroll md:ml-auto">
-            {TIER_FILTERS.map((tier) => (
-              <button
-                key={tier}
-                onClick={() => setTierFilter(tier)}
-                className={`shrink-0 rounded-full px-2.5 py-1.5 text-[10px] uppercase tracking-[0.14em] transition-colors md:px-3 md:py-2 md:tracking-[0.18em] ${
-                  tierFilter === tier
-                    ? "bg-accent text-white"
-                    : "border border-white/10 text-text-muted hover:text-white"
-                }`}
-              >
-                {tier}
-              </button>
-            ))}
+          <div className="filter-field filter-field-wide">
+            <span className="filter-label">Tier</span>
+            <div className="filter-scroll">
+              {TIER_FILTERS.map((tier) => (
+                <button
+                  key={tier}
+                  onClick={() => setTierFilter(tier)}
+                  className={`filter-pill ${tierFilter === tier ? "filter-pill-accent" : "filter-pill-muted"}`}
+                >
+                  {tier}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            {activeTab !== "championships" && (
+          {activeTab !== "championships" ? (
+            <label className="filter-field" htmlFor="tournament-year-filter">
+              <span className="filter-label">Year</span>
               <select
+                id="tournament-year-filter"
                 value={yearFilter ?? ""}
                 onChange={(e) => setYearFilter(e.target.value ? Number(e.target.value) : null)}
-                className="shrink-0 rounded-full border border-white/10 bg-transparent px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-text-secondary outline-none md:px-4 md:py-2 md:text-xs md:tracking-[0.18em]"
+                className="filter-select"
               >
                 <option value="">All Years</option>
                 {years.map((year) => (
@@ -163,22 +234,19 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
                   </option>
                 ))}
               </select>
-            )}
-          </div>
+            </label>
+          ) : null}
         </div>
-
-        <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-text-muted md:mt-4 md:text-xs md:tracking-[0.18em]">
-          {filteredTournaments.length} result{filteredTournaments.length !== 1 ? "s" : ""}
-        </p>
-      </section>
+      </DynamicFilterDock>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={`${activeTab}-${tierFilter}-${yearFilter}`}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
+          transition={{ duration: prefersReducedMotion ? MOTION_TIMINGS.fast : MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
+          className="filter-results-shell"
         >
           {activeTab === "by-year" ? (
             <div className="space-y-10">

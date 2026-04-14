@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { getBgisHighlights, getBlobAssetStats, getChampionPlayers } from "@/data/bgisChampions";
+import {
+  getBgisHighlights,
+  getBlobAssetStats,
+  getChampionPlayers,
+  getChampionStaff,
+} from "@/data/bgisChampions";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 export const metadata: Metadata = {
   title: "BGIS Champions — Team SOUL Archive",
@@ -12,6 +18,7 @@ export const metadata: Metadata = {
 
 export default function BgisChampionsPage() {
   const players = getChampionPlayers();
+  const staff = getChampionStaff();
   const highlights = getBgisHighlights();
   const assetStats = getBlobAssetStats();
 
@@ -21,19 +28,21 @@ export default function BgisChampionsPage() {
       <main id="main-content" className="flex-1 pt-28 md:pt-32">
         <section className="archive-section !pt-0">
           <div className="page-wrap space-y-6">
-            <section className="inner-hero rounded-[36px] px-6 py-8 md:px-10 md:py-10">
+            <RevealOnScroll as="section" className="inner-hero rounded-[36px] px-5 py-7 md:px-10 md:py-10" intensity="hero">
               <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
                 <div className="max-w-3xl">
                   <p className="section-kicker">BGIS 2026</p>
                   <h1 className="section-title">Champions gallery</h1>
                   <p className="section-copy">
-                    This route stays the most image-led page in the archive. Portraits and highlight frames
-                    carry the emotion; the surrounding UI only gives them a cleaner, stronger stage.
+                    The title story is not only the five on stage. This page now keeps the portraits,
+                    highlight frames, and the coaching context together so the 2026 championship reads like
+                    a complete setup.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 xl:max-w-[360px] xl:justify-end">
                   <span className="hero-chip">{players.length} player portraits</span>
+                  <span className="hero-chip">{staff.length} coach portrait</span>
                   <span className="hero-chip">{highlights.length} highlight frames</span>
                 </div>
               </div>
@@ -54,9 +63,9 @@ export default function BgisChampionsPage() {
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="section-label">Highlight images</p>
-                  <p className="font-display text-5xl uppercase leading-none text-[#f3c76a] md:text-6xl">
-                    {highlights.length}
+                  <p className="section-label">Support staff</p>
+                  <p className="font-display text-5xl uppercase leading-none text-gold md:text-6xl">
+                    {staff.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
@@ -71,35 +80,77 @@ export default function BgisChampionsPage() {
                   </p>
                 </article>
               </div>
-            </section>
+            </RevealOnScroll>
 
             <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-              <div className="archive-panel rounded-[28px] p-6 md:p-7">
-                <p className="section-kicker">Visual note</p>
+              <RevealOnScroll as="div" className="archive-panel rounded-[28px] p-6 md:p-7" delay={0.04}>
+                <p className="section-kicker">Championship setup</p>
                 <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
-                  Portraits hold the page
+                  Manya and NakuL reset the era. Ayogi stayed through the title phase.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">
-                  This screen keeps the strongest visual hierarchy in the archive, with restrained copy and a
-                  tighter split between roster portraits and celebration frames.
+                  The modern run opens with the 2024 ex-Blind core acquisition around Manya and NakuL.
+                  Later roster changes hardened into the BGIS 2026 five, with Ayogi still in the coaching
+                  lane as the structure stabilized.
                 </p>
-              </div>
+              </RevealOnScroll>
 
-              <div className="archive-panel rounded-[28px] p-6 md:p-7">
-                <p className="section-kicker">Sync status</p>
+              <RevealOnScroll as="div" className="archive-panel rounded-[28px] p-6 md:p-7" delay={0.1}>
+                <p className="section-kicker">Support lane</p>
                 <p className="mt-1 text-sm leading-7 text-text-secondary">
-                  Blob assets loaded: {assetStats.totalFiles}
-                  {assetStats.generatedAt
-                    ? ` • Last sync: ${new Date(assetStats.generatedAt).toLocaleString()}`
-                    : ""}
+                  Soul Ayogi remains attached to the modern chapter as coach, so the gallery now separates
+                  the player five from the staff context instead of implying the title run was player-only.
                 </p>
-              </div>
+              </RevealOnScroll>
             </section>
 
-            <section className="archive-panel rounded-[32px] p-6 md:p-8">
+            <RevealOnScroll as="section" className="archive-panel rounded-[32px] p-6 md:p-8" delay={0.12}>
+              <div className="mb-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                <div className="rounded-[24px] border border-white/8 bg-white/[0.02] p-5 md:p-6">
+                  <p className="section-kicker">Championship context</p>
+                  <p className="max-w-2xl text-sm leading-7 text-text-secondary">
+                    The visible five for BGIS 2026 were NakuL, Goblin, LEGIT, Jokerr, and Thunder. Behind
+                    them, Ayogi stayed with the modern structure from the rebuild period into the title
+                    finish, giving the roster a continuous coaching line after the Manya-led acquisition.
+                  </p>
+                </div>
+
+                {staff.map((member) => (
+                  <article
+                    key={member.id}
+                    className="overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
+                  >
+                    <div className="relative aspect-[5/4] bg-black/35">
+                      {member.image ? (
+                        <Image
+                          src={member.image}
+                          alt={`${member.displayName} portrait`}
+                          fill
+                          className="object-contain object-top"
+                          sizes="(max-width: 1024px) 100vw, 28vw"
+                        />
+                      ) : (
+                        <div className="grid h-full place-items-center text-xs text-text-muted">
+                          Image not mapped
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Coach</p>
+                      <h3 className="mt-2 font-display text-3xl uppercase leading-none text-white">
+                        {member.displayName}
+                      </h3>
+                      <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-accent">
+                        {member.role}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
               <div className="mb-5 flex items-center justify-between gap-3">
                 <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
-                  Champion roster
+                  Title-winning five
                 </h2>
                 <span className="rounded-full border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-text-muted">
                   2026 core
@@ -136,11 +187,11 @@ export default function BgisChampionsPage() {
                       <p className="mt-3 text-sm leading-7 text-text-secondary">{player.impact}</p>
                     </div>
                   </article>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+            </RevealOnScroll>
 
-            <section className="archive-panel rounded-[32px] p-6 md:p-8">
+            <RevealOnScroll as="section" className="archive-panel rounded-[32px] p-6 md:p-8" delay={0.16}>
               <div className="mb-5 flex items-center justify-between gap-3">
                 <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
                   Highlight frames
@@ -172,7 +223,7 @@ export default function BgisChampionsPage() {
                   No highlight assets found yet. Run <code>npm run upload:bgmi-assets</code>.
                 </p>
               )}
-            </section>
+            </RevealOnScroll>
           </div>
         </section>
       </main>
