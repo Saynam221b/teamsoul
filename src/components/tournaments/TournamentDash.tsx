@@ -119,53 +119,49 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
 
   return (
     <div>
-      <section className="archive-panel public-card mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
-          <div>
-            <p className="section-kicker">Ongoing right now</p>
-            <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
-              Live campaigns
-            </h2>
+      {ongoingTournaments.length > 0 && (
+        <section className="archive-panel public-card mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
+            <div>
+              <p className="section-kicker">Ongoing right now</p>
+              <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+                Live campaigns
+              </h2>
+            </div>
+            <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
+              {ongoingTournaments.length} active
+            </span>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
-            {ongoingTournaments.length} active
-          </span>
-        </div>
 
-        {ongoingTournaments.length > 0 ? (
           <div className="results-grid">
             {ongoingTournaments.map((item, index) => (
               <TournamentCard key={item.id} tournament={item} index={index} />
             ))}
           </div>
-        ) : (
-          <p className="text-sm leading-7 text-text-muted">No ongoing right now.</p>
-        )}
-      </section>
+        </section>
+      )}
 
-      <section className="archive-panel public-card mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
-          <div>
-            <p className="section-kicker">Upcoming events</p>
-            <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
-              What&apos;s next
-            </h2>
+      {upcomingTournaments.length > 0 && (
+        <section className="archive-panel public-card mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
+            <div>
+              <p className="section-kicker">Upcoming events</p>
+              <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+                What&apos;s next
+              </h2>
+            </div>
+            <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
+              {upcomingTournaments.length} scheduled
+            </span>
           </div>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
-            {upcomingTournaments.length} scheduled
-          </span>
-        </div>
 
-        {upcomingTournaments.length > 0 ? (
           <div className="results-grid">
             {upcomingTournaments.map((item, index) => (
               <TournamentCard key={item.id} tournament={item} index={index} />
             ))}
           </div>
-        ) : (
-          <p className="text-sm leading-7 text-text-muted">No upcoming tournaments yet.</p>
-        )}
-      </section>
+        </section>
+      )}
 
       <DynamicFilterDock
         summaryLabel={summaryLabel}
