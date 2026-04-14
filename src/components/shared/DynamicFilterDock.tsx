@@ -41,7 +41,7 @@ export default function DynamicFilterDock({
     <section
       ref={sectionRef}
       data-softened={isSoftened ? "true" : "false"}
-      className={`utility-panel dynamic-filter-inline sticky top-[84px] z-30 mb-6 rounded-[24px] p-4 md:top-24 md:mb-8 md:rounded-[28px] md:p-5 ${className}`}
+      className={`utility-panel dynamic-filter-inline relative z-20 mb-7 rounded-[24px] p-4 md:mb-9 md:rounded-[28px] md:p-5 ${className}`}
     >
       <div className="dynamic-filter-meta">
         <div className="min-w-0">

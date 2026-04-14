@@ -374,6 +374,7 @@ h6 {
   -ms-overflow-style: none;
   max-width: 100%;
   min-height: 46px;
+  padding-bottom: 1px;
 }
 
 .filter-scroll::-webkit-scrollbar {
@@ -636,7 +637,7 @@ h6 {
 }
 
 .filter-results-shell {
-  margin-top: clamp(24px, 3vw, 38px);
+  margin-top: clamp(30px, 3.6vw, 46px);
 }
 
 .major-wins-stage {
@@ -1219,6 +1220,10 @@ h6 {
     gap: 14px;
   }
 
+  .filter-reset {
+    justify-self: end;
+  }
+
   .hero-stat-grid {
     gap: 14px;
   }
@@ -1467,15 +1472,6 @@ h6 {
       margin-left: 0;
       margin-top: 10px;
     }
-  }
-}
-
-@media (min-width: 1024px) {
-  .filter-layout-tournaments .filter-scroll,
-  .filter-layout-roster .filter-scroll {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    min-height: 0;
   }
 }
 
