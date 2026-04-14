@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 
@@ -55,9 +56,16 @@ export default function Navbar() {
         }`}
       >
         <Link href="/" className="nav-brand flex min-w-0 items-center gap-3">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 font-display text-2xl uppercase tracking-[0.06em] text-white">
-            S
-          </span>
+          <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-white/5">
+            <Image
+              src="/logo.png"
+              alt="Team SOUL logo"
+              fill
+              className="object-contain p-1.5"
+              sizes="40px"
+              priority
+            />
+          </div>
           <div className="min-w-0">
             <p className="font-display text-2xl uppercase leading-none tracking-[0.08em] text-white">
               Team Soul

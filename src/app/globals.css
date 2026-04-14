@@ -55,6 +55,7 @@
 }
 
 html {
+  position: relative;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -62,6 +63,7 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;

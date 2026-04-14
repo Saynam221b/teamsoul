@@ -37,6 +37,11 @@ export const metadata: Metadata = {
       "Bharat Ki Sarvashreshth Team, Team SOUL. Explore the championships, roster legacy, and defining achievements.",
     type: "website",
   },
+  icons: {
+    icon: "/logo.png?v=1",
+    shortcut: "/logo.png?v=1",
+    apple: "/logo.png?v=1",
+  },
 };
 
 export default function RootLayout({
@@ -50,6 +55,7 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
     >
       <head>
         <meta name="theme-color" content="#050912" />
