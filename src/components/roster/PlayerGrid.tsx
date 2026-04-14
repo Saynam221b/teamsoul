@@ -90,7 +90,7 @@ export default function PlayerGrid() {
           </>
         }
       >
-        <div className="filter-layout">
+        <div className="filter-layout filter-layout-roster">
           <label className="filter-field filter-field-search" htmlFor="player-search">
             <span className="filter-label">Search roster</span>
             <input

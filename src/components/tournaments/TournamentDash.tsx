@@ -183,7 +183,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
           </>
         }
       >
-        <div className="filter-layout">
+        <div className="filter-layout filter-layout-tournaments">
           <div className="filter-field filter-field-wide">
             <span className="filter-label">View</span>
             <div className="filter-scroll">
