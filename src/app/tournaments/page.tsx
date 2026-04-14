@@ -28,8 +28,8 @@ export default async function TournamentsPage() {
   return (
     <div className="archive-shell">
       <Navbar />
-      <main id="main-content" className="flex-1 pt-28 md:pt-32">
-        <section className="archive-section !pt-0">
+      <main id="main-content" className="flex-1 pt-28 md:pt-32 space-y-6 md:space-y-8">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <RevealOnScroll as="div" className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
               <div className="flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-end xl:justify-between">
@@ -63,7 +63,7 @@ export default async function TournamentsPage() {
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
+                  <p className="font-display text-[clamp(1.125rem,2.5vw,2.4rem)] uppercase leading-none text-white">
                     {formatPrize(totalPrize)}
                   </p>
                 </article>
@@ -82,7 +82,7 @@ export default async function TournamentsPage() {
           </div>
         </section>
 
-        <section className="archive-section !pt-0">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
@@ -110,7 +110,7 @@ export default async function TournamentsPage() {
           </div>
         </section>
 
-        <section className="archive-section !pt-0">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <TournamentDash tournaments={tournaments} />
           </div>

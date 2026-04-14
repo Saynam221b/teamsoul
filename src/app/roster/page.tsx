@@ -32,8 +32,8 @@ export default function RosterPage() {
   return (
     <div className="archive-shell">
       <Navbar />
-      <main id="main-content" className="flex-1 pt-28 md:pt-32">
-        <section className="archive-section !pt-0">
+      <main id="main-content" className="flex-1 pt-28 md:pt-32 space-y-6 md:space-y-8">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <RevealOnScroll as="div" className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
               <div className="flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-end xl:justify-between">
@@ -80,7 +80,7 @@ export default function RosterPage() {
           </div>
         </section>
 
-        <section className="archive-section !pt-0">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
@@ -108,7 +108,7 @@ export default function RosterPage() {
           </div>
         </section>
 
-        <section className="archive-section !pt-0">
+        <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <PlayerGrid />
           </div>
