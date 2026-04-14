@@ -15,22 +15,39 @@ const NAV_LINKS = [
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 28);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 28);
+      
+      // Hide if scrolling down past 100px, show if scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100 && !menuOpen) {
+        setHidden(true);
+      } else if (currentScrollY < lastScrollY || currentScrollY <= 100) {
+        setHidden(false);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY, menuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 pt-3 md:pt-4">
+    <header className={`fixed inset-x-0 top-0 z-50 pt-3 md:pt-4 transition-all duration-300 ${hidden ? "pointer-events-none" : ""}`}>
       <motion.div
         initial={false}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
-        className={`page-wrap nav-shell flex items-center justify-between px-4 py-3 md:px-6 ${
+        animate={{ 
+          opacity: hidden ? 0 : 1, 
+          y: hidden ? "-140%" : 0 
+        }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className={`page-wrap nav-shell flex items-center justify-between px-4 py-3 md:px-6 pointer-events-auto ${
           scrolled
             ? "nav-shell-scrolled"
             : "nav-shell-rest"

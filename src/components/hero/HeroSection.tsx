@@ -124,10 +124,10 @@ export default function HeroSection() {
               <div className="stat-marquee">
                 {marqueeStats.map((item) => (
                   <div key={item.label}>
-                    <p className="font-display text-4xl uppercase leading-none tracking-[0.06em] text-white md:text-5xl">
+                    <p className="font-display text-2xl uppercase leading-none tracking-[0.06em] text-white md:text-5xl">
                       {item.value}
                     </p>
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-text-muted">
+                    <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-text-muted md:mt-2 md:text-[11px] md:tracking-[0.22em]">
                       {item.label}
                     </p>
                   </div>

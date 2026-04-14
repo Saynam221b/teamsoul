@@ -42,25 +42,25 @@ export default function PlayerGrid() {
 
   return (
     <div>
-      <div className="utility-panel sticky top-24 z-20 mb-8 rounded-[28px] p-4">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <div className="relative xl:min-w-[320px] xl:flex-1">
+      <div className="utility-panel sticky top-4 z-40 mb-6 rounded-[28px] p-3 md:top-6 md:p-4">
+        <div className="flex flex-col gap-2 md:gap-3 xl:flex-row xl:items-center">
+          <div className="relative xl:min-w-[280px] xl:flex-1">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name, role, or real name"
-              className="w-full rounded-full border border-white/10 bg-transparent px-4 py-3 text-sm text-white outline-none placeholder:text-text-muted"
+              placeholder="Search name, role, or real name"
+              className="w-full rounded-full border border-white/10 bg-transparent px-3 py-2 text-xs text-white outline-none placeholder:text-text-muted md:px-4 md:py-3 md:text-sm"
               id="player-search"
             />
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="filter-scroll">
             {(["all", "active", "retired", "departed"] as FilterStatus[]).map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition-colors md:px-4 md:py-2 md:tracking-[0.18em] ${
                   statusFilter === status
                     ? "bg-white text-black"
                     : "border border-white/10 text-text-secondary hover:text-white"
@@ -74,7 +74,7 @@ export default function PlayerGrid() {
           <select
             value={eraFilter}
             onChange={(e) => setEraFilter(e.target.value)}
-            className="rounded-full border border-white/10 bg-transparent px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-text-secondary outline-none"
+            className="shrink-0 rounded-full border border-white/10 bg-transparent px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-text-secondary outline-none md:px-4 md:py-3 md:tracking-[0.18em]"
           >
             <option value="all">All Eras</option>
             {eras.map((era) => (
@@ -85,7 +85,7 @@ export default function PlayerGrid() {
           </select>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.18em] text-text-muted">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-text-muted md:mt-4 md:gap-3 md:text-xs md:tracking-[0.18em]">
           <span>{filteredPlayers.length} players shown</span>
           {(statusFilter !== "all" || eraFilter !== "all" || searchQuery.trim()) && (
             <button
@@ -94,7 +94,7 @@ export default function PlayerGrid() {
                 setEraFilter("all");
                 setSearchQuery("");
               }}
-              className="rounded-full border border-white/10 px-3 py-2 text-text-secondary hover:text-white"
+              className="rounded-full border border-white/10 px-2.5 py-1.5 text-text-secondary hover:text-white"
             >
               Clear filters
             </button>

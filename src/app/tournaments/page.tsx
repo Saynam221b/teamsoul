@@ -27,8 +27,8 @@ export default async function TournamentsPage() {
       <main id="main-content" className="flex-1 pt-28 md:pt-32">
         <section className="archive-section !pt-0">
           <div className="page-wrap">
-            <div className="inner-hero rounded-[36px] px-6 py-8 md:px-10 md:py-10">
-              <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+            <div className="inner-hero rounded-[28px] px-4 py-6 md:rounded-[36px] md:px-10 md:py-10">
+              <div className="flex flex-col gap-5 md:gap-8 xl:flex-row xl:items-end xl:justify-between">
                 <div className="max-w-3xl">
                   <p className="section-kicker">Tournament archive</p>
                   <h1 className="section-title">Every campaign, every final table, one live command board</h1>
@@ -44,30 +44,26 @@ export default async function TournamentsPage() {
                 </div>
               </div>
 
-              <div className="section-divider mt-8" />
+              <div className="section-divider mt-5 md:mt-8" />
 
-              <div className="hero-stat-grid mt-8">
+              <div className="hero-stat-grid mt-5 md:mt-8">
                 <article className="hero-stat-card">
-                  <p className="section-label">Completed events</p>
-                  <p className="font-display text-5xl uppercase leading-none text-white md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
                     {completed.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="section-label">Title finishes</p>
-                  <p className="font-display text-5xl uppercase leading-none text-accent md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-accent md:text-6xl">
                     {wins.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="section-label">Approx prize tracked</p>
-                  <p className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                  <p className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
                     {formatPrize(totalPrize)}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="section-label">Upcoming queue</p>
-                  <p className="font-display text-5xl uppercase leading-none text-[#f3c76a] md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-[#f3c76a] md:text-6xl">
                     {upcoming.length}
                   </p>
                 </article>
@@ -79,9 +75,9 @@ export default async function TournamentsPage() {
         <section className="archive-section !pt-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="archive-panel rounded-[28px] p-6 md:p-7">
+              <div className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7">
                 <p className="section-kicker">Archive signal</p>
-                <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
                   Scan fast, then go deep
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-text-secondary">
@@ -90,9 +86,9 @@ export default async function TournamentsPage() {
                 </p>
               </div>
 
-              <div className="archive-panel rounded-[28px] p-6 md:p-7">
+              <div className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7">
                 <p className="section-kicker">Best return</p>
-                <p className="font-display text-5xl uppercase leading-none text-white md:text-6xl">
+                <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
                   {wins[0]?.year ?? "—"}
                 </p>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">

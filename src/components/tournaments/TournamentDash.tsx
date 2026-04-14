@@ -89,15 +89,15 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
 
   return (
     <div>
-      <section className="archive-panel mb-8 rounded-[32px] p-5 md:p-6">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-white/8 pb-5">
+      <section className="archive-panel mb-6 rounded-[24px] p-4 md:mb-8 md:rounded-[32px] md:p-6">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
           <div>
             <p className="section-kicker">Upcoming events</p>
-            <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+            <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
               What&apos;s next
             </h2>
           </div>
-          <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted md:text-xs md:tracking-[0.22em]">
             {upcomingTournaments.length} scheduled
           </span>
         </div>
@@ -113,9 +113,9 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
         )}
       </section>
 
-      <section className="utility-panel sticky top-24 z-20 mb-8 rounded-[28px] p-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap gap-2">
+      <section className="utility-panel sticky top-4 z-40 mb-6 rounded-[28px] p-3 md:top-6 md:mb-8 md:p-4">
+        <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-3">
+          <div className="filter-scroll">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -124,7 +124,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
                   setTierFilter("All");
                   setYearFilter(null);
                 }}
-                className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.18em] transition-colors ${
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition-colors md:px-4 md:py-2 md:text-xs md:tracking-[0.18em] ${
                   activeTab === tab.id
                     ? "bg-white text-black"
                     : "border border-white/10 text-text-secondary hover:text-white"
@@ -135,12 +135,12 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
             ))}
           </div>
 
-          <div className="ml-auto flex flex-wrap gap-2">
+          <div className="filter-scroll md:ml-auto">
             {TIER_FILTERS.map((tier) => (
               <button
                 key={tier}
                 onClick={() => setTierFilter(tier)}
-                className={`rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] transition-colors ${
+                className={`shrink-0 rounded-full px-2.5 py-1.5 text-[10px] uppercase tracking-[0.14em] transition-colors md:px-3 md:py-2 md:tracking-[0.18em] ${
                   tierFilter === tier
                     ? "bg-accent text-white"
                     : "border border-white/10 text-text-muted hover:text-white"
@@ -154,7 +154,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
               <select
                 value={yearFilter ?? ""}
                 onChange={(e) => setYearFilter(e.target.value ? Number(e.target.value) : null)}
-                className="rounded-full border border-white/10 bg-transparent px-4 py-2 text-xs uppercase tracking-[0.18em] text-text-secondary outline-none"
+                className="shrink-0 rounded-full border border-white/10 bg-transparent px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-text-secondary outline-none md:px-4 md:py-2 md:text-xs md:tracking-[0.18em]"
               >
                 <option value="">All Years</option>
                 {years.map((year) => (
@@ -167,7 +167,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
           </div>
         </div>
 
-        <p className="mt-4 text-xs uppercase tracking-[0.18em] text-text-muted">
+        <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-text-muted md:mt-4 md:text-xs md:tracking-[0.18em]">
           {filteredTournaments.length} result{filteredTournaments.length !== 1 ? "s" : ""}
         </p>
       </section>

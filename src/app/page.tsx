@@ -44,9 +44,9 @@ export default function HomePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="section-kicker mb-3">{item.year}</p>
-                      <h3 className="font-display text-4xl uppercase leading-[0.92] tracking-[0.02em] text-white md:text-5xl">
+                      <p className="font-display text-2xl uppercase leading-none tracking-[0.06em] text-white md:text-5xl">
                         {item.name}
-                      </h3>
+                      </p>
                     </div>
                     <span className="tag tag-won">Champion</span>
                   </div>
@@ -56,7 +56,7 @@ export default function HomePage() {
                       <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">
                         Placement
                       </p>
-                      <p className="mt-2 font-display text-5xl uppercase leading-none text-energy">
+                      <p className="mt-1 font-display text-3xl uppercase leading-none text-energy md:mt-2 md:text-5xl">
                         {item.placement}
                       </p>
                     </div>
@@ -64,7 +64,7 @@ export default function HomePage() {
                       <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">
                         Approx prize
                       </p>
-                      <p className="mt-2 font-display text-4xl uppercase leading-none text-white">
+                      <p className="mt-1 font-display text-2xl uppercase leading-none text-white md:mt-2 md:text-4xl">
                         {formatPrize(item.prize)}
                       </p>
                     </div>
