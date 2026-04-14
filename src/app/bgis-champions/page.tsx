@@ -83,7 +83,7 @@ export default function BgisChampionsPage() {
             </RevealOnScroll>
 
             <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-              <RevealOnScroll as="div" className="archive-panel rounded-[28px] p-6 md:p-7" delay={0.04}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[28px] p-6 md:p-7" delay={0.04}>
                 <p className="section-kicker">Championship setup</p>
                 <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
                   Manya and NakuL reset the era. Ayogi stayed through the title phase.
@@ -95,7 +95,7 @@ export default function BgisChampionsPage() {
                 </p>
               </RevealOnScroll>
 
-              <RevealOnScroll as="div" className="archive-panel rounded-[28px] p-6 md:p-7" delay={0.1}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[28px] p-6 md:p-7" delay={0.1}>
                 <p className="section-kicker">Support lane</p>
                 <p className="mt-1 text-sm leading-7 text-text-secondary">
                   Soul Ayogi remains attached to the modern chapter as coach, so the gallery now separates
@@ -104,9 +104,9 @@ export default function BgisChampionsPage() {
               </RevealOnScroll>
             </section>
 
-            <RevealOnScroll as="section" className="archive-panel rounded-[32px] p-6 md:p-8" delay={0.12}>
+            <RevealOnScroll as="section" className="archive-panel public-card rounded-[32px] p-6 md:p-8" delay={0.12}>
               <div className="mb-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                <div className="rounded-[24px] border border-white/8 bg-white/[0.02] p-5 md:p-6">
+                <div className="public-card-accent public-card-accent-highlight rounded-[24px] border border-white/8 bg-white/[0.02] p-5 md:p-6">
                   <p className="section-kicker">Championship context</p>
                   <p className="max-w-2xl text-sm leading-7 text-text-secondary">
                     The visible five for BGIS 2026 were NakuL, Goblin, LEGIT, Jokerr, and Thunder. Behind
@@ -118,7 +118,7 @@ export default function BgisChampionsPage() {
                 {staff.map((member) => (
                   <article
                     key={member.id}
-                    className="overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
+                    className="public-card overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
                   >
                     <div className="relative aspect-[5/4] bg-black/35">
                       {member.image ? (
@@ -160,7 +160,7 @@ export default function BgisChampionsPage() {
                 {players.map((player) => (
                   <article
                     key={player.id}
-                    className="overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
+                    className="public-card overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
                   >
                     <div className="relative aspect-[4/5] bg-black/35">
                       {player.image ? (
@@ -191,7 +191,7 @@ export default function BgisChampionsPage() {
                 </div>
             </RevealOnScroll>
 
-            <RevealOnScroll as="section" className="archive-panel rounded-[32px] p-6 md:p-8" delay={0.16}>
+            <RevealOnScroll as="section" className="archive-panel public-card rounded-[32px] p-6 md:p-8" delay={0.16}>
               <div className="mb-5 flex items-center justify-between gap-3">
                 <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
                   Highlight frames
@@ -206,7 +206,7 @@ export default function BgisChampionsPage() {
                   {highlights.map((highlight) => (
                     <figure
                       key={highlight.id}
-                      className="relative aspect-[4/3] overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.02]"
+                      className="public-card relative aspect-[4/3] overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.02]"
                     >
                       <Image
                         src={highlight.url}

@@ -25,12 +25,12 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
       distance={20}
       margin="-30px"
       intensity="soft"
-      className="archive-panel group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
+      className="archive-panel public-card group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
     >
       <div className="mb-4 flex items-start justify-between gap-2 md:mb-5 md:gap-3">
         <div className="flex items-center gap-3 md:gap-4">
           <div
-            className={`avatar-grayscale flex h-11 w-11 items-center justify-center rounded-full border font-display text-xl uppercase md:h-16 md:w-16 md:text-3xl ${
+            className={`avatar-grayscale public-card-accent-avatar flex h-11 w-11 items-center justify-center rounded-full border font-display text-xl uppercase md:h-16 md:w-16 md:text-3xl ${
               player.isFounder
                 ? "border-gold/30 bg-gold/10 text-gold"
                 : "border-white/10 bg-white/5 text-white"
@@ -82,7 +82,7 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
             {player.awards.slice(0, 3).map((award, awardIndex) => (
               <span
                 key={`${player.id}-${awardIndex}`}
-                className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.1em] text-text-secondary md:px-3 md:py-1.5 md:text-xs md:tracking-[0.12em]"
+                className="public-card-accent rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.1em] text-text-secondary md:px-3 md:py-1.5 md:text-xs md:tracking-[0.12em]"
               >
                 {award.name}
               </span>

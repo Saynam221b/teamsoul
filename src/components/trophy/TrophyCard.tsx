@@ -87,9 +87,9 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
       distance={24}
       margin="-40px"
       intensity="soft"
-      className={`${featured ? "major-win-featured" : ""} trophy-card major-win-card major-win-${context.tone} rounded-[28px] p-5 md:p-6`}
+      className={`${featured ? "major-win-featured" : ""} public-card trophy-card major-win-card major-win-${context.tone} rounded-[28px] p-5 md:p-6`}
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="trophy-card-meta flex items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className={`rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] ${TONE_CLASS[context.tone]}`}>
             {context.label}
@@ -101,20 +101,20 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
         <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">{eventStamp}</span>
       </div>
 
-      <div className="mt-6 rounded-[20px] border border-white/8 bg-white/[0.02] px-4 py-3">
+      <div className="public-card-accent public-card-accent-highlight trophy-card-context mt-6 rounded-[20px] border border-white/8 bg-white/[0.02] px-4 py-3">
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Competition context</p>
         <p className="mt-3 text-sm leading-7 text-text-secondary">
           {context.note}
         </p>
       </div>
 
-      <div className="mt-8 flex min-h-[7.5rem] flex-1 flex-col justify-start md:min-h-[8.5rem]">
+      <div className="trophy-card-title mt-8 flex min-h-[7.5rem] flex-1 flex-col justify-start md:min-h-[8.5rem]">
         <h3 className="font-display text-3xl uppercase leading-[0.88] tracking-[-0.05em] text-white md:text-4xl">
           {tournament.name}
         </h3>
       </div>
 
-      <div className="mt-6 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
+      <div className="trophy-card-stats mt-6 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Placement</p>
           <p className="mt-2 font-display text-4xl uppercase leading-none text-white md:text-5xl">
@@ -132,14 +132,14 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
       </div>
 
       {roster.length > 0 ? (
-        <div className="mt-6 border-t border-border-subtle pt-5">
+        <div className="trophy-card-roster mt-6 border-t border-border-subtle pt-5">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Winning squad</p>
             <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
               {roster.length} players
             </span>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2.5">
+          <div className="trophy-card-roster-grid mt-4 flex flex-wrap gap-2.5">
             {roster.map((player) => (
               <div
                 key={player.id}
@@ -158,7 +158,7 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
       ) : null}
 
       {staff.length > 0 ? (
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="trophy-card-staff mt-5 flex flex-wrap items-center gap-2">
           <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Coaching lane</span>
           {staff.map((member) => (
             <span

@@ -119,7 +119,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
 
   return (
     <div>
-      <section className="archive-panel mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
+      <section className="archive-panel public-card mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
           <div>
             <p className="section-kicker">Ongoing right now</p>
@@ -143,7 +143,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
         )}
       </section>
 
-      <section className="archive-panel mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
+      <section className="archive-panel public-card mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
           <div>
             <p className="section-kicker">Upcoming events</p>

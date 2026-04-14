@@ -13,6 +13,29 @@ import { getEras, getPlayerById, getStaffById } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 
+function formatEraProgress(value: number) {
+  return value.toString().padStart(2, "0");
+}
+
+function EraScrollHelper({
+  instruction,
+  progressLabel,
+  className = "",
+}: {
+  instruction: string;
+  progressLabel: string;
+  className?: string;
+}) {
+  return (
+    <div className={`era-story-helper ${className}`.trim()} aria-label={`${instruction} ${progressLabel}`}>
+      <p className="era-story-helper-copy">{instruction}</p>
+      <p className="era-story-helper-progress" aria-live="polite">
+        {progressLabel}
+      </p>
+    </div>
+  );
+}
+
 export default function EraTimeline() {
   const eras = getEras();
   const prefersReducedMotion = useReducedMotion();
@@ -23,6 +46,8 @@ export default function EraTimeline() {
     target: trackRef,
     offset: ["start start", "end end"],
   });
+  const totalEras = formatEraProgress(eras.length);
+  const activeProgressLabel = `${formatEraProgress(activeIndex + 1)} / ${totalEras}`;
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const nextIndex = Math.min(eras.length - 1, Math.max(0, Math.floor(latest * eras.length)));
@@ -46,6 +71,10 @@ export default function EraTimeline() {
             </p>
           </RevealOnScroll>
 
+          <div className="era-story-helper-rail era-story-helper-rail-static">
+            <EraScrollHelper instruction="Scroll for story" progressLabel={`${eras.length} chapters`} />
+          </div>
+
           <div className="space-y-6">
             {eras.map((era, index) => {
               const staff = (era.staff ?? [])
@@ -57,7 +86,7 @@ export default function EraTimeline() {
                   key={era.id}
                   as="article"
                   delay={Math.min(index * 0.05, 0.2)}
-                  className="timeline-era-row rounded-[28px] p-6 md:p-8"
+                  className="timeline-era-row public-card rounded-[28px] p-6 md:p-8"
                 >
                   {era.storyImageUrl ? (
                     <figure className="era-story-inline-media">
@@ -153,75 +182,81 @@ export default function EraTimeline() {
               })}
             </aside>
 
-            <div className="era-story-canvas">
-              <AnimatePresence mode="wait">
-                <motion.article
-                  key={activeEra.id}
-                  initial={{ opacity: 0, y: 28 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -18 }}
-                  transition={{ duration: MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
-                  className="era-story-phase"
-                >
-                  <div className="era-story-layout">
-                    <div className="era-story-copy">
-                      <p className="text-[11px] uppercase tracking-[0.28em] text-text-muted">
-                        {activeEra.yearRange[0]}-{activeEra.yearRange[1]}
-                      </p>
-                      <h3 className="mt-5 font-display text-[clamp(2.5rem,5.8vw,5.6rem)] uppercase leading-[0.84] tracking-[-0.065em] text-white">
-                        {activeEra.name}
-                      </h3>
-                      <p className="mt-5 max-w-[40rem] text-[0.97rem] leading-7 text-text-secondary md:text-[1.02rem] md:leading-8">
-                        {activeEra.description}
-                      </p>
+            <div className="era-story-main">
+              <div className="era-story-helper-rail">
+                <EraScrollHelper instruction="Scroll for story" progressLabel={activeProgressLabel} />
+              </div>
 
-                      <div className="mt-6 flex max-w-[42rem] flex-wrap gap-2">
-                        {activePlayers.map((player) => (
-                          <span
-                            key={player.id}
-                            className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-text-secondary"
-                          >
-                            {player.displayName}
-                          </span>
-                        ))}
-                        {activeStaff.map((member) => (
-                          <span
-                            key={member.id}
-                            className="rounded-full border border-accent/18 bg-accent/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-accent"
-                          >
-                            {member.displayName} · {member.role}
-                          </span>
-                        ))}
+              <div className="era-story-canvas">
+                <AnimatePresence mode="wait">
+                  <motion.article
+                    key={activeEra.id}
+                    initial={{ opacity: 0, y: 28 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -18 }}
+                    transition={{ duration: MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
+                    className="era-story-phase"
+                  >
+                    <div className="era-story-layout">
+                      <div className="era-story-copy">
+                        <p className="text-[11px] uppercase tracking-[0.28em] text-text-muted">
+                          {activeEra.yearRange[0]}-{activeEra.yearRange[1]}
+                        </p>
+                        <h3 className="mt-5 font-display text-[clamp(2.5rem,5.8vw,5.6rem)] uppercase leading-[0.84] tracking-[-0.065em] text-white">
+                          {activeEra.name}
+                        </h3>
+                        <p className="mt-5 max-w-[40rem] text-[0.97rem] leading-7 text-text-secondary md:text-[1.02rem] md:leading-8">
+                          {activeEra.description}
+                        </p>
+
+                        <div className="mt-6 flex max-w-[42rem] flex-wrap gap-2">
+                          {activePlayers.map((player) => (
+                            <span
+                              key={player.id}
+                              className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-text-secondary"
+                            >
+                              {player.displayName}
+                            </span>
+                          ))}
+                          {activeStaff.map((member) => (
+                            <span
+                              key={member.id}
+                              className="rounded-full border border-accent/18 bg-accent/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-accent"
+                            >
+                              {member.displayName} · {member.role}
+                            </span>
+                          ))}
+                        </div>
+
+                        <p className="mt-7 max-w-[36rem] border-l border-border-subtle pl-4 text-[0.82rem] uppercase tracking-[0.15em] text-text-muted md:text-[0.92rem]">
+                          {activeEra.definingMoment}
+                        </p>
                       </div>
 
-                      <p className="mt-7 max-w-[36rem] border-l border-border-subtle pl-4 text-[0.82rem] uppercase tracking-[0.15em] text-text-muted md:text-[0.92rem]">
-                        {activeEra.definingMoment}
-                      </p>
+                      <div className="era-story-visual">
+                        {activeEra.storyImageUrl ? (
+                          <figure className="era-story-media">
+                            <Image
+                              src={activeEra.storyImageUrl}
+                              alt={activeEra.storyImageAlt ?? `${activeEra.name} lineup`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 1199px) 100vw, 42vw"
+                              priority={activeIndex === 0}
+                            />
+                          </figure>
+                        ) : (
+                          <div className="era-story-media era-story-media-fallback">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
+                              Story image pending
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-
-                    <div className="era-story-visual">
-                      {activeEra.storyImageUrl ? (
-                        <figure className="era-story-media">
-                          <Image
-                            src={activeEra.storyImageUrl}
-                            alt={activeEra.storyImageAlt ?? `${activeEra.name} lineup`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 1199px) 100vw, 42vw"
-                            priority={activeIndex === 0}
-                          />
-                        </figure>
-                      ) : (
-                        <div className="era-story-media era-story-media-fallback">
-                          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
-                            Story image pending
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.article>
-              </AnimatePresence>
+                  </motion.article>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>

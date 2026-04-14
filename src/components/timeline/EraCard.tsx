@@ -24,7 +24,7 @@ export default function EraCard({ era, index }: EraCardProps) {
       distance={24}
       margin="-50px"
       intensity="soft"
-      className="timeline-era-row rounded-[24px] p-5 md:p-6"
+      className="timeline-era-row public-card rounded-[24px] p-5 md:p-6"
     >
       <div className="grid gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">
         <div className="border-b border-border-subtle pb-5 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">

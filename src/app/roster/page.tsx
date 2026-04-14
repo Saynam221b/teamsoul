@@ -83,7 +83,7 @@ export default function RosterPage() {
         <section className="archive-section !pt-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-              <RevealOnScroll as="div" className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Roster signal</p>
                 <h2 className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
                   Built to track movement
@@ -94,7 +94,7 @@ export default function RosterPage() {
                 </p>
               </RevealOnScroll>
 
-              <RevealOnScroll as="div" className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
                 <p className="section-kicker">Identity check</p>
                 <p className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
                   Names first. Impact second.

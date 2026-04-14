@@ -85,7 +85,7 @@ export default async function TournamentsPage() {
         <section className="archive-section !pt-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-              <RevealOnScroll as="div" className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Archive signal</p>
                 <h2 className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
                   Scan fast, then go deep
@@ -96,7 +96,7 @@ export default async function TournamentsPage() {
                 </p>
               </RevealOnScroll>
 
-              <RevealOnScroll as="div" className="archive-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
+              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
                 <p className="section-kicker">Best return</p>
                 <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
                   {wins[0]?.year ?? "—"}

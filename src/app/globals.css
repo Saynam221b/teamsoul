@@ -174,6 +174,59 @@ h6 {
   margin-bottom: 40px;
 }
 
+.era-story-helper-rail {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: clamp(8px, 1.6vw, 18px);
+}
+
+.era-story-helper-rail-static {
+  margin-bottom: 18px;
+}
+
+.era-story-helper {
+  position: relative;
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  min-width: min(100%, 11rem);
+  padding: 12px 0 12px 14px;
+  border-left: 1px solid rgba(128, 145, 164, 0.18);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.025) 100%);
+  text-align: right;
+  opacity: 0.82;
+}
+
+.era-story-helper::before {
+  content: "";
+  width: 38px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.26));
+}
+
+.era-story-helper-copy,
+.era-story-helper-progress {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.era-story-helper-copy {
+  color: var(--text-secondary);
+  max-width: 14ch;
+  line-height: 1.5;
+}
+
+.era-story-helper-progress {
+  color: var(--text-primary);
+  font-family: var(--font-outfit, "Outfit", sans-serif);
+  font-size: 0.94rem;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+
 .section-kicker {
   margin: 0 0 12px;
   color: var(--accent);
@@ -702,6 +755,13 @@ h6 {
   text-wrap: balance;
 }
 
+.trophy-card-meta,
+.trophy-card-roster,
+.trophy-card-staff {
+  position: relative;
+  z-index: 1;
+}
+
 .era-story-track {
   position: relative;
   height: calc(var(--era-count) * 100vh);
@@ -718,6 +778,13 @@ h6 {
   min-height: calc(100dvh - 120px);
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(24px, 4vw, 56px);
+}
+
+.era-story-main {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 8px;
 }
 
 .era-story-rail {
@@ -1133,27 +1200,89 @@ h6 {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
-.footer-callout {
-  margin-top: clamp(10px, 2.5vw, 28px);
+.footer-legacy-grid {
+  border-top: 1px solid rgba(128, 145, 164, 0.12);
 }
 
-.footer-callout-compact .section-title {
+.footer-legacy-copy .section-title {
   font-size: clamp(1.85rem, 4vw, 3rem);
   line-height: 0.92;
   max-width: 11ch;
 }
 
-.footer-callout-compact .section-copy {
+.footer-legacy-copy .section-copy {
   max-width: 33rem;
   font-size: 0.92rem;
   line-height: 1.6;
 }
 
-.footer-callout-compact .button-primary,
-.footer-callout-compact .button-secondary {
-  min-height: 44px;
-  padding: 0 18px;
-  font-size: 0.92rem;
+.public-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform var(--motion-duration-base) var(--motion-ease-premium),
+    border-color var(--motion-duration-base) ease,
+    background-color var(--motion-duration-base) ease,
+    box-shadow var(--motion-duration-base) ease;
+}
+
+.public-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 24%),
+    linear-gradient(145deg, transparent 58%, rgba(0, 229, 255, 0.05) 100%);
+  opacity: 0;
+  transition: opacity var(--motion-duration-base) ease;
+}
+
+.public-card-accent {
+  transition:
+    transform var(--motion-duration-base) var(--motion-ease-premium),
+    border-color var(--motion-duration-base) ease,
+    background-color var(--motion-duration-base) ease,
+    box-shadow var(--motion-duration-base) ease;
+}
+
+.public-card-accent-avatar {
+  transform-origin: center;
+  transition:
+    transform var(--motion-duration-base) var(--motion-ease-premium),
+    border-color var(--motion-duration-base) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .public-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 20px 44px rgba(0, 0, 0, 0.18);
+  }
+
+  .public-card:hover::after {
+    opacity: 1;
+  }
+
+  .public-card:hover .public-card-accent {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .public-card:hover .public-card-accent-highlight {
+    border-color: rgba(0, 229, 255, 0.16);
+    background: rgba(0, 229, 255, 0.07);
+  }
+
+  .public-card:hover .public-card-accent-avatar {
+    transform: scale(1.04);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
 }
 
 @keyframes routePulse {
@@ -1379,12 +1508,97 @@ h6 {
     gap: 16px;
   }
 
+  .major-wins-stage {
+    display: grid;
+    gap: 14px;
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
   .major-wins-stage > * {
-    flex-basis: min(84vw, 320px);
+    flex: 1 1 100%;
+    min-width: 0;
   }
 
   .major-win-card {
-    min-height: 540px;
+    min-height: auto;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .major-win-featured {
+    transform: none;
+  }
+
+  .trophy-card-meta {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .trophy-card-meta > :last-child {
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .trophy-card-context {
+    margin-top: 14px;
+    border-radius: 18px;
+    padding: 12px 14px;
+  }
+
+  .trophy-card-context p:last-child {
+    margin-top: 8px;
+    font-size: 0.84rem;
+    line-height: 1.65;
+  }
+
+  .trophy-card-title {
+    min-height: auto;
+    margin-top: 18px;
+  }
+
+  .trophy-card-title h3 {
+    font-size: clamp(1.8rem, 7.4vw, 2.35rem);
+  }
+
+  .trophy-card-stats {
+    margin-top: 16px;
+    gap: 12px;
+    padding-top: 16px;
+  }
+
+  .trophy-card-stats p:last-child {
+    margin-top: 8px;
+  }
+
+  .trophy-card-roster {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .trophy-card-roster-grid {
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  .trophy-card-roster-grid > div {
+    border-radius: 16px;
+    padding: 10px 12px;
+  }
+
+  .trophy-card-roster-grid > div p:first-child {
+    font-size: 11px;
+  }
+
+  .trophy-card-roster-grid > div p:last-child {
+    margin-top: 4px;
+    font-size: 9px;
+  }
+
+  .trophy-card-staff {
+    margin-top: 14px;
+    gap: 8px;
   }
 
   .era-story-track {
@@ -1409,6 +1623,29 @@ h6 {
   .era-story-phase {
     align-items: flex-start;
     padding-block: 10px 0;
+  }
+
+  .era-story-main {
+    gap: 4px;
+  }
+
+  .era-story-helper-rail {
+    margin-bottom: 6px;
+  }
+
+  .era-story-helper {
+    min-width: 9rem;
+    padding: 8px 0 8px 12px;
+  }
+
+  .era-story-helper-copy,
+  .era-story-helper-progress {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  .era-story-helper-progress {
+    font-size: 0.82rem;
   }
 
   .era-story-layout {
@@ -1538,16 +1775,12 @@ h6 {
     width: 100%;
   }
 
-  .footer-callout {
-    margin-top: 14px;
-  }
-
-  .footer-callout-compact .section-title {
+  .footer-legacy-copy .section-title {
     font-size: clamp(1.7rem, 9vw, 2.35rem);
     max-width: 12ch;
   }
 
-  .footer-callout-compact .section-copy {
+  .footer-legacy-copy .section-copy {
     font-size: 0.84rem;
     line-height: 1.52;
   }

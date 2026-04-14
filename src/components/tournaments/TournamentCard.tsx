@@ -42,7 +42,7 @@ export default function TournamentCard({
       distance={20}
       margin="-30px"
       intensity="soft"
-      className={`${featured ? "bento-featured" : ""} archive-panel rounded-[24px] p-5 md:rounded-[26px]`}
+      className={`${featured ? "bento-featured" : ""} archive-panel public-card rounded-[24px] p-5 md:rounded-[26px]`}
     >
       <div className="mb-3 flex items-start justify-between gap-2 md:mb-4 md:gap-3">
         <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
@@ -78,7 +78,7 @@ export default function TournamentCard({
       )}
 
       <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 md:mt-5 md:gap-4 md:pt-5">
-        <div className="min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
+        <div className="public-card-accent min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
             {status === "upcoming" || status === "live" ? "Slot" : "Placement"}
           </p>
@@ -94,7 +94,7 @@ export default function TournamentCard({
         </div>
 
         {prize !== null && prize > 0 && (
-          <div className="min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
+          <div className="public-card-accent min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
             <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Approx prize</p>
             <p className="mt-2 break-words font-display text-2xl uppercase leading-[0.92] text-white md:text-[2.75rem]">
               {formatPrize(prize)}
