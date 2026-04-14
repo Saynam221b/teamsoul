@@ -11,7 +11,7 @@ interface PlayerCardProps {
 
 const STATUS_STYLES = {
   active: "text-accent",
-  retired: "text-[#f3c76a]",
+  retired: "text-gold",
   departed: "text-text-secondary",
 };
 
@@ -24,14 +24,15 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
       delay={Math.min(index * 0.04, 0.24)}
       distance={20}
       margin="-30px"
-      className="archive-panel group rounded-[20px] p-4 md:rounded-[28px] md:p-5"
+      intensity="soft"
+      className="archive-panel group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
     >
       <div className="mb-4 flex items-start justify-between gap-2 md:mb-5 md:gap-3">
         <div className="flex items-center gap-3 md:gap-4">
           <div
             className={`avatar-grayscale flex h-11 w-11 items-center justify-center rounded-full border font-display text-xl uppercase md:h-16 md:w-16 md:text-3xl ${
               player.isFounder
-                ? "border-[#f3c76a]/30 bg-[#f3c76a]/10 text-[#f3c76a]"
+                ? "border-gold/30 bg-gold/10 text-gold"
                 : "border-white/10 bg-white/5 text-white"
             }`}
           >
@@ -44,7 +45,7 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
                 {player.displayName}
               </h3>
               {player.isFounder && (
-                <span className="rounded-full border border-[#f3c76a]/30 px-2 py-0.5 text-[9px] uppercase tracking-[0.14em] text-[#f3c76a] md:py-1 md:text-[10px] md:tracking-[0.16em]">
+                <span className="rounded-full border border-gold/30 px-2 py-0.5 text-[9px] uppercase tracking-[0.14em] text-gold md:py-1 md:text-[10px] md:tracking-[0.16em]">
                   Founder
                 </span>
               )}

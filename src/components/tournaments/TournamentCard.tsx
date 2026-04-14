@@ -1,7 +1,7 @@
 "use client";
 
 import type { Tournament } from "@/data/types";
-import { formatPlacement, formatPrize } from "@/data/helpers";
+import { formatDate, formatPlacement, formatPrize } from "@/data/helpers";
 import TierBadge from "../shared/TierBadge";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
@@ -18,9 +18,15 @@ export default function TournamentCard({
 }: TournamentCardProps) {
   const { name, year, tier, placement, prize, isWin, status, eventDate, location, details } =
     tournament;
+  const placementLabel =
+    status === "upcoming" || status === "live"
+      ? "Scheduled"
+      : typeof placement === "number"
+        ? formatPlacement(placement)
+        : placement;
 
   const statusLabel =
-    status === "upcoming" ? "Upcoming" : status === "live" ? "Live" : "Completed";
+    status === "upcoming" ? "Upcoming" : status === "live" ? "Ongoing" : "Completed";
 
   const statusClass =
     status === "upcoming"
@@ -35,7 +41,8 @@ export default function TournamentCard({
       delay={Math.min(index * 0.03, 0.22)}
       distance={20}
       margin="-30px"
-      className={`${featured ? "bento-featured" : ""} archive-panel rounded-[20px] p-4 md:rounded-[26px] md:p-5`}
+      intensity="soft"
+      className={`${featured ? "bento-featured" : ""} archive-panel rounded-[24px] p-5 md:rounded-[26px]`}
     >
       <div className="mb-3 flex items-start justify-between gap-2 md:mb-4 md:gap-3">
         <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
@@ -57,7 +64,7 @@ export default function TournamentCard({
             <div>
               <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Date</p>
               <p className="mt-1 text-sm text-text-secondary">
-                {new Date(eventDate).toLocaleDateString()}
+                {formatDate(eventDate)}
               </p>
             </div>
           )}
@@ -70,31 +77,33 @@ export default function TournamentCard({
         </div>
       )}
 
-      <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 sm:grid-cols-2 md:mt-5 md:gap-4 md:pt-5">
-        <div>
+      <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 md:mt-5 md:gap-4 md:pt-5">
+        <div className="min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
-            {status === "upcoming" ? "Slot" : "Placement"}
+            {status === "upcoming" || status === "live" ? "Slot" : "Placement"}
           </p>
-          <p className={`mt-1 font-display text-3xl uppercase leading-none md:mt-2 md:text-5xl ${isWin ? "text-accent" : "text-white"}`}>
-            {status === "upcoming"
-              ? "Scheduled"
-              : typeof placement === "number"
-                ? formatPlacement(placement)
-                : placement}
+          <p
+            className={`mt-2 break-words font-display uppercase leading-[0.9] ${
+              status === "upcoming" || status === "live"
+                ? "text-[2.4rem] md:text-[3.2rem]"
+                : "text-3xl md:text-5xl"
+            } ${isWin ? "text-accent" : "text-white"}`}
+          >
+            {placementLabel}
           </p>
         </div>
 
         {prize !== null && prize > 0 && (
-          <div>
+          <div className="min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
             <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Approx prize</p>
-            <p className="mt-1 font-display text-2xl uppercase leading-none text-white md:mt-2 md:text-4xl">
+            <p className="mt-2 break-words font-display text-2xl uppercase leading-[0.92] text-white md:text-[2.75rem]">
               {formatPrize(prize)}
             </p>
           </div>
         )}
       </div>
 
-      {isWin && status !== "upcoming" && (
+      {isWin && status !== "upcoming" && status !== "live" && (
         <div className="mt-4 md:mt-5">
           <span className="tag tag-won">Won the title</span>
         </div>
