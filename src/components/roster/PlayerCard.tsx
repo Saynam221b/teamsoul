@@ -25,7 +25,7 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
       <div className="mb-4 flex items-start justify-between gap-2 md:mb-5 md:gap-3">
         <div className="flex items-center gap-3 md:gap-4">
           <div
-            className={`avatar-grayscale public-card-accent-avatar flex h-11 w-11 items-center justify-center rounded-full border font-display text-xl uppercase md:h-16 md:w-16 md:text-3xl ${
+            className={`avatar-grayscale public-card-accent-avatar flex h-10 w-10 items-center justify-center rounded-full border font-display text-base uppercase md:h-12 md:w-12 md:text-xl ${
               player.isFounder
                 ? "border-gold/30 bg-gold/10 text-gold"
                 : "border-white/10 bg-white/5 text-white"
@@ -36,7 +36,7 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
 
           <div>
             <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
-              <h3 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
+              <h3 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                 {player.displayName}
               </h3>
               {player.isFounder && (

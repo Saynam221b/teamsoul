@@ -101,20 +101,12 @@ export interface Tournament {
   awards?: Award[];
 }
 
-export type DataFeedSource = "db" | "fallback";
-
-export type DataFeedDegradedReason =
-  | "missing_supabase_config"
-  | "missing_supabase_client"
-  | "query_error";
-
-export type TournamentFeedSource = DataFeedSource;
-export type TournamentFeedDegradedReason = DataFeedDegradedReason;
+export type DataFeedSource = "db" | "unavailable";
 
 export interface PublicTournamentFeedResult {
   tournaments: Tournament[];
-  source: TournamentFeedSource;
-  degradedReason?: TournamentFeedDegradedReason;
+  source: DataFeedSource;
+  message?: string;
 }
 
 export interface PublicArchiveFeedResult {
@@ -124,7 +116,7 @@ export interface PublicArchiveFeedResult {
   players: Player[];
   staff: StaffMember[];
   source: DataFeedSource;
-  degradedReason?: DataFeedDegradedReason;
+  message?: string;
 }
 
 export interface BlobAsset {
@@ -138,7 +130,7 @@ export interface PublicBlobAssetFeedResult {
   generatedAt?: string | null;
   totalFiles: number;
   source: DataFeedSource;
-  degradedReason?: DataFeedDegradedReason;
+  message?: string;
 }
 
 export interface Award {

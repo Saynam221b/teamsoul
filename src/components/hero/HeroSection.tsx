@@ -68,13 +68,13 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
                     <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(255,255,255,0.04),transparent_38%,rgba(255,255,255,0.015))]" />
                     <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(0,229,255,0.35),transparent)]" />
 
-                    <div className="relative z-10 flex min-h-[250px] flex-col justify-between p-5 md:min-h-[360px] md:p-8">
+                    <div className="relative z-10 flex min-h-[220px] flex-col justify-between p-4 md:min-h-[300px] md:p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <p className="text-[11px] uppercase tracking-[0.26em] text-accent">
                             Featured Championship
                           </p>
-                          <h2 className="mt-4 max-w-sm font-display text-4xl uppercase leading-[0.9] text-white md:text-5xl">
+                          <h2 className="mt-3 max-w-sm font-display text-3xl uppercase leading-[0.92] text-white md:text-4xl">
                             BGIS 2026 Grand Finals
                           </h2>
                         </div>
@@ -132,7 +132,7 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
               <div className="stat-marquee">
                 {marqueeStats.map((item) => (
                   <div key={item.label}>
-                    <p className="font-display text-2xl uppercase leading-none tracking-[0.06em] text-white md:text-5xl">
+                    <p className="font-display text-xl uppercase leading-none tracking-[0.06em] text-white md:text-3xl">
                       {item.value}
                     </p>
                     <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-text-muted md:mt-2 md:text-[11px] md:tracking-[0.22em]">

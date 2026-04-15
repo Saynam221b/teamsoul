@@ -3,6 +3,7 @@
 import type { Tournament } from "@/data/types";
 import { formatDate, formatPlacement, formatPrize } from "@/data/helpers";
 import TierBadge from "../shared/TierBadge";
+import { isCompletedWin } from "@/lib/tournamentLifecycle";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -40,7 +41,7 @@ export default function TournamentCard({
 
   return (
     <article
-      className={`${featured ? "bento-featured" : ""} archive-card-shell archive-panel public-card rounded-[24px] p-5 md:rounded-[26px]`}
+      className={`${featured ? "bento-featured" : ""} archive-card-shell archive-panel public-card rounded-[20px] p-4 md:rounded-[22px]`}
       style={{ animationDelay: `${Math.min(index * 28, 180)}ms` }}
     >
       <div className="mb-3 flex items-start justify-between gap-2 md:mb-4 md:gap-3">
@@ -51,11 +52,11 @@ export default function TournamentCard({
         <span className="text-[10px] uppercase tracking-[0.14em] text-text-muted md:text-xs md:tracking-[0.18em]">{year}</span>
       </div>
 
-      <h3 className="font-display text-2xl uppercase leading-[0.9] text-white md:text-4xl">
+      <h3 className="font-display text-lg uppercase leading-[0.94] text-white md:text-xl">
         {name}
       </h3>
 
-      {details && <p className="mt-2 text-xs leading-6 text-text-secondary md:mt-3 md:text-sm md:leading-7">{details}</p>}
+      {details && <p className="mt-2 text-xs leading-6 text-text-secondary md:mt-3 md:text-sm md:leading-6">{details}</p>}
 
       {staffLabels.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
@@ -89,16 +90,16 @@ export default function TournamentCard({
         </div>
       )}
 
-      <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 md:mt-5 md:gap-4 md:pt-5">
-        <div className="public-card-accent min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
+      <div className="mt-4 grid gap-3 border-t border-white/8 pt-4 md:mt-4 md:gap-3 md:pt-4">
+        <div className="public-card-accent min-w-0 rounded-[14px] border border-white/8 bg-white/[0.02] p-3.5">
           <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
             {status === "upcoming" || status === "live" ? "Slot" : "Placement"}
           </p>
           <p
             className={`mt-2 break-words font-display uppercase leading-[0.9] ${
               status === "upcoming" || status === "live"
-                ? "text-[2.4rem] md:text-[3.2rem]"
-                : "text-3xl md:text-5xl"
+                ? "text-xl md:text-2xl"
+                : "text-xl md:text-2xl"
             } ${isWin ? "text-accent" : "text-white"}`}
           >
             {placementLabel}
@@ -106,16 +107,16 @@ export default function TournamentCard({
         </div>
 
         {prize !== null && prize > 0 && (
-          <div className="public-card-accent min-w-0 rounded-[18px] border border-white/8 bg-white/[0.02] p-4">
+          <div className="public-card-accent min-w-0 rounded-[14px] border border-white/8 bg-white/[0.02] p-3.5">
             <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Approx prize</p>
-            <p className="mt-2 break-words font-display text-2xl uppercase leading-[0.92] text-white md:text-[2.75rem]">
+            <p className="mt-2 break-words font-display text-lg uppercase leading-[0.95] text-white md:text-xl">
               {formatPrize(prize)}
             </p>
           </div>
         )}
       </div>
 
-      {isWin && status !== "upcoming" && status !== "live" && (
+      {isCompletedWin(tournament) && (
         <div className="mt-4 md:mt-5">
           <span className="tag tag-won">Won the title</span>
         </div>

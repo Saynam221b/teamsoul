@@ -1,16 +1,8 @@
-import blobAssetsRaw from "@/data/blob-assets.json";
 import type {
   BlobAsset,
-  DataFeedDegradedReason,
   PublicBlobAssetFeedResult,
 } from "@/data/types";
 import { getPostgresPool, isPostgresConfigured } from "@/lib/postgres";
-
-type BlobAssetsFile = {
-  generatedAt: string;
-  totalFiles: number;
-  files: Record<string, string>;
-};
 
 type DbBlobAssetRow = {
   relative_path: string;
@@ -18,51 +10,28 @@ type DbBlobAssetRow = {
   created_at: string | null;
 };
 
-const blobAssets = blobAssetsRaw as BlobAssetsFile;
-
-function getFallbackBlobAssets(
-  reason: DataFeedDegradedReason,
-  details?: string
-): PublicBlobAssetFeedResult {
-  const detailSuffix = details ? ` ${details}` : "";
-  console.warn(`[blob-assets] Falling back to bundled blob asset mapping due to ${reason}.${detailSuffix}`);
-
+function buildUnavailableBlobAssets(message: string): PublicBlobAssetFeedResult {
   return {
-    assets: Object.entries(blobAssets.files).map(([relativePath, url]) => ({
-      relativePath,
-      url,
-      createdAt: blobAssets.generatedAt,
-    })),
-    generatedAt: blobAssets.generatedAt,
-    totalFiles: blobAssets.totalFiles,
-    source: "fallback",
-    degradedReason: reason,
+    assets: [],
+    generatedAt: null,
+    totalFiles: 0,
+    source: "unavailable",
+    message,
   };
 }
 
-export function getBlobAssetFeedFallbackMessage(
-  reason?: DataFeedDegradedReason
-): string {
-  switch (reason) {
-    case "missing_supabase_config":
-      return "Live BGIS asset mapping is not configured. Showing the bundled asset snapshot.";
-    case "missing_supabase_client":
-      return "Live BGIS asset mapping could not initialize. Showing the bundled asset snapshot.";
-    case "query_error":
-      return "Live BGIS asset mapping is temporarily unavailable. Showing the bundled asset snapshot.";
-    default:
-      return "Showing the bundled asset snapshot.";
-  }
+export function getBlobAssetFeedUnavailableMessage(message?: string): string {
+  return message ?? "BGIS asset mapping is unavailable right now.";
 }
 
 export async function getPublicBlobAssetFeed(): Promise<PublicBlobAssetFeedResult> {
   if (!isPostgresConfigured()) {
-    return getFallbackBlobAssets("missing_supabase_config");
+    return buildUnavailableBlobAssets("Live BGIS asset mapping is not configured.");
   }
 
   const pool = getPostgresPool();
   if (!pool) {
-    return getFallbackBlobAssets("missing_supabase_client");
+    return buildUnavailableBlobAssets("Live BGIS asset mapping could not initialize.");
   }
 
   try {
@@ -94,9 +63,10 @@ export async function getPublicBlobAssetFeed(): Promise<PublicBlobAssetFeedResul
       source: "db",
     };
   } catch (error) {
-    return getFallbackBlobAssets(
-      "query_error",
-      error instanceof Error ? error.message : String(error)
+    return buildUnavailableBlobAssets(
+      `Live BGIS asset mapping is temporarily unavailable. ${
+        error instanceof Error ? error.message : String(error)
+      }`
     );
   }
 }

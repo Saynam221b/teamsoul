@@ -89,10 +89,10 @@ function StaticEraLayout({
                 <p className="text-[11px] uppercase tracking-[0.26em] text-text-muted">
                   {era.yearRange[0]}-{era.yearRange[1]}
                 </p>
-                <h3 className="mt-4 font-display text-4xl uppercase leading-[0.86] tracking-[-0.05em] text-white md:text-6xl">
+                <h3 className="mt-4 font-display text-3xl uppercase leading-[0.9] tracking-[-0.04em] text-white md:text-4xl">
                   {era.name}
                 </h3>
-                <p className="mt-6 max-w-3xl text-base leading-8 text-text-secondary">{era.description}</p>
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-text-secondary">{era.description}</p>
                 {staff.length > 0 ? (
                   <div className="mt-5 flex flex-wrap gap-2">
                     {staff.map((member) => (
@@ -208,7 +208,7 @@ export default function EraTimeline({ eras, players, staff }: EraTimelineProps) 
                         {era.yearRange[0]}-{era.yearRange[1]}
                       </span>
                       <p
-                        className={`mt-2 font-display text-xl uppercase leading-none md:text-2xl ${
+                        className={`mt-2 font-display text-lg uppercase leading-none md:text-xl ${
                           isActive ? "text-white" : "text-text-secondary"
                         }`}
                       >
@@ -239,10 +239,10 @@ export default function EraTimeline({ eras, players, staff }: EraTimelineProps) 
                           <p className="text-[11px] uppercase tracking-[0.28em] text-text-muted">
                             {activeEra.yearRange[0]}-{activeEra.yearRange[1]}
                           </p>
-                          <h3 className="mt-5 font-display text-[clamp(2.5rem,5.8vw,5.6rem)] uppercase leading-[0.84] tracking-[-0.065em] text-white">
+                          <h3 className="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.8rem)] uppercase leading-[0.88] tracking-[-0.05em] text-white">
                             {activeEra.name}
                           </h3>
-                          <p className="mt-5 max-w-[40rem] text-[0.97rem] leading-7 text-text-secondary md:text-[1.02rem] md:leading-8">
+                          <p className="mt-4 max-w-[40rem] text-[0.92rem] leading-6 text-text-secondary md:text-[0.96rem] md:leading-7">
                             {activeEra.description}
                           </p>
 

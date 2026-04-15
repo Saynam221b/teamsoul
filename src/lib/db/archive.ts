@@ -1,7 +1,5 @@
-import { getArchive } from "@/data/helpers";
 import type {
   AggregateStats,
-  DataFeedDegradedReason,
   Era,
   Organization,
   Player,
@@ -83,49 +81,53 @@ type DbStaffEraRow = {
   era_id: string;
 };
 
-function getFallbackArchive(
-  reason: DataFeedDegradedReason,
-  details?: string
-): PublicArchiveFeedResult {
-  const detailSuffix = details ? ` ${details}` : "";
-  console.warn(`[archive] Falling back to bundled archive data due to ${reason}.${detailSuffix}`);
+const EMPTY_ORGANIZATION: Organization = {
+  name: "Team SOUL",
+  founded: "",
+  parentOrg: "",
+  parentOrgFormed: "",
+  totalEarnings: 0,
+  bgmiEarnings: 0,
+  totalTournaments: 0,
+  totalMatches: 0,
+  peakViewership: 0,
+  peakViewershipEvent: "",
+  peakViewershipYear: 0,
+  viewershipMilestones: [],
+};
 
-  const archive = getArchive();
+const EMPTY_STATS: AggregateStats = {
+  totalWins: 0,
+  totalPrize: 0,
+  winsByTier: {},
+  tournamentsByYear: {},
+  bestPlacement: { tournament: "", placement: 0, prize: 0 },
+};
 
+function buildUnavailableArchive(message: string): PublicArchiveFeedResult {
   return {
-    organization: archive.organization,
-    stats: archive.stats,
-    eras: archive.eras,
-    players: Object.values(archive.players),
-    staff: Object.values(archive.staff),
-    source: "fallback",
-    degradedReason: reason,
+    organization: EMPTY_ORGANIZATION,
+    stats: EMPTY_STATS,
+    eras: [],
+    players: [],
+    staff: [],
+    source: "unavailable",
+    message,
   };
 }
 
-export function getArchiveFeedFallbackMessage(
-  reason?: DataFeedDegradedReason
-): string {
-  switch (reason) {
-    case "missing_supabase_config":
-      return "Live archive data is not configured. Showing the bundled archive snapshot.";
-    case "missing_supabase_client":
-      return "Live archive data could not initialize. Showing the bundled archive snapshot.";
-    case "query_error":
-      return "Live archive data is temporarily unavailable. Showing the bundled archive snapshot.";
-    default:
-      return "Showing the bundled archive snapshot.";
-  }
+export function getArchiveFeedUnavailableMessage(message?: string): string {
+  return message ?? "Archive data is unavailable right now.";
 }
 
 export async function getPublicArchiveFeed(): Promise<PublicArchiveFeedResult> {
   if (!isPostgresConfigured()) {
-    return getFallbackArchive("missing_supabase_config");
+    return buildUnavailableArchive("Live archive data is not configured.");
   }
 
   const pool = getPostgresPool();
   if (!pool) {
-    return getFallbackArchive("missing_supabase_client");
+    return buildUnavailableArchive("Live archive data could not initialize.");
   }
 
   try {
@@ -277,7 +279,7 @@ export async function getPublicArchiveFeed(): Promise<PublicArchiveFeedResult> {
     ]);
 
     if (!organizationResult.rows[0] || !statsResult.rows[0]) {
-      return getFallbackArchive("query_error", "Archive rows missing from Postgres");
+      return buildUnavailableArchive("Archive rows are missing from Postgres.");
     }
 
     const milestoneRows = milestonesResult.rows as DbMilestoneRow[];
@@ -438,9 +440,10 @@ export async function getPublicArchiveFeed(): Promise<PublicArchiveFeedResult> {
       source: "db",
     };
   } catch (error) {
-    return getFallbackArchive(
-      "query_error",
-      error instanceof Error ? error.message : String(error)
+    return buildUnavailableArchive(
+      `Live archive data is temporarily unavailable. ${
+        error instanceof Error ? error.message : String(error)
+      }`
     );
   }
 }

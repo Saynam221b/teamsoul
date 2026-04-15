@@ -1,12 +1,12 @@
 "use client";
 
 import type { Era } from "@/data/types";
-import { getPlayerById } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface EraCardProps {
   era: Era;
   index: number;
+  playerLookup?: Record<string, string>;
 }
 
 const OUTCOME_STYLES: Record<string, string> = {
@@ -16,7 +16,7 @@ const OUTCOME_STYLES: Record<string, string> = {
   dominance: "bg-[rgba(0,229,255,0.08)] text-[#00e5ff]",
 };
 
-export default function EraCard({ era, index }: EraCardProps) {
+export default function EraCard({ era, index, playerLookup = {} }: EraCardProps) {
   return (
     <RevealOnScroll
       as="article"
@@ -24,17 +24,17 @@ export default function EraCard({ era, index }: EraCardProps) {
       distance={24}
       margin="-50px"
       intensity="soft"
-      className="timeline-era-row public-card rounded-[24px] p-5 md:p-6"
+      className="timeline-era-row public-card rounded-[20px] p-4 md:p-5"
     >
       <div className="grid gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">
         <div className="border-b border-border-subtle pb-5 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
           <p className="text-[11px] uppercase tracking-[0.24em] text-text-muted">
             Era {String(index + 1).padStart(2, "0")}
           </p>
-          <p className="mt-3 font-display text-5xl uppercase leading-none text-white">
+          <p className="mt-3 font-display text-4xl uppercase leading-none text-white">
             {era.yearRange[0]}
           </p>
-          <p className="font-display text-3xl uppercase leading-none text-text-muted">
+          <p className="font-display text-2xl uppercase leading-none text-text-muted">
             {era.yearRange[1]}
           </p>
           <span
@@ -45,10 +45,10 @@ export default function EraCard({ era, index }: EraCardProps) {
         </div>
 
         <div>
-          <h3 className="font-display text-5xl uppercase leading-[0.88] text-white md:text-6xl">
+          <h3 className="font-display text-3xl uppercase leading-[0.9] text-white md:text-4xl">
             {era.name}
           </h3>
-          <p className="mt-4 max-w-3xl text-base leading-8 text-text-secondary">{era.description}</p>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-text-secondary">{era.description}</p>
 
           <div className="mt-7 grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
             <div className="rounded-[18px] border border-border-subtle bg-white/[0.01] p-5">
@@ -68,7 +68,7 @@ export default function EraCard({ era, index }: EraCardProps) {
                     key={playerId}
                     className="rounded-full border border-border-subtle px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-text-secondary"
                   >
-                    {getPlayerById(playerId)?.displayName ?? playerId}
+                    {playerLookup[playerId] ?? playerId}
                   </span>
                 ))}
               </div>

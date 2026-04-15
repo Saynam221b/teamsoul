@@ -1,4 +1,3 @@
-import { getAllPlayers, getAllTournaments } from "@/data/helpers";
 import type {
   AdminPlayerOption,
   AdminTournament,
@@ -8,6 +7,8 @@ import type {
   UpdateTournamentInput,
 } from "@/data/types";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseAdmin";
+import { isCuratedTrophyTournament } from "@/lib/curatedTournaments";
+import { normalizeTournamentLifecycleInput } from "@/lib/tournamentLifecycle";
 
 type DbTournamentRow = {
   id: string;
@@ -160,26 +161,6 @@ function mapAdminTournament(row: DbTournamentRow): AdminTournament {
   };
 }
 
-function mapFallbackTournament(item: Tournament): AdminTournament {
-  return {
-    id: item.id,
-    name: item.name,
-    year: item.year,
-    month: item.month ?? null,
-    tier: item.tier,
-    placement: typeof item.placement === "number" ? String(item.placement) : item.placement,
-    approxPrize: item.prize,
-    isWin: item.isWin,
-    status: item.status ?? "completed",
-    eventDate: item.eventDate ?? null,
-    location: item.location ?? null,
-    details: item.details ?? null,
-    coach: item.coach ?? null,
-    analyst: item.analyst ?? null,
-    rosterIds: item.roster ?? [],
-  };
-}
-
 async function replaceTournamentRoster(tournamentId: string, rosterIds: string[]) {
   const client = ensureSupabase();
   const uniqueRosterIds = normalizeRosterIds(rosterIds);
@@ -234,15 +215,24 @@ async function generateTournamentId(name: string, year: number) {
   }
 }
 
+async function getTournamentStatus(id: string): Promise<DbTournamentRow["status"]> {
+  const client = ensureSupabase();
+  const { data, error } = await client
+    .from("tournaments")
+    .select("status")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Could not load tournament status");
+  }
+
+  return data.status as DbTournamentRow["status"];
+}
+
 export async function listAdminTournaments(): Promise<AdminTournament[]> {
   if (!isSupabaseConfigured()) {
-    return getAllTournaments()
-      .map((item) => ({
-        ...item,
-        status: (item.status ?? "completed") as NonNullable<Tournament["status"]>,
-      }))
-      .map(mapFallbackTournament)
-      .sort((a, b) => b.year - a.year || (b.month ?? 0) - (a.month ?? 0) || a.name.localeCompare(b.name));
+    return [];
   }
 
   const client = ensureSupabase();
@@ -264,13 +254,7 @@ export async function listAdminTournaments(): Promise<AdminTournament[]> {
 
 export async function listAdminPlayers(): Promise<AdminPlayerOption[]> {
   if (!isSupabaseConfigured()) {
-    return getAllPlayers().map((player) => ({
-      id: player.id,
-      displayName: player.displayName,
-      role: player.role,
-      currentStatus: player.currentStatus,
-      isActive: player.isActive,
-    }));
+    return [];
   }
 
   const client = ensureSupabase();
@@ -296,7 +280,12 @@ export async function createUpcomingTournament(input: CreateUpcomingTournamentIn
   const client = ensureSupabase();
   const normalized = normalizeBaseTournamentInput(input);
   const id = await generateTournamentId(normalized.name, normalized.year);
-  const status = input.status === "live" ? "live" : "upcoming";
+  const lifecycle = normalizeTournamentLifecycleInput({
+    status: input.status === "live" ? "live" : "upcoming",
+    placement: null,
+    isWin: false,
+    rosterIds: [],
+  });
 
   const { data, error } = await client
     .from("tournaments")
@@ -306,10 +295,10 @@ export async function createUpcomingTournament(input: CreateUpcomingTournamentIn
       year: normalized.year,
       month: normalized.month,
       tier: normalized.tier,
-      placement: null,
+      placement: lifecycle.placement,
       approx_price: normalized.approxPrice,
-      is_win: false,
-      status,
+      is_win: lifecycle.isWin,
+      status: lifecycle.status,
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
@@ -332,11 +321,17 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
   const client = ensureSupabase();
   const normalized = normalizeBaseTournamentInput(input);
   const rosterIds = input.rosterIds ? normalizeRosterIds(input.rosterIds) : null;
-  const placement = input.placement?.trim() || null;
-  const nextStatus =
+  const requestedStatus =
     input.status === "live" || input.status === "upcoming" || input.status === "completed"
       ? input.status
       : undefined;
+  const status = requestedStatus ?? (await getTournamentStatus(id));
+  const lifecycle = normalizeTournamentLifecycleInput({
+    status,
+    placement: input.placement?.trim() || null,
+    isWin: Boolean(input.isWin),
+    rosterIds: rosterIds ?? [],
+  });
 
   const { data, error } = await client
     .from("tournaments")
@@ -345,10 +340,10 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
       year: normalized.year,
       month: normalized.month,
       tier: normalized.tier,
-      placement,
+      placement: lifecycle.placement,
       approx_price: normalized.approxPrice,
-      is_win: Boolean(input.isWin),
-      ...(nextStatus ? { status: nextStatus } : {}),
+      is_win: lifecycle.isWin,
+      status: lifecycle.status,
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
@@ -365,8 +360,12 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
     throw new Error(error?.message ?? "Could not update tournament");
   }
 
-  if (rosterIds) {
-    await replaceTournamentRoster(id, rosterIds);
+  if (lifecycle.status === "completed") {
+    if (rosterIds) {
+      await replaceTournamentRoster(id, lifecycle.rosterIds);
+    }
+  } else {
+    await replaceTournamentRoster(id, []);
   }
 
   const refreshed = await listAdminTournaments();
@@ -381,11 +380,16 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
 export async function completeTournament(id: string, input: CompleteTournamentInput) {
   const client = ensureSupabase();
   const normalized = normalizeBaseTournamentInput(input);
-  const rosterIds = normalizeRosterIds(input.rosterIds);
-  if (!input.placement?.trim()) {
+  const lifecycle = normalizeTournamentLifecycleInput({
+    status: "completed",
+    placement: input.placement?.trim() || null,
+    isWin: Boolean(input.isWin),
+    rosterIds: normalizeRosterIds(input.rosterIds),
+  });
+  if (!lifecycle.placement) {
     throw new Error("Placement is required to complete a tournament");
   }
-  if (!rosterIds.length) {
+  if (!lifecycle.rosterIds.length) {
     throw new Error("Select at least one roster player");
   }
 
@@ -396,10 +400,10 @@ export async function completeTournament(id: string, input: CompleteTournamentIn
       year: normalized.year,
       month: normalized.month,
       tier: normalized.tier,
-      placement: input.placement.trim(),
+      placement: lifecycle.placement,
       approx_price: normalized.approxPrice,
-      is_win: Boolean(input.isWin),
-      status: "completed",
+      is_win: lifecycle.isWin,
+      status: lifecycle.status,
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
@@ -416,7 +420,7 @@ export async function completeTournament(id: string, input: CompleteTournamentIn
     throw new Error(error?.message ?? "Could not complete tournament");
   }
 
-  await replaceTournamentRoster(id, rosterIds);
+  await replaceTournamentRoster(id, lifecycle.rosterIds);
 
   const refreshed = await listAdminTournaments();
   const completed = refreshed.find((item) => item.id === id);
@@ -428,6 +432,10 @@ export async function completeTournament(id: string, input: CompleteTournamentIn
 }
 
 export async function deleteTournament(id: string) {
+  if (isCuratedTrophyTournament(id)) {
+    throw new Error("This tournament is curated on the trophy wall and cannot be deleted.");
+  }
+
   const client = ensureSupabase();
 
   const { error: rosterError } = await client

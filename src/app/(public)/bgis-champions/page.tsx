@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
-import { getArchiveFeedFallbackMessage, getPublicArchiveFeed } from "@/lib/db/archive";
-import { getPublicBlobAssetFeed, getBlobAssetFeedFallbackMessage } from "@/lib/db/blobAssets";
+import { getArchiveFeedUnavailableMessage, getPublicArchiveFeed } from "@/lib/db/archive";
+import { getPublicBlobAssetFeed, getBlobAssetFeedUnavailableMessage } from "@/lib/db/blobAssets";
 import { getBgisHighlights, getChampionPlayers, getChampionStaff } from "@/lib/bgis";
 
 export const metadata: Metadata = {
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Team SOUL BGIS 2026 championship gallery with roster photos and highlights.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function BgisChampionsPage() {
   const archiveFeed = await getPublicArchiveFeed();
@@ -22,12 +23,12 @@ export default async function BgisChampionsPage() {
     generatedAt: blobAssetFeed.generatedAt,
     totalFiles: blobAssetFeed.totalFiles,
   };
-  const fallbackMessages = [
-    archiveFeed.source === "fallback"
-      ? getArchiveFeedFallbackMessage(archiveFeed.degradedReason)
+  const unavailableMessages = [
+    archiveFeed.source === "unavailable"
+      ? getArchiveFeedUnavailableMessage(archiveFeed.message)
       : null,
-    blobAssetFeed.source === "fallback"
-      ? getBlobAssetFeedFallbackMessage(blobAssetFeed.degradedReason)
+    blobAssetFeed.source === "unavailable"
+      ? getBlobAssetFeedUnavailableMessage(blobAssetFeed.message)
       : null,
   ].filter((value): value is string => Boolean(value));
 
@@ -35,8 +36,8 @@ export default async function BgisChampionsPage() {
     <div className="pt-28 md:pt-32">
         <section className="archive-section !pt-0">
           <div className="page-wrap space-y-6">
-            {fallbackMessages.length > 0 ? (
-              <DataFallbackNotice messages={fallbackMessages} />
+            {unavailableMessages.length > 0 ? (
+              <DataFallbackNotice messages={unavailableMessages} />
             ) : null}
 
             <RevealOnScroll as="section" className="inner-hero rounded-[36px] px-5 py-7 md:px-10 md:py-10" intensity="hero">
@@ -64,25 +65,25 @@ export default async function BgisChampionsPage() {
               <div className="hero-stat-grid mt-8">
                 <article className="hero-stat-card">
                   <p className="section-label">Blob assets loaded</p>
-                  <p className="font-display text-5xl uppercase leading-none text-white md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-white md:text-4xl">
                     {assetStats.totalFiles}
                   </p>
                 </article>
                 <article className="hero-stat-card">
                   <p className="section-label">Champion roster</p>
-                  <p className="font-display text-5xl uppercase leading-none text-accent md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-accent md:text-4xl">
                     {players.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
                   <p className="section-label">Support staff</p>
-                  <p className="font-display text-5xl uppercase leading-none text-gold md:text-6xl">
+                  <p className="font-display text-3xl uppercase leading-none text-gold md:text-4xl">
                     {staff.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
                   <p className="section-label">Last sync</p>
-                  <p className="font-display text-3xl uppercase leading-none text-white md:text-4xl">
+                  <p className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                     {assetStats.generatedAt
                       ? new Date(assetStats.generatedAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -97,7 +98,7 @@ export default async function BgisChampionsPage() {
             <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[28px] p-6 md:p-7" delay={0.04}>
                 <p className="section-kicker">Championship setup</p>
-                <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                   Manya and NakuL reset the era. Ayogi stayed through the title phase.
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">
@@ -149,7 +150,7 @@ export default async function BgisChampionsPage() {
                     </div>
                     <div className="p-4">
                       <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Coach</p>
-                      <h3 className="mt-2 font-display text-3xl uppercase leading-none text-white">
+                      <h3 className="mt-2 font-display text-2xl uppercase leading-none text-white">
                         {member.displayName}
                       </h3>
                       <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-accent">
@@ -161,7 +162,7 @@ export default async function BgisChampionsPage() {
               </div>
 
               <div className="mb-5 flex items-center justify-between gap-3">
-                <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                   Title-winning five
                 </h2>
                 <span className="rounded-full border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-text-muted">
@@ -190,7 +191,7 @@ export default async function BgisChampionsPage() {
                       )}
                     </div>
                     <div className="p-4">
-                      <h3 className="font-display text-3xl uppercase leading-none text-white">
+                      <h3 className="font-display text-2xl uppercase leading-none text-white">
                         {player.displayName}
                       </h3>
                       <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-accent">
@@ -205,7 +206,7 @@ export default async function BgisChampionsPage() {
 
             <RevealOnScroll as="section" className="archive-panel public-card rounded-[32px] p-6 md:p-8" delay={0.16}>
               <div className="mb-5 flex items-center justify-between gap-3">
-                <h2 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                   Highlight frames
                 </h2>
                 <span className="text-xs uppercase tracking-[0.18em] text-text-muted">

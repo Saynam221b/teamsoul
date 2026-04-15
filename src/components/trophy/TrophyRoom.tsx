@@ -1,14 +1,8 @@
 import type { Player, Tournament } from "@/data/types";
 import TrophyCard from "./TrophyCard";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
-
-const TROPHY_ROOM_IDS = [
-  "pmis-2019",
-  "pmco-spring-india-2019",
-  "bmps-s1-2022",
-  "bgms-s3-2024",
-  "bgis-2026",
-] as const;
+import { TROPHY_ROOM_TOURNAMENT_IDS } from "@/lib/curatedTournaments";
+import { isCompletedWin } from "@/lib/tournamentLifecycle";
 
 interface TrophyRoomProps {
   tournaments: Tournament[];
@@ -17,11 +11,11 @@ interface TrophyRoomProps {
 
 function selectTrophyRoomTournaments(tournaments: Tournament[]) {
   const byId = new Map(tournaments.map((tournament) => [tournament.id, tournament]));
-  const curated = TROPHY_ROOM_IDS.map((id) => byId.get(id)).filter(
+  const curated = TROPHY_ROOM_TOURNAMENT_IDS.map((id) => byId.get(id)).filter(
     (tournament): tournament is Tournament => Boolean(tournament)
   );
 
-  if (curated.length >= TROPHY_ROOM_IDS.length) {
+  if (curated.length >= TROPHY_ROOM_TOURNAMENT_IDS.length) {
     return curated;
   }
 
@@ -29,11 +23,11 @@ function selectTrophyRoomTournaments(tournaments: Tournament[]) {
   const fallbackWins = tournaments.filter(
     (tournament) =>
       !usedIds.has(tournament.id) &&
-      tournament.isWin &&
+      isCompletedWin(tournament) &&
       (tournament.tier === "S-Tier" || tournament.tier === "A-Tier")
   );
 
-  return [...curated, ...fallbackWins].slice(0, TROPHY_ROOM_IDS.length);
+  return [...curated, ...fallbackWins].slice(0, TROPHY_ROOM_TOURNAMENT_IDS.length);
 }
 
 export default function TrophyRoom({ tournaments, players }: TrophyRoomProps) {

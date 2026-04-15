@@ -4,6 +4,7 @@ import { startTransition, useMemo, useState } from "react";
 import type { Tournament } from "@/data/types";
 import TournamentCard from "./TournamentCard";
 import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
+import { getChampionshipTournaments, getCompletedTournaments, isCompletedWin } from "@/lib/tournamentLifecycle";
 
 type TabId = "championships" | "all" | "by-year";
 
@@ -30,7 +31,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   const source = tournaments;
 
   const allTournaments = useMemo(
-    () => source.filter((item) => item.status !== "upcoming" && item.status !== "live"),
+    () => getCompletedTournaments(source),
     [source]
   );
 
@@ -53,7 +54,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   );
 
   const wins = useMemo(
-    () => source.filter((item) => item.isWin),
+    () => getChampionshipTournaments(source),
     [source]
   );
 
@@ -116,11 +117,11 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   return (
     <div>
       {ongoingTournaments.length > 0 && (
-        <section className="archive-panel public-card mb-5 rounded-[24px] p-5 md:mb-6 md:rounded-[32px] md:p-7">
+        <section className="archive-panel public-card mb-5 rounded-[20px] p-4 md:mb-6 md:rounded-[24px] md:p-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
             <div>
               <p className="section-kicker">Ongoing right now</p>
-              <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+              <h2 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                 Live campaigns
               </h2>
             </div>
@@ -138,11 +139,11 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
       )}
 
       {upcomingTournaments.length > 0 && (
-        <section className="archive-panel public-card mb-6 rounded-[24px] p-5 md:mb-8 md:rounded-[32px] md:p-7">
+        <section className="archive-panel public-card mb-6 rounded-[20px] p-4 md:mb-8 md:rounded-[24px] md:p-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
             <div>
               <p className="section-kicker">Upcoming events</p>
-              <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
+              <h2 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                 What&apos;s next
               </h2>
             </div>
@@ -243,7 +244,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
             {groupedByYear.map(({ year, tournaments: items }) => (
               <div key={year}>
                 <div className="mb-4 flex items-center justify-between gap-4">
-                  <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                  <h3 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                     {year}
                   </h3>
                   <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
@@ -256,7 +257,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
                       key={item.id}
                       tournament={item}
                       index={index}
-                      featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
+                      featured={isCompletedWin(item) && (item.tier === "A-Tier" || item.tier === "S-Tier")}
                     />
                   ))}
                 </div>
@@ -270,7 +271,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
                 key={item.id}
                 tournament={item}
                 index={index}
-                featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
+                featured={isCompletedWin(item) && (item.tier === "A-Tier" || item.tier === "S-Tier")}
               />
             ))}
           </div>

@@ -15,7 +15,7 @@ export default function DataFallbackNotice({
       className={`archive-panel public-card rounded-[18px] border border-amber-400/15 bg-amber-300/8 px-4 py-3 md:rounded-[20px] md:px-5 md:py-4 ${className}`.trim()}
     >
       <p className="text-[10px] uppercase tracking-[0.18em] text-amber-100/72">
-        Data source fallback
+        Data temporarily unavailable
       </p>
       <div className="mt-2 space-y-1.5">
         {uniqueMessages.map((message) => (

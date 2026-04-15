@@ -67,7 +67,7 @@ export default function StatCounter({
       transition={{ duration: prefersReducedMotion ? MOTION_TIMINGS.fast : 0.5, ease: EASE_PREMIUM }}
       className={`text-center ${className}`}
     >
-      <div className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+      <div className="font-display text-xl font-bold text-text-primary md:text-2xl lg:text-3xl">
         {prefix}
         {displayValue.toLocaleString("en-US")}
         {suffix}

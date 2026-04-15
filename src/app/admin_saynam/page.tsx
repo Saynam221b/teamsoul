@@ -31,7 +31,7 @@ type AdminFilter = "upcoming" | "live" | "completed";
 type ModalMode = "create" | "edit" | "complete";
 
 type TournamentFormState = {
-  status: "upcoming" | "live";
+  status: "upcoming" | "live" | "completed";
   name: string;
   tier: Tournament["tier"];
   year: string;
@@ -75,7 +75,7 @@ const EMPTY_FORM: TournamentFormState = {
 
 function toFormState(tournament: AdminTournament): TournamentFormState {
   return {
-    status: tournament.status === "live" ? "live" : "upcoming",
+    status: tournament.status,
     name: tournament.name,
     tier: tournament.tier,
     year: String(tournament.year),
@@ -97,7 +97,7 @@ function toFormState(tournament: AdminTournament): TournamentFormState {
 
 function buildBasePayload(
   form: TournamentFormState
-): Omit<CreateUpcomingTournamentInput, "name" | "tier" | "year"> & {
+): Omit<UpdateTournamentInput, "name" | "tier" | "year" | "placement" | "isWin" | "rosterIds"> & {
   name: string;
   tier: Tournament["tier"];
   year: number;
@@ -668,7 +668,10 @@ export default function AdminSaynamPage() {
       let response: Response;
 
       if (modalMode === "create") {
-        const payload: CreateUpcomingTournamentInput = basePayload;
+        const payload: CreateUpcomingTournamentInput = {
+          ...basePayload,
+          status: form.status === "live" ? "live" : "upcoming",
+        };
         response = await fetch("/api/admin/tournaments", {
           method: "POST",
           headers: {

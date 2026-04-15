@@ -2,32 +2,32 @@ import type { Metadata } from "next";
 import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
 import {
   getPublicTournamentFeed,
-  getTournamentFeedFallbackMessage,
+  getTournamentFeedUnavailableMessage,
 } from "@/lib/db/tournaments";
 import { formatPrize } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import TournamentDash from "@/components/tournaments/TournamentDash";
+import { getChampionshipTournaments, getCompletedTournaments } from "@/lib/tournamentLifecycle";
 
 export const metadata: Metadata = {
   title: "Tournament History — Team SOUL Archive",
   description:
     "Simple tournament history of Team SOUL with placements, status, and approx price details.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function TournamentsPage() {
   const tournamentFeed = await getPublicTournamentFeed();
   const tournaments = tournamentFeed.tournaments;
   const ongoing = tournaments.filter((item) => item.status === "live");
-  const completed = tournaments.filter(
-    (item) => item.status !== "upcoming" && item.status !== "live"
-  );
-  const wins = completed.filter((item) => item.isWin);
+  const completed = getCompletedTournaments(tournaments);
+  const wins = getChampionshipTournaments(tournaments);
   const upcoming = tournaments.filter((item) => item.status === "upcoming");
   const totalPrize = completed.reduce((sum, item) => sum + (item.prize ?? 0), 0);
   const latestYear = completed.reduce((latest, item) => Math.max(latest, item.year), 0);
-  const fallbackMessage =
-    tournamentFeed.source === "fallback"
-      ? getTournamentFeedFallbackMessage(tournamentFeed.degradedReason)
+  const unavailableMessage =
+    tournamentFeed.source === "unavailable"
+      ? getTournamentFeedUnavailableMessage(tournamentFeed.message)
       : null;
 
   return (
@@ -57,12 +57,12 @@ export default async function TournamentsPage() {
 
               <div className="hero-stat-grid mt-5 md:mt-8">
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {completed.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-accent md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-accent md:text-4xl">
                     {wins.length}
                   </p>
                 </article>
@@ -72,12 +72,12 @@ export default async function TournamentsPage() {
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-energy md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-energy md:text-4xl">
                     {ongoing.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-gold md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-gold md:text-4xl">
                     {upcoming.length}
                   </p>
                 </article>
@@ -86,10 +86,10 @@ export default async function TournamentsPage() {
           </div>
         </section>
 
-        {fallbackMessage ? (
+        {unavailableMessage ? (
           <section className="archive-section !pt-0 !pb-0">
             <div className="page-wrap">
-              <DataFallbackNotice messages={[fallbackMessage]} />
+              <DataFallbackNotice messages={[unavailableMessage]} />
             </div>
           </section>
         ) : null}
@@ -99,7 +99,7 @@ export default async function TournamentsPage() {
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Archive signal</p>
-                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                   Scan fast, then go deep
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-text-secondary">
@@ -110,7 +110,7 @@ export default async function TournamentsPage() {
 
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
                 <p className="section-kicker">Best return</p>
-                <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
+                <p className="font-display text-xl uppercase leading-none text-white md:text-3xl">
                   {wins[0]?.year ?? "—"}
                 </p>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">

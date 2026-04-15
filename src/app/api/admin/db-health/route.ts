@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest, unauthorizedAdminResponse } from "@/lib/adminAuth";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseAdmin";
+import { TROPHY_ROOM_TOURNAMENT_IDS } from "@/lib/curatedTournaments";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -57,6 +58,7 @@ export async function GET(request: Request) {
           schemaApplied: false,
           seedRun: false,
           keyTablesReady: false,
+          curatedTournamentsReady: false,
         },
         error: "Supabase not configured",
       },
@@ -81,6 +83,20 @@ export async function GET(request: Request) {
   const seeded =
     schemaReady && KEY_TABLES.every((table) => (tableCounts[table] ?? 0) > 0);
   const fallbackActive = !schemaReady;
+  const client = getSupabaseAdmin();
+  let curatedTournamentsReady = false;
+
+  if (client) {
+    const { count, error } = await client
+      .from("tournaments")
+      .select("id", { count: "exact", head: true })
+      .in("id", [...TROPHY_ROOM_TOURNAMENT_IDS]);
+
+    curatedTournamentsReady = !error && (count ?? 0) === TROPHY_ROOM_TOURNAMENT_IDS.length;
+    if (error) {
+      tableErrors.curated_tournaments = error.message;
+    }
+  }
 
   return NextResponse.json({
     schemaReady,
@@ -92,6 +108,7 @@ export async function GET(request: Request) {
       schemaApplied: schemaReady,
       seedRun: seeded,
       keyTablesReady: KEY_TABLES.every((table) => (tableCounts[table] ?? 0) > 0),
+      curatedTournamentsReady,
     },
   });
 }

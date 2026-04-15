@@ -93,7 +93,7 @@ export default function TrophyCard({
       distance={24}
       margin="-40px"
       intensity="soft"
-      className={`${featured ? "major-win-featured" : ""} public-card trophy-card major-win-card major-win-${context.tone} rounded-[28px] p-5 md:p-6`}
+      className={`${featured ? "major-win-featured" : ""} public-card trophy-card major-win-card major-win-${context.tone} rounded-[22px] p-4 md:p-5`}
     >
       <div className="trophy-card-meta flex items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -107,15 +107,15 @@ export default function TrophyCard({
         <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">{eventStamp}</span>
       </div>
 
-      <div className="public-card-accent public-card-accent-highlight trophy-card-context mt-6 rounded-[20px] border border-white/8 bg-white/[0.02] px-4 py-3">
+      <div className="public-card-accent public-card-accent-highlight trophy-card-context mt-5 rounded-[16px] border border-white/8 bg-white/[0.02] px-3.5 py-3">
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Competition context</p>
-        <p className="mt-3 text-sm leading-7 text-text-secondary">
+        <p className="mt-3 text-sm leading-6 text-text-secondary">
           {context.note}
         </p>
       </div>
 
-      <div className="trophy-card-title mt-8 flex min-h-[7.5rem] flex-1 flex-col justify-start md:min-h-[8.5rem]">
-        <h3 className="font-display text-3xl uppercase leading-[0.88] tracking-[-0.05em] text-white md:text-4xl">
+      <div className="trophy-card-title mt-6 flex min-h-[4.2rem] flex-1 flex-col justify-start md:min-h-[5rem]">
+        <h3 className="font-display text-xl uppercase leading-[0.9] tracking-[-0.04em] text-white md:text-2xl">
           {tournament.name}
         </h3>
       </div>
@@ -123,7 +123,7 @@ export default function TrophyCard({
       <div className="trophy-card-stats mt-6 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Placement</p>
-          <p className="mt-2 font-display text-4xl uppercase leading-none text-white md:text-5xl">
+          <p className="mt-2 font-display text-2xl uppercase leading-none text-white md:text-3xl">
             {typeof tournament.placement === "number"
               ? formatPlacement(tournament.placement)
               : tournament.placement}
@@ -131,7 +131,7 @@ export default function TrophyCard({
         </div>
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted">Approx prize</p>
-          <p className="mt-2 font-sans text-xl font-semibold uppercase leading-none tracking-[0.03em] text-text-primary md:text-2xl">
+          <p className="mt-2 font-sans text-base font-semibold uppercase leading-none tracking-[0.03em] text-text-primary md:text-lg">
             {formatPrize(tournament.prize)}
           </p>
         </div>

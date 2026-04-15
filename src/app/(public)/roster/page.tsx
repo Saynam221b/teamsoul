@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
-import { getArchiveFeedFallbackMessage, getPublicArchiveFeed } from "@/lib/db/archive";
+import { getArchiveFeedUnavailableMessage, getPublicArchiveFeed } from "@/lib/db/archive";
 import { getYearFromDateString } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import PlayerGrid from "@/components/roster/PlayerGrid";
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     "Simple player history of Team SOUL, with lineup changes, roles, and key eras.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function RosterPage() {
   const archiveFeed = await getPublicArchiveFeed();
@@ -25,19 +26,19 @@ export default async function RosterPage() {
       return [joinYear, leaveYear];
     })
   );
-  const firstYear = Math.min(...years);
-  const latestYear = Math.max(...years);
-  const fallbackMessages =
-    archiveFeed.source === "fallback"
-      ? [getArchiveFeedFallbackMessage(archiveFeed.degradedReason)]
+  const firstYear = years.length ? Math.min(...years) : null;
+  const latestYear = years.length ? Math.max(...years) : null;
+  const unavailableMessages =
+    archiveFeed.source === "unavailable"
+      ? [getArchiveFeedUnavailableMessage(archiveFeed.message)]
       : [];
 
   return (
     <div className="space-y-6 pt-28 md:space-y-8 md:pt-32">
-        {fallbackMessages.length > 0 ? (
+        {unavailableMessages.length > 0 ? (
           <section className="archive-section !pt-0 !pb-0">
             <div className="page-wrap">
-              <DataFallbackNotice messages={fallbackMessages} />
+              <DataFallbackNotice messages={unavailableMessages} />
             </div>
           </section>
         ) : null}
@@ -56,7 +57,9 @@ export default async function RosterPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-3 xl:max-w-[360px] xl:justify-end">
-                  <span className="hero-chip">{firstYear}-{latestYear} covered</span>
+                  <span className="hero-chip">
+                    {firstYear && latestYear ? `${firstYear}-${latestYear} covered` : "No roster years available"}
+                  </span>
                   <span className="hero-chip">{awardsTracked} awards tracked</span>
                 </div>
               </div>
@@ -65,22 +68,22 @@ export default async function RosterPage() {
 
               <div className="hero-stat-grid mt-5 md:mt-8">
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {totalPlayers}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-accent md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-accent md:text-4xl">
                     {activePlayers}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-gold md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-gold md:text-4xl">
                     {founders}
                   </p>
                 </article>
                 <article className="hero-stat-card">
-                  <p className="font-display text-3xl uppercase leading-none text-white md:text-6xl">
+                  <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {awardsTracked}
                   </p>
                 </article>
@@ -94,7 +97,7 @@ export default async function RosterPage() {
             <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Roster signal</p>
-                <h2 className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
+                <h2 className="font-display text-xl uppercase leading-none text-white md:text-3xl">
                   Built to track movement
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">
@@ -105,7 +108,7 @@ export default async function RosterPage() {
 
               <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
                 <p className="section-kicker">Identity check</p>
-                <p className="font-display text-2xl uppercase leading-none text-white md:text-5xl">
+                <p className="font-display text-xl uppercase leading-none text-white md:text-3xl">
                   Names first. Impact second.
                 </p>
                 <p className="mt-4 text-sm leading-7 text-text-secondary">

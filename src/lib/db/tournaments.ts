@@ -1,9 +1,7 @@
 import type {
   PublicTournamentFeedResult,
   Tournament,
-  TournamentFeedDegradedReason,
 } from "@/data/types";
-import { getAllTournaments } from "@/data/helpers";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseAdmin";
 
 type DbTournament = {
@@ -50,50 +48,28 @@ function mapTournament(row: DbTournament): Tournament {
   };
 }
 
-function getFallbackTournaments(): Tournament[] {
-  return getAllTournaments().map((item) => ({
-    ...item,
-    status: item.status ?? "completed",
-  }));
-}
-
-function buildFallbackFeed(
-  reason: TournamentFeedDegradedReason,
-  details?: string
-): PublicTournamentFeedResult {
-  const detailSuffix = details ? ` ${details}` : "";
-  console.warn(`[tournaments] Falling back to bundled archive data due to ${reason}.${detailSuffix}`);
-
+function buildUnavailableFeed(message: string): PublicTournamentFeedResult {
   return {
-    tournaments: getFallbackTournaments(),
-    source: "fallback",
-    degradedReason: reason,
+    tournaments: [],
+    source: "unavailable",
+    message,
   };
 }
 
-export function getTournamentFeedFallbackMessage(
-  reason?: TournamentFeedDegradedReason
+export function getTournamentFeedUnavailableMessage(
+  message?: string
 ): string {
-  switch (reason) {
-    case "missing_supabase_config":
-      return "Live tournament feed is not configured. Showing the bundled archive snapshot.";
-    case "missing_supabase_client":
-      return "Live tournament feed could not initialize. Showing the bundled archive snapshot.";
-    case "query_error":
-      return "Live tournament feed is temporarily unavailable. Showing the bundled archive snapshot.";
-    default:
-      return "Showing the bundled archive snapshot.";
-  }
+  return message ?? "Tournament data is unavailable right now.";
 }
 
 export async function getPublicTournamentFeed(): Promise<PublicTournamentFeedResult> {
   if (!isSupabaseConfigured()) {
-    return buildFallbackFeed("missing_supabase_config");
+    return buildUnavailableFeed("Live tournament feed is not configured.");
   }
 
   const client = getSupabaseAdmin();
   if (!client) {
-    return buildFallbackFeed("missing_supabase_client");
+    return buildUnavailableFeed("Live tournament feed could not initialize.");
   }
 
   const { data, error } = await client
@@ -103,7 +79,9 @@ export async function getPublicTournamentFeed(): Promise<PublicTournamentFeedRes
     .order("month", { ascending: false, nullsFirst: false });
 
   if (error || !data) {
-    return buildFallbackFeed("query_error", error?.message);
+    return buildUnavailableFeed(
+      `Live tournament feed is temporarily unavailable.${error?.message ? ` ${error.message}` : ""}`
+    );
   }
 
   return {
