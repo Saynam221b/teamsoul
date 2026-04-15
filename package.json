@@ -16,6 +16,9 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",
+    "@tanstack/query-sync-storage-persister": "^5.99.0",
+    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-query-persist-client": "^5.99.0",
     "framer-motion": "^12.38.0",
     "next": "16.2.3",
     "pg": "^8.20.0",

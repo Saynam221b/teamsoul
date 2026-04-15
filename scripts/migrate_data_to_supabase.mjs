@@ -186,63 +186,14 @@ const tournaments = data.tournaments.map((tournament) => ({
   placement: tournament.placement === null ? null : String(tournament.placement),
   approx_price: tournament.prize ?? null,
   is_win: tournament.isWin,
-  status: "completed",
+  status: tournament.status ?? "completed",
+  event_date: tournament.eventDate ?? null,
+  details: tournament.details ?? null,
 }));
 
-const upcoming = [
-  {
-    id: "upcoming-bgms-2026-season-4",
-    name: "BGMS 2026 Season 4",
-    year: 2026,
-    month: 7,
-    tier: "S-Tier",
-    placement: null,
-    approx_price: 150000,
-    is_win: false,
-    status: "upcoming",
-    event_date: "2026-07-18",
-    location: "Delhi, India",
-    details: "Invitational LAN with 24 top BGMI teams.",
-    coach: null,
-    analyst: null,
-  },
-  {
-    id: "upcoming-snapdragon-pro-series-2026",
-    name: "Snapdragon Pro Series 2026",
-    year: 2026,
-    month: 9,
-    tier: "S-Tier",
-    placement: null,
-    approx_price: 220000,
-    is_win: false,
-    status: "upcoming",
-    event_date: "2026-09-06",
-    location: "Mumbai, India",
-    details: "Cross-region championship featuring partner league winners.",
-    coach: null,
-    analyst: null,
-  },
-  {
-    id: "upcoming-bgis-2027-the-grind",
-    name: "BGIS 2027: The Grind",
-    year: 2027,
-    month: 1,
-    tier: "Qualifier",
-    placement: null,
-    approx_price: 50000,
-    is_win: false,
-    status: "upcoming",
-    event_date: "2027-01-12",
-    location: "Online",
-    details: "Open qualifier path for BGIS 2027.",
-    coach: null,
-    analyst: null,
-  },
-];
+const tournamentIds = new Set(tournaments.map((item) => item.id));
 
-const tournamentIds = new Set([...tournaments, ...upcoming].map((item) => item.id));
-
-await upsert("tournaments", [...tournaments, ...upcoming]);
+await upsert("tournaments", tournaments);
 
 await upsert(
   "tournament_rosters",

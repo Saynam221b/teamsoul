@@ -426,3 +426,27 @@ export async function completeTournament(id: string, input: CompleteTournamentIn
 
   return completed;
 }
+
+export async function deleteTournament(id: string) {
+  const client = ensureSupabase();
+
+  const { error: rosterError } = await client
+    .from("tournament_rosters")
+    .delete()
+    .eq("tournament_id", id);
+    
+  if (rosterError) {
+    throw new Error(rosterError.message);
+  }
+
+  const { error } = await client
+    .from("tournaments")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message || "Could not delete tournament");
+  }
+
+  return true;
+}

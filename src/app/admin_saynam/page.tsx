@@ -769,6 +769,35 @@ export default function AdminSaynamPage() {
     }
   }
 
+  async function handleDeleteTournament(tournament: AdminTournament) {
+    if (!window.confirm(`Are you sure you want to delete ${tournament.name}? This action cannot be undone.`)) {
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setNotice("");
+
+    try {
+      const response = await fetch(`/api/admin/tournaments/${tournament.id}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      });
+
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "Could not delete tournament");
+      }
+
+      await loadAdminData();
+      setNotice("Tournament deleted successfully.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete tournament");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
   return (
     <>
       <Navbar />
@@ -1133,6 +1162,13 @@ export default function AdminSaynamPage() {
                                 Mark Completed
                               </button>
                             ) : null}
+                            <button
+                              type="button"
+                              onClick={() => void handleDeleteTournament(tournament)}
+                              className="rounded-full border border-red-500/20 px-4 py-[7px] text-xs font-medium tracking-wide text-red-500/80 transition-colors hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
+                            >
+                              Delete
+                            </button>
                           </div>
                         </article>
                       ))}

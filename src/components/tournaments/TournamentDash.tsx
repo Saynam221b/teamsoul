@@ -40,7 +40,15 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   );
 
   const upcomingTournaments = useMemo(
-    () => source.filter((item) => item.status === "upcoming"),
+    () => 
+      source
+        .filter((item) => item.status === "upcoming")
+        .sort((a, b) => {
+          if (a.year !== b.year) return a.year - b.year;
+          const monthA = a.month ?? 12;
+          const monthB = b.month ?? 12;
+          return monthA - monthB;
+        }),
     [source]
   );
 

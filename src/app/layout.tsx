@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import AppLoader from "@/components/layout/AppLoader";
 import RouteBusyObserver from "@/components/layout/RouteBusyObserver";
+import QueryProvider from "@/components/providers/QueryProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -67,7 +68,7 @@ export default function RootLayout({
         </a>
         <RouteBusyObserver />
         <AppLoader />
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
