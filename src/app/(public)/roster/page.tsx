@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { getActivePlayers, getAllPlayers, getFounders, getYearFromDateString } from "@/data/helpers";
-import dynamic from "next/dynamic";
+import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
+import { getArchiveFeedFallbackMessage, getPublicArchiveFeed } from "@/lib/db/archive";
+import { getYearFromDateString } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
-
-const PlayerGrid = dynamic(() => import("@/components/roster/PlayerGrid"), { ssr: true });
+import PlayerGrid from "@/components/roster/PlayerGrid";
 
 export const metadata: Metadata = {
   title: "Roster — Team SOUL Archive",
@@ -13,11 +11,12 @@ export const metadata: Metadata = {
     "Simple player history of Team SOUL, with lineup changes, roles, and key eras.",
 };
 
-export default function RosterPage() {
-  const players = getAllPlayers();
+export default async function RosterPage() {
+  const archiveFeed = await getPublicArchiveFeed();
+  const players = archiveFeed.players;
   const totalPlayers = players.length;
-  const activePlayers = getActivePlayers().length;
-  const founders = getFounders().length;
+  const activePlayers = players.filter((player) => player.currentStatus === "active").length;
+  const founders = players.filter((player) => player.isFounder).length;
   const awardsTracked = players.reduce((sum, player) => sum + player.awards.length, 0);
   const years = players.flatMap((player) =>
     player.stints.flatMap((stint) => {
@@ -28,11 +27,21 @@ export default function RosterPage() {
   );
   const firstYear = Math.min(...years);
   const latestYear = Math.max(...years);
+  const fallbackMessages =
+    archiveFeed.source === "fallback"
+      ? [getArchiveFeedFallbackMessage(archiveFeed.degradedReason)]
+      : [];
 
   return (
-    <div className="archive-shell">
-      <Navbar />
-      <main id="main-content" className="flex-1 pt-28 md:pt-32 space-y-6 md:space-y-8">
+    <div className="space-y-6 pt-28 md:space-y-8 md:pt-32">
+        {fallbackMessages.length > 0 ? (
+          <section className="archive-section !pt-0 !pb-0">
+            <div className="page-wrap">
+              <DataFallbackNotice messages={fallbackMessages} />
+            </div>
+          </section>
+        ) : null}
+
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <RevealOnScroll as="div" className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
@@ -110,11 +119,9 @@ export default function RosterPage() {
 
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
-            <PlayerGrid />
+            <PlayerGrid players={archiveFeed.players} eras={archiveFeed.eras} />
           </div>
         </section>
-      </main>
-      <Footer />
     </div>
   );
 }

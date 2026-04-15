@@ -1,22 +1,23 @@
-"use client";
-
-import Link from "next/link";
 import Image from "next/image";
-import { getOrganization, getStats } from "@/data/helpers";
+import type { AggregateStats, Organization } from "@/data/types";
 import { homeHeroContent } from "@/data/presentation";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
+import RouteLink from "@/components/layout/RouteLink";
 
-const heroStats = (org: ReturnType<typeof getOrganization>, wins: number) => [
+const heroStats = (org: Organization, wins: number) => [
   { label: "Major wins", value: wins.toString().padStart(2, "0") },
   { label: "Tournaments tracked", value: org.totalTournaments.toString() },
   { label: "Peak viewers", value: org.peakViewership.toLocaleString("en-US") },
   { label: "Approx earnings", value: `$${org.totalEarnings.toLocaleString("en-US")}` },
 ];
 
-export default function HeroSection() {
-  const org = getOrganization();
-  const stats = getStats();
-  const marqueeStats = heroStats(org, stats.totalWins);
+interface HeroSectionProps {
+  organization: Organization;
+  stats: AggregateStats;
+}
+
+export default function HeroSection({ organization, stats }: HeroSectionProps) {
+  const marqueeStats = heroStats(organization, stats.totalWins);
 
   return (
     <section className="hero-section relative overflow-hidden pt-24 md:pt-32">
@@ -43,12 +44,20 @@ export default function HeroSection() {
                   </p>
 
                   <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">
-                    <Link href={homeHeroContent.primaryCta.href} className="button-primary">
+                    <RouteLink
+                      href={homeHeroContent.primaryCta.href}
+                      className="button-primary"
+                      prefetch={true}
+                    >
                       {homeHeroContent.primaryCta.label}
-                    </Link>
-                    <Link href={homeHeroContent.secondaryCta.href} className="button-secondary">
+                    </RouteLink>
+                    <RouteLink
+                      href={homeHeroContent.secondaryCta.href}
+                      className="button-secondary"
+                      prefetch={true}
+                    >
                       {homeHeroContent.secondaryCta.label}
-                    </Link>
+                    </RouteLink>
                   </div>
                 </div>
               </RevealOnScroll>

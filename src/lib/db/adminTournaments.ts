@@ -22,6 +22,8 @@ type DbTournamentRow = {
   event_date: string | null;
   location: string | null;
   details: string | null;
+  coach: string | null;
+  analyst: string | null;
   tournament_rosters?: Array<{ player_id: string }>;
 };
 
@@ -128,6 +130,8 @@ function normalizeBaseTournamentInput(
     eventDate,
     location: input.location?.trim() || null,
     details: input.details?.trim() || null,
+    coach: input.coach?.trim() || null,
+    analyst: input.analyst?.trim() || null,
     approxPrice: parseOptionalNumber(input.approxPrize),
   };
 }
@@ -150,6 +154,8 @@ function mapAdminTournament(row: DbTournamentRow): AdminTournament {
     eventDate: row.event_date,
     location: row.location,
     details: row.details,
+    coach: row.coach,
+    analyst: row.analyst,
     rosterIds: (row.tournament_rosters ?? []).map((item) => item.player_id),
   };
 }
@@ -168,6 +174,8 @@ function mapFallbackTournament(item: Tournament): AdminTournament {
     eventDate: item.eventDate ?? null,
     location: item.location ?? null,
     details: item.details ?? null,
+    coach: item.coach ?? null,
+    analyst: item.analyst ?? null,
     rosterIds: item.roster ?? [],
   };
 }
@@ -241,7 +249,7 @@ export async function listAdminTournaments(): Promise<AdminTournament[]> {
   const { data, error } = await client
     .from("tournaments")
     .select(
-      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,tournament_rosters(player_id)"
+      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,coach,analyst,tournament_rosters(player_id)"
     )
     .order("year", { ascending: false })
     .order("month", { ascending: false, nullsFirst: false })
@@ -305,9 +313,11 @@ export async function createUpcomingTournament(input: CreateUpcomingTournamentIn
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
+      coach: normalized.coach,
+      analyst: normalized.analyst,
     })
     .select(
-      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,tournament_rosters(player_id)"
+      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,coach,analyst,tournament_rosters(player_id)"
     )
     .single();
 
@@ -342,10 +352,12 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
+      coach: normalized.coach,
+      analyst: normalized.analyst,
     })
     .eq("id", id)
     .select(
-      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,tournament_rosters(player_id)"
+      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,coach,analyst,tournament_rosters(player_id)"
     )
     .single();
 
@@ -391,10 +403,12 @@ export async function completeTournament(id: string, input: CompleteTournamentIn
       event_date: normalized.eventDate,
       location: normalized.location,
       details: normalized.details,
+      coach: normalized.coach,
+      analyst: normalized.analyst,
     })
     .eq("id", id)
     .select(
-      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,tournament_rosters(player_id)"
+      "id,name,year,month,tier,placement,approx_price,is_win,status,event_date,location,details,coach,analyst,tournament_rosters(player_id)"
     )
     .single();
 

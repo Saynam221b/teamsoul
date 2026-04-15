@@ -73,10 +73,6 @@ body {
   font-family: var(--font-inter, "Inter", system-ui, sans-serif);
 }
 
-body[data-route-busy="true"] {
-  cursor: progress;
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -407,6 +403,342 @@ h6 {
   border-radius: 999px;
   background: var(--accent);
   animation: routePulse 1.6s ease-in-out infinite;
+}
+
+.archive-loader-shell {
+  display: grid;
+  gap: 18px;
+  min-height: clamp(300px, 44vw, 420px);
+  border-color: rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(circle at top right, rgba(0, 229, 255, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01) 42%, transparent 100%),
+    rgba(10, 17, 28, 0.9);
+}
+
+.archive-loader-copy {
+  display: grid;
+  gap: 10px;
+  max-width: 42rem;
+}
+
+.archive-loader-kicker,
+.archive-loader-metric-label {
+  margin: 0;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.archive-loader-title {
+  margin: 0;
+  font-family: var(--font-outfit, "Outfit", sans-serif);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.archive-loader-description {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.archive-loader-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 168px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 100%),
+    rgba(255, 255, 255, 0.02);
+}
+
+.archive-loader-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 18%, rgba(255, 255, 255, 0.06) 48%, transparent 72%);
+  transform: translateX(-120%);
+  animation: archiveLoaderSweep 2.4s linear infinite;
+  pointer-events: none;
+}
+
+.archive-loader-stage[data-route-theme="tournaments"] {
+  box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.08);
+}
+
+.archive-loader-stage[data-route-theme="roster"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.archive-loader-stage[data-route-theme="champions"] {
+  box-shadow: inset 0 0 0 1px rgba(243, 199, 106, 0.08);
+}
+
+.archive-loader-visual {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 168px;
+  padding: 20px;
+}
+
+.archive-loader-visual-tournaments {
+  grid-template-columns: auto minmax(52px, 1fr) auto minmax(52px, 0.7fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.archive-loader-bracket-column {
+  display: grid;
+  gap: 18px;
+}
+
+.archive-loader-bracket-column-mid {
+  gap: 30px;
+}
+
+.archive-loader-bracket-column-final {
+  justify-items: center;
+}
+
+.archive-loader-bracket-rail {
+  display: grid;
+  gap: 12px;
+}
+
+.archive-loader-bracket-rail-final {
+  align-self: center;
+}
+
+.archive-loader-node {
+  width: clamp(30px, 4vw, 42px);
+  height: clamp(30px, 4vw, 42px);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+    rgba(255, 255, 255, 0.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+  animation: archiveLoaderPulseSoft 1.8s ease-in-out infinite;
+}
+
+.archive-loader-node-dim {
+  opacity: 0.58;
+}
+
+.archive-loader-node-accent {
+  border-color: rgba(0, 229, 255, 0.3);
+  background:
+    linear-gradient(180deg, rgba(0, 229, 255, 0.24), rgba(0, 229, 255, 0.08)),
+    rgba(0, 229, 255, 0.08);
+}
+
+.archive-loader-node-gold {
+  border-color: rgba(243, 199, 106, 0.34);
+  background:
+    linear-gradient(180deg, rgba(243, 199, 106, 0.28), rgba(243, 199, 106, 0.08)),
+    rgba(243, 199, 106, 0.08);
+}
+
+.archive-loader-rail {
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(0, 229, 255, 0.54));
+  transform-origin: left center;
+  animation: archiveLoaderRail 1.8s var(--motion-ease-premium) infinite;
+}
+
+.archive-loader-rail-short {
+  width: 66%;
+}
+
+.archive-loader-rail-long {
+  width: 100%;
+}
+
+.archive-loader-visual-roster {
+  align-content: center;
+  gap: 12px;
+}
+
+.archive-loader-roster-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  animation: archiveLoaderFloat 2.4s ease-in-out infinite;
+}
+
+.archive-loader-roster-card:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.archive-loader-roster-card:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.archive-loader-roster-card:nth-child(4) {
+  animation-delay: 360ms;
+}
+
+.archive-loader-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(243, 199, 106, 0.18), rgba(255, 255, 255, 0.02));
+}
+
+.archive-loader-roster-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.archive-loader-line {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.archive-loader-line-strong {
+  width: min(240px, 62%);
+}
+
+.archive-loader-line-soft {
+  width: min(180px, 42%);
+  opacity: 0.72;
+}
+
+.archive-loader-chip {
+  width: 58px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 229, 255, 0.14);
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.archive-loader-visual-champions {
+  grid-template-columns: minmax(120px, 0.7fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.archive-loader-trophy-shell {
+  position: relative;
+  justify-self: center;
+  width: 118px;
+  height: 118px;
+  border-radius: 32px;
+  border: 1px solid rgba(243, 199, 106, 0.18);
+  background:
+    radial-gradient(circle at top, rgba(243, 199, 106, 0.28), transparent 52%),
+    rgba(255, 255, 255, 0.02);
+  animation: archiveLoaderPulseGold 1.9s ease-in-out infinite;
+}
+
+.archive-loader-trophy-crown,
+.archive-loader-trophy-stem,
+.archive-loader-trophy-base {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+}
+
+.archive-loader-trophy-crown {
+  top: 24px;
+  width: 54px;
+  height: 36px;
+  border-radius: 16px 16px 20px 20px;
+  border: 2px solid rgba(243, 199, 106, 0.7);
+  border-bottom-width: 4px;
+}
+
+.archive-loader-trophy-stem {
+  top: 64px;
+  width: 12px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(243, 199, 106, 0.66);
+}
+
+.archive-loader-trophy-base {
+  top: 84px;
+  width: 42px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(243, 199, 106, 0.88);
+}
+
+.archive-loader-frame-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.archive-loader-frame {
+  min-height: 126px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 100%),
+    rgba(255, 255, 255, 0.02);
+  animation: archiveLoaderFloat 2.2s ease-in-out infinite;
+}
+
+.archive-loader-frame-wide {
+  min-height: 136px;
+}
+
+.archive-loader-frame-tall {
+  min-height: 148px;
+}
+
+.archive-loader-frame:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.archive-loader-frame:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.archive-loader-metrics {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.archive-loader-metric {
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.archive-loader-metric-value {
+  margin: 8px 0 0;
+  font-family: var(--font-outfit, "Outfit", sans-serif);
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
 }
 
 .utility-panel {
@@ -1105,22 +1437,28 @@ h6 {
 }
 
 .nav-pending-dot {
+  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: rgba(0, 229, 255, 0.18);
-  opacity: 0.65;
-  transform: scale(0.8);
+  margin-left: 2px;
+  background: rgba(0, 229, 255, 0.24);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.72);
   transition:
+    visibility 0s linear var(--motion-duration-fast),
     opacity var(--motion-duration-fast) ease,
     background-color var(--motion-duration-fast) ease,
     transform var(--motion-duration-fast) ease;
 }
 
 .nav-pending-dot-active {
+  visibility: visible;
   opacity: 1;
   background: var(--accent);
   transform: scale(1);
+  transition-delay: 0s;
 }
 
 .nav-mobile-panel {
@@ -1143,6 +1481,33 @@ h6 {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
   transform: translateX(4px);
+}
+
+@media (pointer: coarse), (max-width: 820px) {
+  .nav-shell {
+    transition:
+      background-color var(--motion-duration-base) ease,
+      border-color var(--motion-duration-base) ease,
+      box-shadow var(--motion-duration-base) ease;
+  }
+
+  .nav-shell-rest,
+  .nav-shell-scrolled {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .nav-shell-scrolled {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .nav-link:hover,
+  .nav-link-armed,
+  .nav-mobile-link:hover,
+  .nav-mobile-link:focus-visible,
+  .nav-mobile-link-active {
+    transform: none;
+  }
 }
 
 .hero-section::before {
@@ -1202,6 +1567,12 @@ h6 {
     border-color var(--motion-duration-base) ease,
     background-color var(--motion-duration-base) ease,
     box-shadow var(--motion-duration-base) ease;
+}
+
+.archive-card-shell {
+  content-visibility: auto;
+  contain-intrinsic-size: 320px 420px;
+  animation: archiveCardEnter 320ms var(--motion-ease-premium) both;
 }
 
 .public-card::after {
@@ -1274,7 +1645,89 @@ h6 {
   }
 }
 
+@keyframes archiveLoaderSweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes archiveLoaderPulseSoft {
+  0%,
+  100% {
+    transform: scale(0.96);
+    opacity: 0.78;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes archiveLoaderPulseGold {
+  0%,
+  100% {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 rgba(243, 199, 106, 0);
+  }
+  50% {
+    transform: scale(1);
+    box-shadow: 0 0 28px rgba(243, 199, 106, 0.12);
+  }
+}
+
+@keyframes archiveLoaderRail {
+  0%,
+  100% {
+    transform: scaleX(0.72);
+    opacity: 0.52;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes archiveLoaderFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes archiveCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (min-width: 768px) {
+  .archive-loader-shell {
+    gap: 22px 24px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  }
+
+  .archive-loader-copy,
+  .archive-loader-metrics {
+    grid-column: 1 / span 1;
+  }
+
+  .archive-loader-stage {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2;
+    min-height: 100%;
+  }
+
   .major-wins-stage {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1463,6 +1916,69 @@ h6 {
 
   .filter-results-shell {
     margin-top: 22px;
+  }
+
+  .archive-loader-shell {
+    gap: 14px;
+    min-height: auto;
+  }
+
+  .archive-loader-stage {
+    min-height: 150px;
+    border-radius: 22px;
+  }
+
+  .archive-loader-visual {
+    padding: 16px;
+  }
+
+  .archive-loader-visual-tournaments {
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+  }
+
+  .archive-loader-bracket-rail-final,
+  .archive-loader-bracket-column-final {
+    display: none;
+  }
+
+  .archive-loader-visual-champions {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-loader-trophy-shell {
+    width: 92px;
+    height: 92px;
+    border-radius: 24px;
+  }
+
+  .archive-loader-trophy-crown {
+    top: 18px;
+    width: 44px;
+    height: 28px;
+  }
+
+  .archive-loader-trophy-stem {
+    top: 50px;
+  }
+
+  .archive-loader-trophy-base {
+    top: 68px;
+    width: 34px;
+  }
+
+  .archive-loader-frame-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .archive-loader-frame,
+  .archive-loader-frame-wide,
+  .archive-loader-frame-tall {
+    min-height: 92px;
+  }
+
+  .archive-loader-metrics {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .archive-panel {
@@ -1778,5 +2294,9 @@ h6 {
 
   html {
     scroll-behavior: auto;
+  }
+
+  .archive-card-shell {
+    animation: none;
   }
 }

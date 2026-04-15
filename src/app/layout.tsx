@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import AppLoader from "@/components/layout/AppLoader";
+import RouteBusyObserver from "@/components/layout/RouteBusyObserver";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -64,6 +65,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
+        <RouteBusyObserver />
         <AppLoader />
         {children}
       </body>

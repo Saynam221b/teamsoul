@@ -22,19 +22,41 @@ async function getEnvVar(name) {
   return readEnv(envContent, name);
 }
 
+function keyId(...parts) {
+  return parts.filter(Boolean).join("__").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+}
+
 const connectionString = await getEnvVar("POSTGRES_URL_NON_POOLING");
 if (!connectionString) {
   throw new Error("Missing POSTGRES_URL_NON_POOLING in environment");
 }
 
-const sql = await readFile(path.resolve(process.cwd(), "supabase/schema.sql"), "utf8");
-const client = new Client({ connectionString, ssl: { rejectUnauthorized: false } });
+const blobAssetPath = path.resolve(process.cwd(), "src/data/blob-assets.json");
+const blobAssets = JSON.parse(await readFile(blobAssetPath, "utf8"));
+const files = Object.entries(blobAssets.files ?? {});
+
+const client = new Client({
+  connectionString,
+  ssl: { rejectUnauthorized: false },
+});
 
 try {
   await client.connect();
-  await client.query(sql);
+
+  for (const [relativePath, url] of files) {
+    await client.query(
+      `
+        insert into public.blob_assets (id, relative_path, url, created_at, updated_at)
+        values ($1, $2, $3, now(), now())
+        on conflict (relative_path)
+        do update set url = excluded.url, updated_at = now()
+      `,
+      [keyId("blob_asset", relativePath), relativePath, url]
+    );
+  }
+
   await client.query("NOTIFY pgrst, 'reload schema';");
-  console.log("Schema applied successfully.");
+  console.log(`Synced ${files.length} blob asset mappings to Supabase.`);
 } finally {
   await client.end();
 }

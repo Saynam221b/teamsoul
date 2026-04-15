@@ -94,9 +94,51 @@ export interface Tournament {
   eventDate?: string;
   location?: string;
   details?: string;
+  coach?: string | null;
+  analyst?: string | null;
   roster?: string[];
   staff?: string[];
   awards?: Award[];
+}
+
+export type DataFeedSource = "db" | "fallback";
+
+export type DataFeedDegradedReason =
+  | "missing_supabase_config"
+  | "missing_supabase_client"
+  | "query_error";
+
+export type TournamentFeedSource = DataFeedSource;
+export type TournamentFeedDegradedReason = DataFeedDegradedReason;
+
+export interface PublicTournamentFeedResult {
+  tournaments: Tournament[];
+  source: TournamentFeedSource;
+  degradedReason?: TournamentFeedDegradedReason;
+}
+
+export interface PublicArchiveFeedResult {
+  organization: Organization;
+  stats: AggregateStats;
+  eras: Era[];
+  players: Player[];
+  staff: StaffMember[];
+  source: DataFeedSource;
+  degradedReason?: DataFeedDegradedReason;
+}
+
+export interface BlobAsset {
+  relativePath: string;
+  url: string;
+  createdAt?: string | null;
+}
+
+export interface PublicBlobAssetFeedResult {
+  assets: BlobAsset[];
+  generatedAt?: string | null;
+  totalFiles: number;
+  source: DataFeedSource;
+  degradedReason?: DataFeedDegradedReason;
 }
 
 export interface Award {
@@ -138,6 +180,8 @@ export interface CreateUpcomingTournamentInput {
   location?: string | null;
   approxPrize?: number | null;
   details?: string | null;
+  coach?: string | null;
+  analyst?: string | null;
 }
 
 export interface UpdateTournamentInput {
@@ -150,6 +194,8 @@ export interface UpdateTournamentInput {
   location?: string | null;
   approxPrize?: number | null;
   details?: string | null;
+  coach?: string | null;
+  analyst?: string | null;
   placement?: string | null;
   isWin?: boolean;
   rosterIds?: string[];
@@ -173,6 +219,8 @@ export interface AdminTournament {
   eventDate: string | null;
   location: string | null;
   details: string | null;
+  coach: string | null;
+  analyst: string | null;
   rosterIds: string[];
 }
 

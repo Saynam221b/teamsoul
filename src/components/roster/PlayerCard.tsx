@@ -2,7 +2,6 @@
 
 import type { Player } from "@/data/types";
 import { formatDate } from "@/data/helpers";
-import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface PlayerCardProps {
   player: Player;
@@ -19,13 +18,9 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
   const latestStint = player.stints[player.stints.length - 1];
 
   return (
-    <RevealOnScroll
-      as="article"
-      delay={Math.min(index * 0.04, 0.24)}
-      distance={20}
-      margin="-30px"
-      intensity="soft"
-      className="archive-panel public-card group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
+    <article
+      className="archive-card-shell archive-panel public-card group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
+      style={{ animationDelay: `${Math.min(index * 24, 160)}ms` }}
     >
       <div className="mb-4 flex items-start justify-between gap-2 md:mb-5 md:gap-3">
         <div className="flex items-center gap-3 md:gap-4">
@@ -94,6 +89,6 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
       <p className="mt-4 border-t border-white/8 pt-4 text-xs leading-6 text-text-secondary md:mt-5 md:pt-5 md:text-sm md:leading-7">
         {player.impact}
       </p>
-    </RevealOnScroll>
+    </article>
   );
 }

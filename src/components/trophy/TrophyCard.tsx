@@ -1,12 +1,8 @@
-"use client";
-
-import type { Tournament } from "@/data/types";
+import type { Player, Tournament } from "@/data/types";
 import {
   formatPlacement,
   formatPrize,
   getMonthName,
-  getPlayerById,
-  getStaffById,
 } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
@@ -14,6 +10,7 @@ interface TrophyCardProps {
   tournament: Tournament;
   index: number;
   featured?: boolean;
+  playerLookup: Record<string, Pick<Player, "displayName" | "role">>;
 }
 
 const TROPHY_CONTEXT: Record<
@@ -66,18 +63,27 @@ function getRoleLabel(role: string) {
   return "Player";
 }
 
-export default function TrophyCard({ tournament, index, featured = false }: TrophyCardProps) {
+export default function TrophyCard({
+  tournament,
+  index,
+  featured = false,
+  playerLookup,
+}: TrophyCardProps) {
   const context = TROPHY_CONTEXT[tournament.id] ?? {
     label: "Title run",
     note: "One of the key wins that kept Team SouL in the championship conversation.",
     tone: "accent" as const,
   };
   const roster = (tournament.roster ?? [])
-    .map((playerId) => getPlayerById(playerId))
-    .filter((player): player is NonNullable<typeof player> => Boolean(player));
-  const staff = (tournament.staff ?? [])
-    .map((staffId) => getStaffById(staffId))
-    .filter((member): member is NonNullable<typeof member> => Boolean(member));
+    .map((playerId) => {
+      const player = playerLookup[playerId];
+      return player ? { id: playerId, ...player } : null;
+    })
+    .filter((player): player is { id: string; displayName: string; role: string } => Boolean(player));
+  const staffLabels = [
+    tournament.coach ? `Coach · ${tournament.coach}` : null,
+    tournament.analyst ? `Analyst · ${tournament.analyst}` : null,
+  ].filter((label): label is string => Boolean(label));
   const eventStamp = tournament.month ? `${getMonthName(tournament.month)} ${tournament.year}` : `${tournament.year}`;
 
   return (
@@ -157,15 +163,15 @@ export default function TrophyCard({ tournament, index, featured = false }: Trop
         </div>
       ) : null}
 
-      {staff.length > 0 ? (
+      {staffLabels.length > 0 ? (
         <div className="trophy-card-staff mt-5 flex flex-wrap items-center gap-2">
           <span className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Coaching lane</span>
-          {staff.map((member) => (
+          {staffLabels.map((label) => (
             <span
-              key={member.id}
+              key={label}
               className="rounded-full border border-accent/18 bg-accent/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-accent"
             >
-              {member.displayName} · {member.role}
+              {label}
             </span>
           ))}
         </div>

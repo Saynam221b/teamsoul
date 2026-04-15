@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { getTournamentsFromDb } from "@/lib/db/tournaments";
+import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
+import {
+  getPublicTournamentFeed,
+  getTournamentFeedFallbackMessage,
+} from "@/lib/db/tournaments";
 import { formatPrize } from "@/data/helpers";
-import dynamic from "next/dynamic";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
-
-const TournamentDash = dynamic(() => import("@/components/tournaments/TournamentDash"), { ssr: true });
+import TournamentDash from "@/components/tournaments/TournamentDash";
 
 export const metadata: Metadata = {
   title: "Tournament History — Team SOUL Archive",
@@ -15,7 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default async function TournamentsPage() {
-  const tournaments = await getTournamentsFromDb();
+  const tournamentFeed = await getPublicTournamentFeed();
+  const tournaments = tournamentFeed.tournaments;
   const ongoing = tournaments.filter((item) => item.status === "live");
   const completed = tournaments.filter(
     (item) => item.status !== "upcoming" && item.status !== "live"
@@ -24,11 +25,13 @@ export default async function TournamentsPage() {
   const upcoming = tournaments.filter((item) => item.status === "upcoming");
   const totalPrize = completed.reduce((sum, item) => sum + (item.prize ?? 0), 0);
   const latestYear = completed.reduce((latest, item) => Math.max(latest, item.year), 0);
+  const fallbackMessage =
+    tournamentFeed.source === "fallback"
+      ? getTournamentFeedFallbackMessage(tournamentFeed.degradedReason)
+      : null;
 
   return (
-    <div className="archive-shell">
-      <Navbar />
-      <main id="main-content" className="flex-1 pt-28 md:pt-32 space-y-6 md:space-y-8">
+    <div className="space-y-6 pt-28 md:space-y-8 md:pt-32">
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <RevealOnScroll as="div" className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
@@ -44,8 +47,9 @@ export default async function TournamentsPage() {
 
                 <div className="flex flex-wrap gap-3 xl:max-w-[360px] xl:justify-end">
                   <span className="hero-chip">Tracked through {latestYear || "today"}</span>
-                  <span className="hero-chip">{ongoing.length} ongoing right now</span>
-                  <span className="hero-chip">{upcoming.length} upcoming event{upcoming.length !== 1 ? "s" : ""}</span>
+                  <span className="hero-chip">
+                    {ongoing.length} live / {upcoming.length} scheduled
+                  </span>
                 </div>
               </div>
 
@@ -82,6 +86,14 @@ export default async function TournamentsPage() {
           </div>
         </section>
 
+        {fallbackMessage ? (
+          <section className="archive-section !pt-0 !pb-0">
+            <div className="page-wrap">
+              <DataFallbackNotice messages={[fallbackMessage]} />
+            </div>
+          </section>
+        ) : null}
+
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
@@ -115,8 +127,6 @@ export default async function TournamentsPage() {
             <TournamentDash tournaments={tournaments} />
           </div>
         </section>
-      </main>
-      <Footer />
     </div>
   );
 }

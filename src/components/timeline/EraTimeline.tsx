@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { startTransition, useRef, useState, type CSSProperties } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   AnimatePresence,
   motion,
@@ -9,7 +9,7 @@ import {
   useReducedMotion,
   useScroll,
 } from "framer-motion";
-import { getEras, getPlayerById, getStaffById } from "@/data/helpers";
+import type { Era, Player, StaffMember } from "@/data/types";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 
@@ -36,9 +36,21 @@ function EraScrollHelper({
   );
 }
 
-function StaticEraLayout({ className = "" }: { className?: string }) {
-  const eras = getEras();
-  
+interface EraTimelineProps {
+  eras: Era[];
+  players: Player[];
+  staff: StaffMember[];
+}
+
+function StaticEraLayout({
+  className = "",
+  eras,
+  staffLookup,
+}: {
+  className?: string;
+  eras: Era[];
+  staffLookup: Record<string, StaffMember>;
+}) {
   return (
     <section id="era-timeline-static" className={`archive-section era-story-section ${className}`.trim()}>
       <div className="page-wrap">
@@ -53,7 +65,7 @@ function StaticEraLayout({ className = "" }: { className?: string }) {
         <div className="space-y-6">
           {eras.map((era, index) => {
             const staff = (era.staff ?? [])
-              .map((id) => getStaffById(id))
+              .map((id) => staffLookup[id])
               .filter((member): member is NonNullable<typeof member> => Boolean(member));
 
             return (
@@ -105,18 +117,42 @@ function StaticEraLayout({ className = "" }: { className?: string }) {
   );
 }
 
-export default function EraTimeline() {
-  const eras = getEras();
+export default function EraTimeline({ eras, players, staff }: EraTimelineProps) {
   const prefersReducedMotion = useReducedMotion();
+  const [preferStaticTimeline, setPreferStaticTimeline] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const activeIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const playerLookup = useMemo(
+    () => Object.fromEntries(players.map((player) => [player.id, player])),
+    [players]
+  );
+  const staffLookup = useMemo(
+    () => Object.fromEntries(staff.map((member) => [member.id, member])),
+    [staff]
+  );
   const { scrollYProgress } = useScroll({
     target: trackRef,
     offset: ["start start", "end end"],
   });
   const totalEras = formatEraProgress(eras.length);
   const activeProgressLabel = `${formatEraProgress(activeIndex + 1)} / ${totalEras}`;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia("(pointer: coarse), (max-width: 1023px)");
+    const syncPreference = () => setPreferStaticTimeline(media.matches);
+    syncPreference();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", syncPreference);
+      return () => media.removeEventListener("change", syncPreference);
+    }
+
+    media.addListener(syncPreference);
+    return () => media.removeListener(syncPreference);
+  }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const nextIndex = Math.min(eras.length - 1, Math.max(0, Math.floor(latest * eras.length)));
@@ -127,24 +163,21 @@ export default function EraTimeline() {
     }
   });
 
-  if (prefersReducedMotion) {
-    return <StaticEraLayout className="block" />;
+  if (prefersReducedMotion || preferStaticTimeline) {
+    return <StaticEraLayout className="block" eras={eras} staffLookup={staffLookup} />;
   }
 
   const activeEra = eras[activeIndex];
   const activePlayers = activeEra.keyPlayers
-    .map((id) => getPlayerById(id))
+    .map((id) => playerLookup[id])
     .filter((player): player is NonNullable<typeof player> => Boolean(player));
   const activeStaff = (activeEra.staff ?? [])
-    .map((id) => getStaffById(id))
+    .map((id) => staffLookup[id])
     .filter((member): member is NonNullable<typeof member> => Boolean(member));
 
   return (
-    <>
-      <StaticEraLayout className="block md:hidden" />
-      
-      <section id="era-timeline" className="archive-section era-story-section hidden md:block">
-        <div className="page-wrap">
+    <section id="era-timeline" className="archive-section era-story-section">
+      <div className="page-wrap">
           <RevealOnScroll className="section-head max-w-3xl">
             <p className="section-kicker">Team Legacy</p>
             <h2 className="section-title">Team Legacy</h2>
@@ -264,8 +297,7 @@ export default function EraTimeline() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

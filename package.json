@@ -10,7 +10,9 @@
     "upload:bgmi-assets": "node scripts/upload_blob_assets.mjs",
     "upload:era-story-images": "node scripts/upload_era_story_images.mjs",
     "db:apply-schema:supabase": "node scripts/apply_schema_to_postgres.mjs",
-    "db:migrate:supabase": "node scripts/migrate_data_to_supabase.mjs"
+    "db:migrate:supabase": "node scripts/migrate_data_to_supabase.mjs",
+    "db:sync-archive-runtime:supabase": "node scripts/sync_archive_runtime_to_postgres.mjs",
+    "db:sync-blob-assets:supabase": "node scripts/sync_blob_assets_to_supabase.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",

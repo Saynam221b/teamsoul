@@ -3,7 +3,6 @@
 import type { Tournament } from "@/data/types";
 import { formatDate, formatPlacement, formatPrize } from "@/data/helpers";
 import TierBadge from "../shared/TierBadge";
-import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -18,6 +17,10 @@ export default function TournamentCard({
 }: TournamentCardProps) {
   const { name, year, tier, placement, prize, isWin, status, eventDate, location, details } =
     tournament;
+  const staffLabels = [
+    tournament.coach ? `Coach · ${tournament.coach}` : null,
+    tournament.analyst ? `Analyst · ${tournament.analyst}` : null,
+  ].filter((value): value is string => Boolean(value));
   const placementLabel =
     status === "upcoming" || status === "live"
       ? "Scheduled"
@@ -36,13 +39,9 @@ export default function TournamentCard({
         : "tag tag-completed";
 
   return (
-    <RevealOnScroll
-      as="article"
-      delay={Math.min(index * 0.03, 0.22)}
-      distance={20}
-      margin="-30px"
-      intensity="soft"
-      className={`${featured ? "bento-featured" : ""} archive-panel public-card rounded-[24px] p-5 md:rounded-[26px]`}
+    <article
+      className={`${featured ? "bento-featured" : ""} archive-card-shell archive-panel public-card rounded-[24px] p-5 md:rounded-[26px]`}
+      style={{ animationDelay: `${Math.min(index * 28, 180)}ms` }}
     >
       <div className="mb-3 flex items-start justify-between gap-2 md:mb-4 md:gap-3">
         <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
@@ -57,6 +56,19 @@ export default function TournamentCard({
       </h3>
 
       {details && <p className="mt-2 text-xs leading-6 text-text-secondary md:mt-3 md:text-sm md:leading-7">{details}</p>}
+
+      {staffLabels.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2 md:mt-4">
+          {staffLabels.map((label) => (
+            <span
+              key={label}
+              className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-text-secondary"
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
 
       {(eventDate || location) && (
         <div className="mt-3 grid gap-2 border-t border-white/8 pt-3 sm:grid-cols-2 md:mt-4 md:gap-3 md:pt-4">
@@ -108,6 +120,6 @@ export default function TournamentCard({
           <span className="tag tag-won">Won the title</span>
         </div>
       )}
-    </RevealOnScroll>
+    </article>
   );
 }

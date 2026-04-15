@@ -1,11 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { getAllTournaments, getWins, getYears } from "@/data/helpers";
+import { startTransition, useMemo, useState } from "react";
 import type { Tournament } from "@/data/types";
 import TournamentCard from "./TournamentCard";
-import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
 
 type TabId = "championships" | "all" | "by-year";
@@ -26,21 +23,11 @@ const TIER_FILTERS = [
   "Showmatch",
 ] as const;
 
-export default function TournamentDash({ tournaments }: { tournaments?: Tournament[] }) {
-  const prefersReducedMotion = useReducedMotion();
+export default function TournamentDash({ tournaments }: { tournaments: Tournament[] }) {
   const [activeTab, setActiveTab] = useState<TabId>("championships");
   const [tierFilter, setTierFilter] = useState<string>("All");
   const [yearFilter, setYearFilter] = useState<number | null>(null);
-
-  const staticData = useMemo(
-    () => getAllTournaments().map((item) => ({ ...item, status: "completed" as const })),
-    []
-  );
-
-  const source = useMemo(
-    () => (tournaments?.length ? tournaments : staticData),
-    [tournaments, staticData]
-  );
+  const source = tournaments;
 
   const allTournaments = useMemo(
     () => source.filter((item) => item.status !== "upcoming" && item.status !== "live"),
@@ -58,14 +45,13 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
   );
 
   const wins = useMemo(
-    () => (tournaments?.length ? source : getWins()).filter((item) => item.isWin),
-    [source, tournaments]
+    () => source.filter((item) => item.isWin),
+    [source]
   );
 
   const years = useMemo(() => {
-    if (!tournaments?.length) return getYears();
     return Array.from(new Set(allTournaments.map((item) => item.year))).sort((a, b) => a - b);
-  }, [tournaments, allTournaments]);
+  }, [allTournaments]);
 
   const filteredTournaments = useMemo(() => {
     let base: Tournament[] = activeTab === "championships" ? wins : allTournaments;
@@ -112,9 +98,11 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
   const hasActiveFilters = activeTab !== "championships" || tierFilter !== "All" || yearFilter !== null;
 
   const resetFilters = () => {
-    setActiveTab("championships");
-    setTierFilter("All");
-    setYearFilter(null);
+    startTransition(() => {
+      setActiveTab("championships");
+      setTierFilter("All");
+      setYearFilter(null);
+    });
   };
 
   return (
@@ -187,9 +175,11 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
                 <button
                   key={tab.id}
                   onClick={() => {
-                    setActiveTab(tab.id);
-                    setTierFilter("All");
-                    setYearFilter(null);
+                    startTransition(() => {
+                      setActiveTab(tab.id);
+                      setTierFilter("All");
+                      setYearFilter(null);
+                    });
                   }}
                   className={`filter-pill ${activeTab === tab.id ? "filter-pill-active" : "filter-pill-muted"}`}
                 >
@@ -205,7 +195,7 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
               {TIER_FILTERS.map((tier) => (
                 <button
                   key={tier}
-                  onClick={() => setTierFilter(tier)}
+                  onClick={() => startTransition(() => setTierFilter(tier))}
                   className={`filter-pill ${tierFilter === tier ? "filter-pill-accent" : "filter-pill-muted"}`}
                 >
                   {tier}
@@ -220,7 +210,11 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
               <select
                 id="tournament-year-filter"
                 value={yearFilter ?? ""}
-                onChange={(e) => setYearFilter(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) =>
+                  startTransition(() =>
+                    setYearFilter(e.target.value ? Number(e.target.value) : null)
+                  )
+                }
                 className="filter-select"
               >
                 <option value="">All Years</option>
@@ -235,60 +229,51 @@ export default function TournamentDash({ tournaments }: { tournaments?: Tourname
         </div>
       </DynamicFilterDock>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`${activeTab}-${tierFilter}-${yearFilter}`}
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-          transition={{ duration: prefersReducedMotion ? MOTION_TIMINGS.fast : MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
-          className="filter-results-shell"
-        >
-          {activeTab === "by-year" ? (
-            <div className="space-y-10">
-              {groupedByYear.map(({ year, tournaments: items }) => (
-                <div key={year}>
-                  <div className="mb-4 flex items-center justify-between gap-4">
-                    <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
-                      {year}
-                    </h3>
-                    <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
-                      {items.length} tournaments
-                    </span>
-                  </div>
-                  <div className="bento-grid">
-                    {items.map((item, index) => (
-                      <TournamentCard
-                        key={item.id}
-                        tournament={item}
-                        index={index}
-                        featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
-                      />
-                    ))}
-                  </div>
+      <div className="filter-results-shell">
+        {activeTab === "by-year" ? (
+          <div className="space-y-10">
+            {groupedByYear.map(({ year, tournaments: items }) => (
+              <div key={year}>
+                <div className="mb-4 flex items-center justify-between gap-4">
+                  <h3 className="font-display text-4xl uppercase leading-none text-white md:text-5xl">
+                    {year}
+                  </h3>
+                  <span className="text-xs uppercase tracking-[0.22em] text-text-muted">
+                    {items.length} tournaments
+                  </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bento-grid">
-              {filteredTournaments.map((item, index) => (
-                <TournamentCard
-                  key={item.id}
-                  tournament={item}
-                  index={index}
-                  featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
-                />
-              ))}
-            </div>
-          )}
+                <div className="bento-grid">
+                  {items.map((item, index) => (
+                    <TournamentCard
+                      key={item.id}
+                      tournament={item}
+                      index={index}
+                      featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bento-grid">
+            {filteredTournaments.map((item, index) => (
+              <TournamentCard
+                key={item.id}
+                tournament={item}
+                index={index}
+                featured={item.isWin && (item.tier === "A-Tier" || item.tier === "S-Tier")}
+              />
+            ))}
+          </div>
+        )}
 
-          {filteredTournaments.length === 0 && (
-            <div className="py-20 text-center text-sm leading-7 text-text-muted">
-              No tournaments match the current filters.
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+        {filteredTournaments.length === 0 && (
+          <div className="py-20 text-center text-sm leading-7 text-text-muted">
+            No tournaments match the current filters.
+          </div>
+        )}
+      </div>
     </div>
   );
 }

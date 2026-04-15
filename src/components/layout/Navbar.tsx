@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
+import RouteLink from "./RouteLink";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -55,7 +55,12 @@ export default function Navbar() {
             : "nav-shell-rest"
         }`}
       >
-        <Link href="/" className="nav-brand flex min-w-0 items-center gap-3">
+        <RouteLink
+          href="/"
+          className="nav-brand flex min-w-0 items-center gap-3"
+          prefetch={true}
+          pendingIndicator="off"
+        >
           <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-white/5">
             <Image
               src="/logo.png"
@@ -74,21 +79,22 @@ export default function Navbar() {
               Bharat Ki Sarvashreshth Team
             </p>
           </div>
-        </Link>
+        </RouteLink>
 
         <nav className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((item) => {
             const active = pathname === item.href;
             return (
-              <Link
+              <RouteLink
                 key={item.href}
                 href={item.href}
-                className={`nav-link text-sm uppercase tracking-[0.18em] ${
+                prefetch={true}
+                className={`nav-link inline-flex items-center gap-2 text-sm uppercase tracking-[0.18em] ${
                   active ? "nav-link-active" : ""
                 }`}
               >
                 {item.label}
-              </Link>
+              </RouteLink>
             );
           })}
         </nav>
@@ -115,14 +121,15 @@ export default function Navbar() {
             {NAV_LINKS.map((item) => {
               const active = pathname === item.href;
               return (
-                <Link
+                <RouteLink
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   onClick={() => setMenuOpen(false)}
-                  className={`nav-mobile-link block rounded-[20px] px-4 py-3.5 text-sm uppercase tracking-[0.18em] ${active ? "nav-mobile-link-active" : ""}`}
+                  className={`nav-mobile-link flex items-center justify-between rounded-[20px] px-4 py-3.5 text-sm uppercase tracking-[0.18em] ${active ? "nav-mobile-link-active" : ""}`}
                 >
                   {item.label}
-                </Link>
+                </RouteLink>
               );
             })}
           </motion.div>

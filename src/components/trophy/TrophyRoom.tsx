@@ -1,11 +1,46 @@
-"use client";
-
-import { getMajorWins } from "@/data/helpers";
+import type { Player, Tournament } from "@/data/types";
 import TrophyCard from "./TrophyCard";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 
-export default function TrophyRoom() {
-  const majorWins = getMajorWins().slice(0, 5);
+const TROPHY_ROOM_IDS = [
+  "pmis-2019",
+  "pmco-spring-india-2019",
+  "bmps-s1-2022",
+  "bgms-s3-2024",
+  "bgis-2026",
+] as const;
+
+interface TrophyRoomProps {
+  tournaments: Tournament[];
+  players: Player[];
+}
+
+function selectTrophyRoomTournaments(tournaments: Tournament[]) {
+  const byId = new Map(tournaments.map((tournament) => [tournament.id, tournament]));
+  const curated = TROPHY_ROOM_IDS.map((id) => byId.get(id)).filter(
+    (tournament): tournament is Tournament => Boolean(tournament)
+  );
+
+  if (curated.length >= TROPHY_ROOM_IDS.length) {
+    return curated;
+  }
+
+  const usedIds = new Set(curated.map((tournament) => tournament.id));
+  const fallbackWins = tournaments.filter(
+    (tournament) =>
+      !usedIds.has(tournament.id) &&
+      tournament.isWin &&
+      (tournament.tier === "S-Tier" || tournament.tier === "A-Tier")
+  );
+
+  return [...curated, ...fallbackWins].slice(0, TROPHY_ROOM_IDS.length);
+}
+
+export default function TrophyRoom({ tournaments, players }: TrophyRoomProps) {
+  const majorWins = selectTrophyRoomTournaments(tournaments);
+  const playerLookup = Object.fromEntries(
+    players.map((player) => [player.id, { displayName: player.displayName, role: player.role }])
+  );
 
   return (
     <section id="trophy-room" className="archive-section trophy-room-section">
@@ -22,7 +57,13 @@ export default function TrophyRoom() {
         <RevealOnScroll delay={0.08} distance={20} intensity="soft">
           <div className="major-wins-stage">
             {majorWins.map((tournament, index) => (
-              <TrophyCard key={tournament.id} tournament={tournament} index={index} featured={index < 2} />
+              <TrophyCard
+                key={tournament.id}
+                tournament={tournament}
+                index={index}
+                featured={index < 2}
+                playerLookup={playerLookup}
+              />
             ))}
           </div>
         </RevealOnScroll>

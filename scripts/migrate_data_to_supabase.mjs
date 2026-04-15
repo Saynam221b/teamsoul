@@ -39,6 +39,25 @@ const dataPath = path.resolve(process.cwd(), "src/data/data.json");
 const raw = await readFile(dataPath, "utf8");
 const data = JSON.parse(raw);
 
+function inferTournamentStaff(staffIds = []) {
+  return staffIds.reduce(
+    (acc, staffId) => {
+      const member = data.staff?.[staffId];
+      if (!member) return acc;
+
+      const role = String(member.role ?? "").trim().toLowerCase();
+      if (!acc.analyst && role.includes("analyst")) {
+        acc.analyst = member.displayName;
+      } else if (!acc.coach && role.includes("coach")) {
+        acc.coach = member.displayName;
+      }
+
+      return acc;
+    },
+    { coach: null, analyst: null }
+  );
+}
+
 async function upsert(table, rows, onConflict = "id") {
   if (!rows.length) return;
   const { error } = await supabase.from(table).upsert(rows, { onConflict });
@@ -85,6 +104,8 @@ await upsert(
     description: era.description,
     defining_moment: era.definingMoment,
     outcome: era.outcome,
+    story_image_url: era.storyImageUrl ?? null,
+    story_image_alt: era.storyImageAlt ?? null,
   }))
 );
 
@@ -129,7 +150,34 @@ await upsert(
   )
 );
 
+const staffMembers = Object.values(data.staff ?? {});
+await upsert(
+  "staff_members",
+  staffMembers.map((member) => ({
+    id: member.id,
+    display_name: member.displayName,
+    real_name: member.realName,
+    role: member.role,
+    join_date: member.joinDate,
+    leave_date: member.leaveDate ?? null,
+    is_active: member.isActive,
+    impact: member.impact,
+  }))
+);
+
+await upsert(
+  "staff_eras",
+  staffMembers.flatMap((member) =>
+    member.eras.map((eraId, idx) => ({
+      id: keyId("staff_era", member.id, eraId, String(idx + 1)),
+      staff_id: member.id,
+      era_id: eraId,
+    }))
+  )
+);
+
 const tournaments = data.tournaments.map((tournament) => ({
+  ...inferTournamentStaff(tournament.staff),
   id: tournament.id,
   name: tournament.name,
   year: tournament.year,
@@ -155,6 +203,8 @@ const upcoming = [
     event_date: "2026-07-18",
     location: "Delhi, India",
     details: "Invitational LAN with 24 top BGMI teams.",
+    coach: null,
+    analyst: null,
   },
   {
     id: "upcoming-snapdragon-pro-series-2026",
@@ -169,6 +219,8 @@ const upcoming = [
     event_date: "2026-09-06",
     location: "Mumbai, India",
     details: "Cross-region championship featuring partner league winners.",
+    coach: null,
+    analyst: null,
   },
   {
     id: "upcoming-bgis-2027-the-grind",
@@ -183,6 +235,8 @@ const upcoming = [
     event_date: "2027-01-12",
     location: "Online",
     details: "Open qualifier path for BGIS 2027.",
+    coach: null,
+    analyst: null,
   },
 ];
 

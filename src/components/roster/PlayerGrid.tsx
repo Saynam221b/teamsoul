@@ -1,27 +1,25 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { getAllPlayers, getEras } from "@/data/helpers";
-import type { Player } from "@/data/types";
+import { startTransition, useDeferredValue, useMemo, useState } from "react";
+import type { Era, Player } from "@/data/types";
 import PlayerCard from "./PlayerCard";
-import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
 
 type FilterStatus = "all" | "active" | "retired" | "departed";
 
-export default function PlayerGrid() {
-  const prefersReducedMotion = useReducedMotion();
+interface PlayerGridProps {
+  players: Player[];
+  eras: Era[];
+}
+
+export default function PlayerGrid({ players, eras }: PlayerGridProps) {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [eraFilter, setEraFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const allPlayers = getAllPlayers();
-  const eras = getEras();
-
   const filteredPlayers = useMemo(() => {
-    let result: Player[] = allPlayers;
+    let result: Player[] = players;
 
     if (statusFilter !== "all") {
       result = result.filter((player) => player.currentStatus === statusFilter);
@@ -42,7 +40,7 @@ export default function PlayerGrid() {
     }
 
     return result;
-  }, [allPlayers, deferredSearchQuery, eraFilter, statusFilter]);
+  }, [players, deferredSearchQuery, eraFilter, statusFilter]);
 
   const summaryLabel = useMemo(() => {
     const parts: string[] = [];
@@ -67,8 +65,10 @@ export default function PlayerGrid() {
     statusFilter !== "all" || eraFilter !== "all" || Boolean(searchQuery.trim());
 
   const resetFilters = () => {
-    setStatusFilter("all");
-    setEraFilter("all");
+    startTransition(() => {
+      setStatusFilter("all");
+      setEraFilter("all");
+    });
     setSearchQuery("");
   };
 
@@ -109,7 +109,7 @@ export default function PlayerGrid() {
               {(["all", "active", "retired", "departed"] as FilterStatus[]).map((status) => (
                 <button
                   key={status}
-                  onClick={() => setStatusFilter(status)}
+                  onClick={() => startTransition(() => setStatusFilter(status))}
                   className={`filter-pill ${statusFilter === status ? "filter-pill-active" : "filter-pill-muted"}`}
                 >
                   {status}
@@ -123,7 +123,7 @@ export default function PlayerGrid() {
             <select
               id="player-era-filter"
               value={eraFilter}
-              onChange={(e) => setEraFilter(e.target.value)}
+              onChange={(e) => startTransition(() => setEraFilter(e.target.value))}
               className="filter-select"
             >
               <option value="all">All Eras</option>
@@ -137,20 +137,11 @@ export default function PlayerGrid() {
         </div>
       </DynamicFilterDock>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`${statusFilter}-${eraFilter}-${searchQuery}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: prefersReducedMotion ? MOTION_TIMINGS.fast : MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
-          className="filter-results-shell bento-grid"
-        >
-          {filteredPlayers.map((player, index) => (
-            <PlayerCard key={player.id} player={player} index={index} />
-          ))}
-        </motion.div>
-      </AnimatePresence>
+      <div className="filter-results-shell bento-grid">
+        {filteredPlayers.map((player, index) => (
+          <PlayerCard key={player.id} player={player} index={index} />
+        ))}
+      </div>
 
       {filteredPlayers.length === 0 && (
         <div className="py-20 text-center text-sm leading-7 text-text-muted">

@@ -40,6 +40,8 @@ type TournamentFormState = {
   location: string;
   approxPrize: string;
   details: string;
+  coach: string;
+  analyst: string;
   placement: string;
   isWin: boolean;
   rosterIds: string[];
@@ -64,6 +66,8 @@ const EMPTY_FORM: TournamentFormState = {
   location: "",
   approxPrize: "",
   details: "",
+  coach: "",
+  analyst: "",
   placement: "",
   isWin: false,
   rosterIds: [],
@@ -83,6 +87,8 @@ function toFormState(tournament: AdminTournament): TournamentFormState {
         ? ""
         : String(tournament.approxPrize),
     details: tournament.details ?? "",
+    coach: tournament.coach ?? "",
+    analyst: tournament.analyst ?? "",
     placement: tournament.placement ?? "",
     isWin: tournament.isWin,
     rosterIds: tournament.rosterIds ?? [],
@@ -106,6 +112,8 @@ function buildBasePayload(
     location: form.location.trim() || null,
     approxPrize: form.approxPrize.trim() ? Number(form.approxPrize) : null,
     details: form.details.trim() || null,
+    coach: form.coach.trim() || null,
+    analyst: form.analyst.trim() || null,
   };
 }
 
@@ -284,6 +292,32 @@ function TournamentModal({
                     className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
                     min="1"
                     max="12"
+                    placeholder="Optional"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Coach
+                  </span>
+                  <input
+                    value={form.coach}
+                    onChange={(event) => onChange("coach", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                    placeholder="Optional"
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                    Analyst
+                  </span>
+                  <input
+                    value={form.analyst}
+                    onChange={(event) => onChange("analyst", event.target.value)}
+                    className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
                     placeholder="Optional"
                   />
                 </label>
@@ -1035,6 +1069,21 @@ export default function AdminSaynamPage() {
                             <p className="mt-4 text-sm leading-7 text-text-secondary">
                               {tournament.details}
                             </p>
+                          ) : null}
+
+                          {tournament.coach || tournament.analyst ? (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {tournament.coach ? (
+                                <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-accent">
+                                  Coach · {tournament.coach}
+                                </span>
+                              ) : null}
+                              {tournament.analyst ? (
+                                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-text-secondary">
+                                  Analyst · {tournament.analyst}
+                                </span>
+                              ) : null}
+                            </div>
                           ) : null}
 
                           <div className="mt-5 grid gap-3 border-t border-white/8 pt-4 sm:grid-cols-2">

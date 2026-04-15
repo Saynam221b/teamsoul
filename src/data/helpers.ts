@@ -15,6 +15,53 @@ import type {
 
 const data = archiveData as unknown as SoulArchive;
 
+type TournamentStaffSlot = "coach" | "analyst";
+
+function inferStaffSlot(role: string): TournamentStaffSlot | null {
+  const normalized = role.trim().toLowerCase();
+
+  if (normalized.includes("analyst")) return "analyst";
+  if (normalized.includes("coach")) return "coach";
+
+  return null;
+}
+
+export function normalizeTournament(tournament: Tournament): Tournament {
+  const normalizedCoach = tournament.coach?.trim() || undefined;
+  const normalizedAnalyst = tournament.analyst?.trim() || undefined;
+
+  if (normalizedCoach && normalizedAnalyst) {
+    return {
+      ...tournament,
+      coach: normalizedCoach,
+      analyst: normalizedAnalyst,
+    };
+  }
+
+  const inferredStaff = (tournament.staff ?? []).reduce<{
+    coach?: string;
+    analyst?: string;
+  }>((acc, staffId) => {
+    const member = data.staff[staffId];
+    if (!member) return acc;
+
+    const slot = inferStaffSlot(member.role);
+    if (slot && !acc[slot]) {
+      acc[slot] = member.displayName;
+    }
+
+    return acc;
+  }, {});
+
+  return {
+    ...tournament,
+    coach: normalizedCoach ?? inferredStaff.coach,
+    analyst: normalizedAnalyst ?? inferredStaff.analyst,
+  };
+}
+
+const normalizedTournaments = data.tournaments.map(normalizeTournament);
+
 // ---------------------------------------------------------------------------
 // Full Archive
 // ---------------------------------------------------------------------------
@@ -33,11 +80,11 @@ export function getOrganization() {
 // Tournaments
 // ---------------------------------------------------------------------------
 export function getAllTournaments(): Tournament[] {
-  return data.tournaments;
+  return normalizedTournaments;
 }
 
 export function getTournamentsByYear(year: number): Tournament[] {
-  return data.tournaments
+  return normalizedTournaments
     .filter((t) => t.year === year)
     .sort((a, b) => (a.month ?? 0) - (b.month ?? 0));
 }
@@ -45,34 +92,34 @@ export function getTournamentsByYear(year: number): Tournament[] {
 export function getTournamentsByTier(
   tier: Tournament["tier"]
 ): Tournament[] {
-  return data.tournaments.filter((t) => t.tier === tier);
+  return normalizedTournaments.filter((t) => t.tier === tier);
 }
 
 export function getWins(): Tournament[] {
-  return data.tournaments.filter((t) => t.isWin);
+  return normalizedTournaments.filter((t) => t.isWin);
 }
 
 export function getWinsByTier(tier: Tournament["tier"]): Tournament[] {
-  return data.tournaments.filter((t) => t.isWin && t.tier === tier);
+  return normalizedTournaments.filter((t) => t.isWin && t.tier === tier);
 }
 
 export function getMajorWins(): Tournament[] {
-  return data.tournaments.filter(
+  return normalizedTournaments.filter(
     (t) => t.isWin && (t.tier === "S-Tier" || t.tier === "A-Tier")
   );
 }
 
 export function getTournamentById(id: string): Tournament | undefined {
-  return data.tournaments.find((t) => t.id === id);
+  return normalizedTournaments.find((t) => t.id === id);
 }
 
 export function getYears(): number[] {
-  const years = new Set(data.tournaments.map((t) => t.year));
+  const years = new Set(normalizedTournaments.map((t) => t.year));
   return Array.from(years).sort((a, b) => a - b);
 }
 
 export function getTotalPrize(): number {
-  return data.tournaments.reduce((sum, t) => sum + (t.prize ?? 0), 0);
+  return normalizedTournaments.reduce((sum, t) => sum + (t.prize ?? 0), 0);
 }
 
 // ---------------------------------------------------------------------------

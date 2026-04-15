@@ -1,6 +1,7 @@
 import { createReadStream } from "node:fs";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import pg from "pg";
 
 const TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
 const ROOT_DIR = process.argv[2] || "BGMI_2026_current_with_higglist_bgis";
@@ -9,6 +10,7 @@ const BLOB_PREFIX = "bgmi-assets";
 const API_URL = "https://blob.vercel-storage.com";
 
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+const { Client } = pg;
 
 async function readTokenFromEnvFile() {
   try {
@@ -20,6 +22,22 @@ async function readTokenFromEnvFile() {
     if (!tokenLine) return null;
 
     const rawValue = tokenLine.slice("BLOB_READ_WRITE_TOKEN=".length).trim();
+    return rawValue.replace(/^"(.*)"$/, "$1");
+  } catch {
+    return null;
+  }
+}
+
+async function readEnvVarFromFile(key) {
+  try {
+    const envPath = path.resolve(process.cwd(), ".env.local");
+    const envContent = await fs.readFile(envPath, "utf8");
+    const tokenLine = envContent
+      .split(/\r?\n/)
+      .find((line) => line.startsWith(`${key}=`));
+    if (!tokenLine) return null;
+
+    const rawValue = tokenLine.slice(`${key}=`.length).trim();
     return rawValue.replace(/^"(.*)"$/, "$1");
   } catch {
     return null;
@@ -95,6 +113,44 @@ async function uploadFile(localPath, blobPath) {
   return response.json();
 }
 
+function keyId(...parts) {
+  return parts.filter(Boolean).join("__").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+}
+
+async function syncBlobAssetsToDatabase(files) {
+  const connectionString =
+    process.env.POSTGRES_URL_NON_POOLING ??
+    (await readEnvVarFromFile("POSTGRES_URL_NON_POOLING"));
+
+  if (!connectionString) {
+    process.stdout.write("Skipping blob asset DB sync: POSTGRES_URL_NON_POOLING not configured.\n");
+    return;
+  }
+
+  const client = new Client({
+    connectionString,
+    ssl: { rejectUnauthorized: false },
+  });
+
+  try {
+    await client.connect();
+    for (const [relativePath, url] of Object.entries(files)) {
+      await client.query(
+        `
+          insert into public.blob_assets (id, relative_path, url)
+          values ($1, $2, $3)
+          on conflict (relative_path)
+          do update set url = excluded.url, updated_at = now()
+        `,
+        [keyId("blob_asset", relativePath), relativePath, url]
+      );
+    }
+    process.stdout.write(`Synced ${Object.keys(files).length} blob asset mappings to Postgres.\n`);
+  } finally {
+    await client.end();
+  }
+}
+
 async function main() {
   const absoluteRoot = path.resolve(process.cwd(), ROOT_DIR);
   const absoluteOutput = path.resolve(process.cwd(), OUTPUT_FILE);
@@ -124,6 +180,7 @@ async function main() {
   await fs.mkdir(path.dirname(absoluteOutput), { recursive: true });
   await fs.writeFile(absoluteOutput, `${JSON.stringify(output, null, 2)}\n`, "utf8");
   process.stdout.write(`\nSaved mapping to ${OUTPUT_FILE}\n`);
+  await syncBlobAssetsToDatabase(mapping);
 }
 
 main().catch((error) => {

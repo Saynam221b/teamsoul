@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion, type UseInViewOptions } from "framer-motion";
 import { EASE_PREMIUM, MOTION_TIMINGS } from "@/lib/motion";
 
@@ -29,13 +29,46 @@ export default function RevealOnScroll({
 }: RevealOnScrollProps) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const [isCompactMotionViewport, setIsCompactMotionViewport] = useState(false);
   const isInView = useInView(ref, { once: true, margin: margin as UseInViewOptions["margin"] });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia("(pointer: coarse), (max-width: 820px)");
+    const syncViewport = () => setIsCompactMotionViewport(media.matches);
+    syncViewport();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", syncViewport);
+      return () => media.removeEventListener("change", syncViewport);
+    }
+
+    media.addListener(syncViewport);
+    return () => media.removeListener(syncViewport);
+  }, []);
 
   const Tag = motion[as];
   const resolvedDistance =
-    prefersReducedMotion ? 0 : intensity === "soft" ? Math.min(distance, 18) : intensity === "hero" ? Math.max(distance, 36) : distance;
+    prefersReducedMotion
+      ? 0
+      : isCompactMotionViewport
+        ? Math.min(distance, 12)
+        : intensity === "soft"
+          ? Math.min(distance, 18)
+          : intensity === "hero"
+            ? Math.max(distance, 36)
+            : distance;
   const resolvedDuration =
-    prefersReducedMotion ? MOTION_TIMINGS.fast : intensity === "soft" ? 0.42 : intensity === "hero" ? 0.68 : MOTION_TIMINGS.reveal;
+    prefersReducedMotion
+      ? MOTION_TIMINGS.fast
+      : isCompactMotionViewport
+        ? MOTION_TIMINGS.fast
+        : intensity === "soft"
+          ? 0.42
+          : intensity === "hero"
+            ? 0.68
+            : MOTION_TIMINGS.reveal;
 
   return (
     <Tag

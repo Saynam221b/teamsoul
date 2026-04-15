@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import {
-  getBgisHighlights,
-  getBlobAssetStats,
-  getChampionPlayers,
-  getChampionStaff,
-} from "@/data/bgisChampions";
+import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
+import { getArchiveFeedFallbackMessage, getPublicArchiveFeed } from "@/lib/db/archive";
+import { getPublicBlobAssetFeed, getBlobAssetFeedFallbackMessage } from "@/lib/db/blobAssets";
+import { getBgisHighlights, getChampionPlayers, getChampionStaff } from "@/lib/bgis";
 
 export const metadata: Metadata = {
   title: "BGIS Champions — Team SOUL Archive",
@@ -16,18 +12,33 @@ export const metadata: Metadata = {
     "Team SOUL BGIS 2026 championship gallery with roster photos and highlights.",
 };
 
-export default function BgisChampionsPage() {
-  const players = getChampionPlayers();
-  const staff = getChampionStaff();
-  const highlights = getBgisHighlights();
-  const assetStats = getBlobAssetStats();
+export default async function BgisChampionsPage() {
+  const archiveFeed = await getPublicArchiveFeed();
+  const blobAssetFeed = await getPublicBlobAssetFeed();
+  const players = getChampionPlayers(archiveFeed.players, blobAssetFeed.assets);
+  const staff = getChampionStaff(archiveFeed.staff, blobAssetFeed.assets);
+  const highlights = getBgisHighlights(blobAssetFeed.assets);
+  const assetStats = {
+    generatedAt: blobAssetFeed.generatedAt,
+    totalFiles: blobAssetFeed.totalFiles,
+  };
+  const fallbackMessages = [
+    archiveFeed.source === "fallback"
+      ? getArchiveFeedFallbackMessage(archiveFeed.degradedReason)
+      : null,
+    blobAssetFeed.source === "fallback"
+      ? getBlobAssetFeedFallbackMessage(blobAssetFeed.degradedReason)
+      : null,
+  ].filter((value): value is string => Boolean(value));
 
   return (
-    <div className="archive-shell">
-      <Navbar />
-      <main id="main-content" className="flex-1 pt-28 md:pt-32">
+    <div className="pt-28 md:pt-32">
         <section className="archive-section !pt-0">
           <div className="page-wrap space-y-6">
+            {fallbackMessages.length > 0 ? (
+              <DataFallbackNotice messages={fallbackMessages} />
+            ) : null}
+
             <RevealOnScroll as="section" className="inner-hero rounded-[36px] px-5 py-7 md:px-10 md:py-10" intensity="hero">
               <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
                 <div className="max-w-3xl">
@@ -42,8 +53,9 @@ export default function BgisChampionsPage() {
 
                 <div className="flex flex-wrap gap-3 xl:max-w-[360px] xl:justify-end">
                   <span className="hero-chip">{players.length} player portraits</span>
-                  <span className="hero-chip">{staff.length} coach portrait</span>
-                  <span className="hero-chip">{highlights.length} highlight frames</span>
+                  <span className="hero-chip">
+                    {staff.length} staff / {highlights.length} highlight frames
+                  </span>
                 </div>
               </div>
 
@@ -226,8 +238,6 @@ export default function BgisChampionsPage() {
             </RevealOnScroll>
           </div>
         </section>
-      </main>
-      <Footer />
     </div>
   );
 }

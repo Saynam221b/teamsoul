@@ -10,6 +10,8 @@ const EXTRA_TABLES = [
   "organizations",
   "viewership_milestones",
   "era_key_players",
+  "staff_members",
+  "staff_eras",
   "player_stints",
   "tournament_rosters",
   "awards",
@@ -17,6 +19,7 @@ const EXTRA_TABLES = [
   "roster_snapshot_players",
   "roster_changes",
   "aggregate_stats",
+  "blob_assets",
 ] as const;
 
 async function getTableCount(
