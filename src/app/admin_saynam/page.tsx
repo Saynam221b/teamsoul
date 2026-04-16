@@ -29,6 +29,9 @@ type DbHealth = {
 
 type AdminFilter = "upcoming" | "live" | "completed";
 type ModalMode = "create" | "edit" | "complete";
+type TierFilter = "all" | Tournament["tier"];
+type WinFilter = "all" | "won" | "not_won";
+type YearFilter = "all" | string;
 
 type TournamentFormState = {
   status: "upcoming" | "live" | "completed";
@@ -487,6 +490,9 @@ export default function AdminSaynamPage() {
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<AdminFilter>("upcoming");
+  const [tierFilter, setTierFilter] = useState<TierFilter>("all");
+  const [winFilter, setWinFilter] = useState<WinFilter>("all");
+  const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [players, setPlayers] = useState<AdminPlayerOption[]>([]);
   const [tournaments, setTournaments] = useState<AdminTournament[]>([]);
   const [dbHealth, setDbHealth] = useState<DbHealth | null>(null);
@@ -562,14 +568,39 @@ export default function AdminSaynamPage() {
     [tournaments]
   );
 
+  const yearOptions = useMemo(
+    () =>
+      [...new Set(tournaments.map((item) => item.year))]
+        .sort((a, b) => b - a)
+        .map((year) => String(year)),
+    [tournaments]
+  );
+
+  const hasSecondaryFilters = tierFilter !== "all" || winFilter !== "all" || yearFilter !== "all";
+
   const filteredTournaments = useMemo(() => {
     const term = search.trim().toLowerCase();
     return tournaments.filter((item) => {
       if (item.status !== filter) return false;
+      if (tierFilter !== "all" && item.tier !== tierFilter) return false;
+      if (yearFilter !== "all" && String(item.year) !== yearFilter) return false;
+      if (winFilter === "won" && !item.isWin) return false;
+      if (winFilter === "not_won" && item.isWin) return false;
+
       if (!term) return true;
-      return item.name.toLowerCase().includes(term);
+      const haystack = [
+        item.name,
+        item.tier,
+        item.location ?? "",
+        item.coach ?? "",
+        item.analyst ?? "",
+        item.placement ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(term);
     });
-  }, [filter, search, tournaments]);
+  }, [filter, search, tierFilter, yearFilter, winFilter, tournaments]);
 
   const sortedPlayers = useMemo(
     () =>
@@ -1032,6 +1063,73 @@ export default function AdminSaynamPage() {
                         </button>
                       </div>
                     </div>
+
+                    <div className="mt-4 grid gap-3 md:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Tier
+                        </span>
+                        <select
+                          value={tierFilter}
+                          onChange={(event) => setTierFilter(event.target.value as TierFilter)}
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                        >
+                          <option value="all">All tiers</option>
+                          {TIER_OPTIONS.map((tier) => (
+                            <option key={tier} value={tier}>
+                              {tier}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Result
+                        </span>
+                        <select
+                          value={winFilter}
+                          onChange={(event) => setWinFilter(event.target.value as WinFilter)}
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                        >
+                          <option value="all">All results</option>
+                          <option value="won">Won title</option>
+                          <option value="not_won">Not title win</option>
+                        </select>
+                      </label>
+
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Year
+                        </span>
+                        <select
+                          value={yearFilter}
+                          onChange={(event) => setYearFilter(event.target.value as YearFilter)}
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                        >
+                          <option value="all">All years</option>
+                          {yearOptions.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearch("");
+                          setTierFilter("all");
+                          setWinFilter("all");
+                          setYearFilter("all");
+                        }}
+                        disabled={!search.trim() && !hasSecondaryFilters}
+                        className="self-end rounded-full border border-white/10 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-text-secondary transition-colors enabled:hover:border-white/20 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
                   </div>
                 </section>
 
@@ -1178,7 +1276,7 @@ export default function AdminSaynamPage() {
                     </div>
                   ) : (
                     <div className="rounded-[24px] border border-dashed border-white/10 bg-black/10 px-5 py-16 text-center text-sm text-text-muted">
-                      No tournaments match the current status filter and search.
+                      No tournaments match the active filters.
                     </div>
                   )}
                 </section>
