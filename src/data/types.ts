@@ -224,6 +224,119 @@ export interface AdminPlayerOption {
   isActive: boolean;
 }
 
+export type CommunityVotingState = "draft" | "open" | "locked";
+
+export interface CommunityUser {
+  id: string;
+  username: string;
+  createdAt: string;
+}
+
+export interface CommunitySession {
+  id: string;
+  userId: string;
+  expiresAt: string;
+  createdAt: string;
+  lastSeenAt: string;
+}
+
+export interface CommunityBoardPlayer {
+  id: string;
+  teamId: string;
+  displayName: string;
+  role: string | null;
+  isMvpCandidate: boolean;
+  isIglCandidate: boolean;
+  sortOrder: number;
+}
+
+export interface CommunityBoardTeam {
+  id: string;
+  boardId: string;
+  name: string;
+  shortName: string | null;
+  sortOrder: number;
+  players: CommunityBoardPlayer[];
+}
+
+export interface CommunityBoard {
+  id: string;
+  tournamentId: string;
+  tournamentName: string;
+  tournamentStatus: NonNullable<Tournament["status"]>;
+  headline: string | null;
+  description: string | null;
+  isFeatured: boolean;
+  votingState: CommunityVotingState;
+  createdAt: string;
+  updatedAt: string;
+  teams: CommunityBoardTeam[];
+}
+
+export interface CommunityVote {
+  id: string;
+  boardId: string;
+  userId: string;
+  mvpPlayerId: string;
+  bestIglPlayerId: string;
+  winnerTeamId: string;
+  createdAt: string;
+}
+
+export interface CommunityVoteAggregate {
+  totalVotes: number;
+  mvpVotesByPlayerId: Record<string, number>;
+  iglVotesByPlayerId: Record<string, number>;
+  winnerVotesByTeamId: Record<string, number>;
+}
+
+export interface CommunityAuthPayload {
+  username: string;
+  password: string;
+}
+
+export interface CommunityVotePayload {
+  boardId: string;
+  mvpPlayerId: string;
+  bestIglPlayerId: string;
+  winnerTeamId: string;
+}
+
+export interface CommunityBoardTeamEditorInput {
+  id?: string;
+  name: string;
+  shortName?: string | null;
+  sortOrder: number;
+  players: Array<{
+    id?: string;
+    displayName: string;
+    role?: string | null;
+    isMvpCandidate?: boolean;
+    isIglCandidate?: boolean;
+    sortOrder: number;
+  }>;
+}
+
+export interface CreateCommunityBoardInput {
+  tournamentId: string;
+  headline?: string | null;
+  description?: string | null;
+  votingState?: CommunityVotingState;
+  isFeatured?: boolean;
+}
+
+export interface UpdateCommunityBoardInput {
+  headline?: string | null;
+  description?: string | null;
+  votingState?: CommunityVotingState;
+  isFeatured?: boolean;
+  teams?: CommunityBoardTeamEditorInput[];
+}
+
+export interface AdminCommunityBoard extends CommunityBoard {
+  voteAggregate: CommunityVoteAggregate;
+}
+
 // Tier color mapping — muted professional palette
 export const TIER_COLORS: Record<string, { bg: string; text: string; glow: string }> = {
   "S-Tier": { bg: "bg-cyan-400/10", text: "text-cyan-300", glow: "" },

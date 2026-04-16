@@ -10,6 +10,7 @@ import RouteLink from "./RouteLink";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/tournaments", label: "Tournaments" },
+  { href: "/community", label: "Community" },
   { href: "/roster", label: "Roster" },
   { href: "/bgis-champions", label: "Champions" },
 ];

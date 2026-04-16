@@ -21,6 +21,12 @@ const EXTRA_TABLES = [
   "roster_changes",
   "aggregate_stats",
   "blob_assets",
+  "community_users",
+  "community_sessions",
+  "community_boards",
+  "community_board_teams",
+  "community_board_players",
+  "community_board_votes",
 ] as const;
 
 async function getTableCount(

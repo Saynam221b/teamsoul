@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import AdminCommunitySection from "@/components/admin/AdminCommunitySection";
 import { formatDate, formatPrize, getMonthName } from "@/data/helpers";
 import type {
   AdminPlayerOption,
@@ -32,6 +33,7 @@ type ModalMode = "create" | "edit" | "complete";
 type TierFilter = "all" | Tournament["tier"];
 type WinFilter = "all" | "won" | "not_won";
 type YearFilter = "all" | string;
+type AdminSection = "tournaments" | "community";
 
 type TournamentFormState = {
   status: "upcoming" | "live" | "completed";
@@ -493,6 +495,7 @@ export default function AdminSaynamPage() {
   const [tierFilter, setTierFilter] = useState<TierFilter>("all");
   const [winFilter, setWinFilter] = useState<WinFilter>("all");
   const [yearFilter, setYearFilter] = useState<YearFilter>("all");
+  const [adminSection, setAdminSection] = useState<AdminSection>("tournaments");
   const [players, setPlayers] = useState<AdminPlayerOption[]>([]);
   const [tournaments, setTournaments] = useState<AdminTournament[]>([]);
   const [dbHealth, setDbHealth] = useState<DbHealth | null>(null);
@@ -683,6 +686,7 @@ export default function AdminSaynamPage() {
     setDbHealth(null);
     setError("");
     setNotice("");
+    setAdminSection("tournaments");
     resetModal();
   }
 
@@ -842,29 +846,36 @@ export default function AdminSaynamPage() {
               <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl">
                   <p className="section-kicker">Admin control</p>
-                  <h1 className="section-title">Tournament command board</h1>
+                  <h1 className="section-title">
+                    {adminSection === "community" ? "Community voting board" : "Tournament command board"}
+                  </h1>
                   <p className="section-copy">
-                    Add upcoming or ongoing tournaments, then move them through completion with
-                    structured form inputs only. Raw JSON row editing stays out of the loop.
+                    {adminSection === "community"
+                      ? "Create featured live voting boards, manage teams and player candidates, and inspect vote totals."
+                      : "Add upcoming or ongoing tournaments, then move them through completion with structured form inputs only. Raw JSON row editing stays out of the loop."}
                   </p>
                 </div>
 
                 {authorized ? (
                   <div className="flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => openCreateModal("upcoming")}
-                      className="button-primary"
-                    >
-                      Add New Upcoming Tournament
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => openCreateModal("live")}
-                      className="button-secondary"
-                    >
-                      Add Ongoing Tournament
-                    </button>
+                    {adminSection === "tournaments" ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => openCreateModal("upcoming")}
+                          className="button-primary"
+                        >
+                          Add New Upcoming Tournament
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openCreateModal("live")}
+                          className="button-secondary"
+                        >
+                          Add Ongoing Tournament
+                        </button>
+                      </>
+                    ) : null}
                     <button type="button" onClick={handleLogout} className="button-secondary">
                       Logout
                     </button>
@@ -909,7 +920,34 @@ export default function AdminSaynamPage() {
               </form>
             ) : (
               <>
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                <div className="archive-panel flex flex-wrap gap-2 rounded-[24px] p-3">
+                  <button
+                    type="button"
+                    onClick={() => setAdminSection("tournaments")}
+                    className={`rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.16em] ${
+                      adminSection === "tournaments"
+                        ? "border border-accent/40 bg-accent/15 text-white"
+                        : "border border-white/10 bg-white/[0.03] text-text-secondary"
+                    }`}
+                  >
+                    Tournaments
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAdminSection("community")}
+                    className={`rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.16em] ${
+                      adminSection === "community"
+                        ? "border border-accent/40 bg-accent/15 text-white"
+                        : "border border-white/10 bg-white/[0.03] text-text-secondary"
+                    }`}
+                  >
+                    Community
+                  </button>
+                </div>
+
+                {adminSection === "tournaments" ? (
+                  <>
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                   <article className="archive-panel rounded-[24px] p-5">
                     <p className="section-kicker">Ongoing</p>
                     <p className="font-display text-4xl uppercase leading-none text-energy md:text-5xl">
@@ -1280,6 +1318,10 @@ export default function AdminSaynamPage() {
                     </div>
                   )}
                 </section>
+                  </>
+                ) : (
+                  <AdminCommunitySection authHeaders={authHeaders} />
+                )}
               </>
             )}
           </div>
