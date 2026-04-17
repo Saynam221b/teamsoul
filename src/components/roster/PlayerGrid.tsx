@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useDeferredValue, useMemo, useState } from "react";
+import { startTransition, useDeferredValue, useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Era, Player } from "@/data/types";
 import PlayerCard from "./PlayerCard";
 import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
@@ -13,10 +14,52 @@ interface PlayerGridProps {
 }
 
 export default function PlayerGrid({ players, eras }: PlayerGridProps) {
-  const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
-  const [eraFilter, setEraFilter] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const statusParam = searchParams.get("status");
+  const statusFilter: FilterStatus =
+    statusParam === "active" || statusParam === "retired" || statusParam === "departed"
+      ? statusParam
+      : "all";
+  const eraFilter = searchParams.get("era") ?? "all";
+  const searchQuery = searchParams.get("q") ?? "";
   const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  const updateFilters = (nextValues: {
+    status: FilterStatus;
+    era: string;
+    query: string;
+  }) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+
+    if (nextValues.status === "all") {
+      nextParams.delete("status");
+    } else {
+      nextParams.set("status", nextValues.status);
+    }
+
+    if (nextValues.era === "all") {
+      nextParams.delete("era");
+    } else {
+      nextParams.set("era", nextValues.era);
+    }
+
+    if (nextValues.query.trim()) {
+      nextParams.set("q", nextValues.query);
+    } else {
+      nextParams.delete("q");
+    }
+
+    const nextQuery = nextParams.toString();
+    const currentQuery = searchParams.toString();
+    if (nextQuery === currentQuery) return;
+
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+    startTransition(() => {
+      router.replace(nextUrl, { scroll: false });
+    });
+  };
 
   const filteredPlayers = useMemo(() => {
     let result: Player[] = players;
@@ -65,11 +108,7 @@ export default function PlayerGrid({ players, eras }: PlayerGridProps) {
     statusFilter !== "all" || eraFilter !== "all" || Boolean(searchQuery.trim());
 
   const resetFilters = () => {
-    startTransition(() => {
-      setStatusFilter("all");
-      setEraFilter("all");
-    });
-    setSearchQuery("");
+    updateFilters({ status: "all", era: "all", query: "" });
   };
 
   return (
@@ -96,7 +135,13 @@ export default function PlayerGrid({ players, eras }: PlayerGridProps) {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                updateFilters({
+                  status: statusFilter,
+                  era: eraFilter,
+                  query: e.target.value,
+                })
+              }
               placeholder="Search name, role, or real name"
               className="filter-input"
               id="player-search"
@@ -109,7 +154,13 @@ export default function PlayerGrid({ players, eras }: PlayerGridProps) {
               {(["all", "active", "retired", "departed"] as FilterStatus[]).map((status) => (
                 <button
                   key={status}
-                  onClick={() => startTransition(() => setStatusFilter(status))}
+                  onClick={() =>
+                    updateFilters({
+                      status,
+                      era: eraFilter,
+                      query: searchQuery,
+                    })
+                  }
                   className={`filter-pill ${statusFilter === status ? "filter-pill-active" : "filter-pill-muted"}`}
                 >
                   {status}
@@ -123,7 +174,13 @@ export default function PlayerGrid({ players, eras }: PlayerGridProps) {
             <select
               id="player-era-filter"
               value={eraFilter}
-              onChange={(e) => startTransition(() => setEraFilter(e.target.value))}
+              onChange={(e) =>
+                updateFilters({
+                  status: statusFilter,
+                  era: e.target.value,
+                  query: searchQuery,
+                })
+              }
               className="filter-select"
             >
               <option value="all">All Eras</option>

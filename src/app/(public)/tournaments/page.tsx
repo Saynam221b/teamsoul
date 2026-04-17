@@ -57,26 +57,31 @@ export default async function TournamentsPage() {
 
               <div className="hero-stat-grid mt-5 md:mt-8">
                 <article className="hero-stat-card">
+                  <p className="section-label">Completed runs</p>
                   <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {completed.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Championships</p>
                   <p className="font-display text-2xl uppercase leading-none text-accent md:text-4xl">
                     {wins.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Total prize pool</p>
                   <p className="font-display text-[clamp(1.125rem,2.5vw,2.4rem)] uppercase leading-none text-white">
                     {formatPrize(totalPrize)}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Live events</p>
                   <p className="font-display text-2xl uppercase leading-none text-energy md:text-4xl">
                     {ongoing.length}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Upcoming events</p>
                   <p className="font-display text-2xl uppercase leading-none text-gold md:text-4xl">
                     {upcoming.length}
                   </p>

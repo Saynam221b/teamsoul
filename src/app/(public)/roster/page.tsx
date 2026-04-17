@@ -68,21 +68,25 @@ export default async function RosterPage() {
 
               <div className="hero-stat-grid mt-5 md:mt-8">
                 <article className="hero-stat-card">
+                  <p className="section-label">All players</p>
                   <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {totalPlayers}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Active now</p>
                   <p className="font-display text-2xl uppercase leading-none text-accent md:text-4xl">
                     {activePlayers}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Founders</p>
                   <p className="font-display text-2xl uppercase leading-none text-gold md:text-4xl">
                     {founders}
                   </p>
                 </article>
                 <article className="hero-stat-card">
+                  <p className="section-label">Awards tracked</p>
                   <p className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
                     {awardsTracked}
                   </p>

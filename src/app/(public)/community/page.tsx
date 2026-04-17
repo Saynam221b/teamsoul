@@ -46,7 +46,7 @@ export default async function CommunityPage() {
     user = await getCurrentCommunityUser();
     board = await getFeaturedCommunityBoard();
     userVote = user && board ? await getCommunityVoteForUser(board.id, user.id) : null;
-    voteAggregate = user && board && userVote ? await getCommunityVoteAggregate(board.id) : null;
+    voteAggregate = user && board ? await getCommunityVoteAggregate(board.id) : null;
   } catch (error) {
     if (isMissingCommunityTableError(error)) {
       setupMessage =

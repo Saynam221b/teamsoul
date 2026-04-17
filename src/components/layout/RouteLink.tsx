@@ -28,14 +28,10 @@ function LinkPendingHint({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!pending || mode === "off") {
-      setVisible(false);
-      return;
-    }
-
+    const shouldShow = pending && mode !== "off";
     const timer = window.setTimeout(() => {
-      setVisible(true);
-    }, delayMs);
+      setVisible(shouldShow);
+    }, shouldShow ? delayMs : 0);
 
     return () => window.clearTimeout(timer);
   }, [delayMs, mode, pending]);

@@ -492,7 +492,9 @@ export async function submitCommunityVote(userId: string, payload: CommunityVote
           select p.id
           from public.community_board_players p
           join public.community_board_teams t on t.id = p.team_id
-          where p.id = $1 and t.board_id = $2
+          where p.id = $1
+            and t.board_id = $2
+            and p.is_mvp_candidate = true
           limit 1
         `,
         [payload.mvpPlayerId, payload.boardId]
@@ -516,7 +518,7 @@ export async function submitCommunityVote(userId: string, payload: CommunityVote
     }
 
     if (!(mvpCheck.rows as Array<{ id: string }>)[0]) {
-      throw new Error("MVP player must belong to the board.");
+      throw new Error("MVP player must be an eligible MVP candidate on this board.");
     }
 
     if (!(iglCheck.rows as Array<{ id: string }>)[0]) {

@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useMemo, useState } from "react";
+import { startTransition, useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Tournament } from "@/data/types";
 import TournamentCard from "./TournamentCard";
 import DynamicFilterDock from "@/components/shared/DynamicFilterDock";
@@ -25,10 +26,55 @@ const TIER_FILTERS = [
 ] as const;
 
 export default function TournamentDash({ tournaments }: { tournaments: Tournament[] }) {
-  const [activeTab, setActiveTab] = useState<TabId>("championships");
-  const [tierFilter, setTierFilter] = useState<string>("All");
-  const [yearFilter, setYearFilter] = useState<number | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const tabParam = searchParams.get("view");
+  const activeTab: TabId =
+    tabParam === "all" || tabParam === "by-year" || tabParam === "championships"
+      ? tabParam
+      : "championships";
+  const tierParam = searchParams.get("tier");
+  const tierFilter = TIER_FILTERS.includes((tierParam ?? "All") as (typeof TIER_FILTERS)[number])
+    ? (tierParam as (typeof TIER_FILTERS)[number] | null) ?? "All"
+    : "All";
+  const yearParam = searchParams.get("year");
+  const parsedYear =
+    yearParam && Number.isFinite(Number(yearParam)) ? Number(yearParam) : null;
+  const yearFilter = parsedYear;
   const source = tournaments;
+
+  const updateFilters = (nextValues: { tab: TabId; tier: string; year: number | null }) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+
+    if (nextValues.tab === "championships") {
+      nextParams.delete("view");
+    } else {
+      nextParams.set("view", nextValues.tab);
+    }
+
+    if (nextValues.tier === "All") {
+      nextParams.delete("tier");
+    } else {
+      nextParams.set("tier", nextValues.tier);
+    }
+
+    if (nextValues.year === null) {
+      nextParams.delete("year");
+    } else {
+      nextParams.set("year", String(nextValues.year));
+    }
+
+    const nextQuery = nextParams.toString();
+    const currentQuery = searchParams.toString();
+    if (nextQuery === currentQuery) return;
+
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+    startTransition(() => {
+      router.replace(nextUrl, { scroll: false });
+    });
+  };
 
   const allTournaments = useMemo(
     () => getCompletedTournaments(source),
@@ -107,11 +153,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   const hasActiveFilters = activeTab !== "championships" || tierFilter !== "All" || yearFilter !== null;
 
   const resetFilters = () => {
-    startTransition(() => {
-      setActiveTab("championships");
-      setTierFilter("All");
-      setYearFilter(null);
-    });
+    updateFilters({ tab: "championships", tier: "All", year: null });
   };
 
   return (
@@ -184,11 +226,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
                 <button
                   key={tab.id}
                   onClick={() => {
-                    startTransition(() => {
-                      setActiveTab(tab.id);
-                      setTierFilter("All");
-                      setYearFilter(null);
-                    });
+                    updateFilters({ tab: tab.id, tier: "All", year: null });
                   }}
                   className={`filter-pill ${activeTab === tab.id ? "filter-pill-active" : "filter-pill-muted"}`}
                 >
@@ -204,7 +242,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
               {TIER_FILTERS.map((tier) => (
                 <button
                   key={tier}
-                  onClick={() => startTransition(() => setTierFilter(tier))}
+                  onClick={() => updateFilters({ tab: activeTab, tier, year: yearFilter })}
                   className={`filter-pill ${tierFilter === tier ? "filter-pill-accent" : "filter-pill-muted"}`}
                 >
                   {tier}
@@ -219,11 +257,11 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
               <select
                 id="tournament-year-filter"
                 value={yearFilter ?? ""}
-                onChange={(e) =>
-                  startTransition(() =>
-                    setYearFilter(e.target.value ? Number(e.target.value) : null)
-                  )
-                }
+                onChange={(e) => updateFilters({
+                  tab: activeTab,
+                  tier: tierFilter,
+                  year: e.target.value ? Number(e.target.value) : null,
+                })}
                 className="filter-select"
               >
                 <option value="">All Years</option>
