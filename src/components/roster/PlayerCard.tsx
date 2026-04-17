@@ -19,7 +19,7 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
 
   return (
     <article
-      className="archive-card-shell archive-panel public-card group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
+      className="archive-card-shell archive-panel public-card route-card-chromatic group rounded-[22px] p-4 md:rounded-[26px] md:p-5"
       style={{ animationDelay: `${Math.min(index * 24, 160)}ms` }}
     >
       <div className="mb-4 flex items-start justify-between gap-2 md:mb-5 md:gap-3">

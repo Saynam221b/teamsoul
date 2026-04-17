@@ -21,6 +21,12 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
 
   return (
     <section className="hero-section relative overflow-hidden pt-24 md:pt-32">
+      <div className="hero-kinetic-layers" aria-hidden="true">
+        <span className="hero-orb hero-orb-cyan" />
+        <span className="hero-orb hero-orb-energy" />
+        <span className="hero-orb hero-orb-gold" />
+        <span className="hero-grid-sweep" />
+      </div>
       <div className="page-wrap">
         <div className="hero-stage relative px-4 pb-7 pt-6 md:px-5 md:pb-8 md:pt-8 lg:px-6 lg:pb-10 lg:pt-10">
           <div className="absolute inset-0">
@@ -33,7 +39,7 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
               <RevealOnScroll distance={24} margin="-20px" intensity="hero">
                 <div className="max-w-3xl">
                   <span className="eyebrow-pill">{homeHeroContent.eyebrow}</span>
-                  <h1 className="hero-title mt-6 font-display uppercase text-white">
+                  <h1 className="hero-title hero-title-kinetic mt-6 font-display uppercase text-white">
                     Team Soul
                     <span className="hero-tagline mt-3 block text-text-secondary">
                       {homeHeroContent.title}
@@ -65,6 +71,7 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
               <RevealOnScroll delay={0.1} distance={24} margin="-20px" intensity="hero">
                 <div className="flex flex-col justify-end gap-4 md:gap-6 xl:gap-7 lg:pl-8">
                   <div className="hero-highlight relative overflow-hidden">
+                    <span className="hero-highlight-sweep" aria-hidden="true" />
                     <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(255,255,255,0.04),transparent_38%,rgba(255,255,255,0.015))]" />
                     <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(0,229,255,0.35),transparent)]" />
 
@@ -91,7 +98,7 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
                           </p>
                         </div>
 
-                        <div className="relative hidden h-28 w-28 shrink-0 md:block">
+                        <div className="hero-logo-orbit relative hidden h-28 w-28 shrink-0 md:block">
                           <Image
                             src="/logo.png"
                             alt="Team SOUL logo"
@@ -131,7 +138,7 @@ export default function HeroSection({ organization, stats }: HeroSectionProps) {
             <RevealOnScroll delay={0.2} distance={20} margin="-20px" className="mt-1">
               <div className="stat-marquee">
                 {marqueeStats.map((item) => (
-                  <div key={item.label}>
+                  <div key={item.label} className="stat-marquee-card">
                     <p className="font-display text-xl uppercase leading-none tracking-[0.06em] text-white md:text-3xl">
                       {item.value}
                     </p>

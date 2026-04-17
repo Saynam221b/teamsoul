@@ -31,10 +31,16 @@ export default async function TournamentsPage() {
       : null;
 
   return (
-    <div className="space-y-6 pt-28 md:space-y-8 md:pt-32">
+    <div className="tournaments-route relative space-y-6 overflow-hidden pt-28 md:space-y-8 md:pt-32">
+        <div className="route-kinetic-layers" aria-hidden="true">
+          <span className="route-kinetic-glow route-kinetic-glow-cyan" />
+          <span className="route-kinetic-glow route-kinetic-glow-gold" />
+          <span className="route-kinetic-lines" />
+        </div>
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
-            <RevealOnScroll as="div" className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
+            <RevealOnScroll as="div" className="inner-hero route-hero route-hero-tournaments rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10" intensity="hero">
+              <span className="route-hero-sweep" aria-hidden="true" />
               <div className="flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-end xl:justify-between">
                 <div className="max-w-3xl">
                   <p className="section-kicker">Tournament archive</p>
@@ -102,7 +108,7 @@ export default async function TournamentsPage() {
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
+              <RevealOnScroll as="div" className="archive-panel public-card route-info-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Archive signal</p>
                 <h2 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
                   Scan fast, then go deep
@@ -113,7 +119,7 @@ export default async function TournamentsPage() {
                 </p>
               </RevealOnScroll>
 
-              <RevealOnScroll as="div" className="archive-panel public-card rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
+              <RevealOnScroll as="div" className="archive-panel public-card route-info-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.1}>
                 <p className="section-kicker">Best return</p>
                 <p className="font-display text-xl uppercase leading-none text-white md:text-3xl">
                   {wins[0]?.year ?? "—"}

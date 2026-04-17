@@ -69,17 +69,33 @@ export default function RevealOnScroll({
           : intensity === "hero"
             ? 0.68
             : MOTION_TIMINGS.reveal;
+  const shouldUseHeroSpring =
+    !prefersReducedMotion && !isCompactMotionViewport && intensity === "hero";
 
   return (
     <Tag
       ref={ref}
-      initial={{ opacity: 0, y: resolvedDistance }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: resolvedDistance }}
-      transition={{
-        duration: resolvedDuration,
-        delay,
-        ease: EASE_PREMIUM,
-      }}
+      initial={{ opacity: 0, y: resolvedDistance, scale: shouldUseHeroSpring ? 0.97 : 1 }}
+      animate={
+        isInView
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: resolvedDistance, scale: shouldUseHeroSpring ? 0.97 : 1 }
+      }
+      transition={
+        shouldUseHeroSpring
+          ? {
+              type: "spring",
+              stiffness: 130,
+              damping: 20,
+              mass: 0.9,
+              delay,
+            }
+          : {
+              duration: resolvedDuration,
+              delay,
+              ease: EASE_PREMIUM,
+            }
+      }
       className={className}
     >
       {children}

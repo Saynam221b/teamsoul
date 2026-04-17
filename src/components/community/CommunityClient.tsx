@@ -151,7 +151,7 @@ export default function CommunityClient({
   if (!user) {
     return (
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-        <article className="archive-panel rounded-[28px] p-6 md:p-8">
+        <article className="archive-panel public-card route-info-panel rounded-[28px] p-6 md:p-8">
           <p className="section-kicker">Community access</p>
           <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
             Vote Like A Team SOUL Insider
@@ -161,7 +161,7 @@ export default function CommunityClient({
           </p>
         </article>
 
-        <form onSubmit={handleAuthSubmit} className="archive-panel rounded-[28px] p-6 md:p-8">
+        <form onSubmit={handleAuthSubmit} className="archive-panel public-card route-live-panel rounded-[28px] p-6 md:p-8">
           <div className="mb-6 flex gap-2 rounded-full border border-white/10 bg-black/20 p-1">
             <button
               type="button"
@@ -218,7 +218,7 @@ export default function CommunityClient({
 
   if (!board) {
     return (
-      <section className="archive-panel rounded-[28px] p-6 md:p-8">
+      <section className="archive-panel public-card route-info-panel rounded-[28px] p-6 md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="section-kicker">Welcome, {user.username}</p>
@@ -246,7 +246,7 @@ export default function CommunityClient({
 
   return (
     <div className="space-y-6">
-      <section className="archive-panel rounded-[28px] p-6 md:p-8">
+      <section className="archive-panel public-card route-live-panel rounded-[28px] p-6 md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="section-kicker">Featured ongoing tournament</p>
@@ -268,26 +268,26 @@ export default function CommunityClient({
       </section>
 
       {userVote ? (
-        <section className="archive-panel rounded-[28px] p-6 md:p-8">
+        <section className="archive-panel public-card route-live-panel rounded-[28px] p-6 md:p-8">
           <p className="section-kicker">Vote submitted</p>
           <h3 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">Your Picks Are Locked</h3>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <article className="rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
+            <article className="route-card-chromatic rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">MVP</p>
               <p className="mt-2 text-base text-white">{candidateData.playerNameById[userVote.mvpPlayerId] ?? "-"}</p>
             </article>
-            <article className="rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
+            <article className="route-card-chromatic rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">Best IGL</p>
               <p className="mt-2 text-base text-white">{candidateData.playerNameById[userVote.bestIglPlayerId] ?? "-"}</p>
             </article>
-            <article className="rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
+            <article className="route-card-chromatic rounded-[18px] border border-white/10 bg-white/[0.03] p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">Winner</p>
               <p className="mt-2 text-base text-white">{candidateData.teamNameById[userVote.winnerTeamId] ?? "-"}</p>
             </article>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <article className="rounded-[20px] border border-white/10 p-4">
+            <article className="route-card-chromatic rounded-[20px] border border-white/10 p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">MVP leaderboard</p>
               <div className="mt-3 space-y-2 text-sm text-text-secondary">
                 {candidateData.mvpCandidates.map((candidate) => (
@@ -299,7 +299,7 @@ export default function CommunityClient({
               </div>
             </article>
 
-            <article className="rounded-[20px] border border-white/10 p-4">
+            <article className="route-card-chromatic rounded-[20px] border border-white/10 p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">IGL leaderboard</p>
               <div className="mt-3 space-y-2 text-sm text-text-secondary">
                 {candidateData.iglCandidates.map((candidate) => (
@@ -311,7 +311,7 @@ export default function CommunityClient({
               </div>
             </article>
 
-            <article className="rounded-[20px] border border-white/10 p-4">
+            <article className="route-card-chromatic rounded-[20px] border border-white/10 p-4">
               <p className="text-[10px] uppercase tracking-[0.16em] text-text-muted">Winner picks</p>
               <div className="mt-3 space-y-2 text-sm text-text-secondary">
                 {candidateData.teams.map((team) => (
@@ -325,7 +325,7 @@ export default function CommunityClient({
           </div>
         </section>
       ) : (
-        <form onSubmit={handleVoteSubmit} className="archive-panel rounded-[28px] p-6 md:p-8">
+        <form onSubmit={handleVoteSubmit} className="archive-panel public-card route-live-panel rounded-[28px] p-6 md:p-8">
           <p className="section-kicker">One vote per account</p>
           <h3 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
             Lock Your Tournament Predictions

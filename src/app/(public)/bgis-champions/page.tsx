@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
+import HighlightGallery from "@/components/champions/HighlightGallery";
 import { getArchiveFeedUnavailableMessage, getPublicArchiveFeed } from "@/lib/db/archive";
 import { getPublicBlobAssetFeed, getBlobAssetFeedUnavailableMessage } from "@/lib/db/blobAssets";
 import { getBgisHighlights, getChampionPlayers, getChampionStaff } from "@/lib/bgis";
@@ -33,14 +34,20 @@ export default async function BgisChampionsPage() {
   ].filter((value): value is string => Boolean(value));
 
   return (
-    <div className="pt-28 md:pt-32">
+    <div className="champions-route relative overflow-hidden pt-28 md:pt-32">
+        <div className="route-kinetic-layers" aria-hidden="true">
+          <span className="route-kinetic-glow route-kinetic-glow-cyan" />
+          <span className="route-kinetic-glow route-kinetic-glow-gold" />
+          <span className="route-kinetic-lines" />
+        </div>
         <section className="archive-section !pt-0">
           <div className="page-wrap space-y-6">
             {unavailableMessages.length > 0 ? (
               <DataFallbackNotice messages={unavailableMessages} />
             ) : null}
 
-            <RevealOnScroll as="section" className="inner-hero rounded-[36px] px-5 py-7 md:px-10 md:py-10" intensity="hero">
+            <RevealOnScroll as="section" className="inner-hero route-hero route-hero-champions rounded-[36px] px-5 py-7 md:px-10 md:py-10" intensity="hero">
+              <span className="route-hero-sweep" aria-hidden="true" />
               <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
                 <div className="max-w-3xl">
                   <p className="section-kicker">BGIS 2026</p>
@@ -96,7 +103,7 @@ export default async function BgisChampionsPage() {
             </RevealOnScroll>
 
             <section className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-              <RevealOnScroll as="div" className="archive-panel public-card rounded-[28px] p-6 md:p-7" delay={0.04}>
+              <RevealOnScroll as="div" className="archive-panel public-card route-info-panel rounded-[28px] p-6 md:p-7" delay={0.04}>
                 <p className="section-kicker">Championship setup</p>
                 <h2 className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                   Manya and NakuL reset the era. Ayogi stayed through the title phase.
@@ -108,7 +115,7 @@ export default async function BgisChampionsPage() {
                 </p>
               </RevealOnScroll>
 
-              <RevealOnScroll as="div" className="archive-panel public-card rounded-[28px] p-6 md:p-7" delay={0.1}>
+              <RevealOnScroll as="div" className="archive-panel public-card route-info-panel rounded-[28px] p-6 md:p-7" delay={0.1}>
                 <p className="section-kicker">Support lane</p>
                 <p className="mt-1 text-sm leading-7 text-text-secondary">
                   Soul Ayogi remains attached to the modern chapter as coach, so the gallery now separates
@@ -117,7 +124,7 @@ export default async function BgisChampionsPage() {
               </RevealOnScroll>
             </section>
 
-            <RevealOnScroll as="section" className="archive-panel public-card rounded-[32px] p-6 md:p-8" delay={0.12}>
+            <RevealOnScroll as="section" className="archive-panel public-card route-live-panel rounded-[32px] p-6 md:p-8" delay={0.12}>
               <div className="mb-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
                 <div className="public-card-accent public-card-accent-highlight rounded-[24px] border border-white/8 bg-white/[0.02] p-5 md:p-6">
                   <p className="section-kicker">Championship context</p>
@@ -131,7 +138,7 @@ export default async function BgisChampionsPage() {
                 {staff.map((member) => (
                   <article
                     key={member.id}
-                    className="public-card overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
+                    className="public-card route-card-chromatic overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
                   >
                     <div className="relative aspect-[5/4] bg-black/35">
                       {member.image ? (
@@ -173,7 +180,7 @@ export default async function BgisChampionsPage() {
                 {players.map((player) => (
                   <article
                     key={player.id}
-                    className="public-card overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
+                    className="public-card route-card-chromatic overflow-hidden rounded-[24px] border border-white/8 bg-white/[0.02]"
                   >
                     <div className="relative aspect-[4/5] bg-black/35">
                       {player.image ? (
@@ -204,7 +211,7 @@ export default async function BgisChampionsPage() {
                 </div>
             </RevealOnScroll>
 
-            <RevealOnScroll as="section" className="archive-panel public-card rounded-[32px] p-6 md:p-8" delay={0.16}>
+            <RevealOnScroll as="section" className="archive-panel public-card route-live-panel rounded-[32px] p-6 md:p-8" delay={0.16}>
               <div className="mb-5 flex items-center justify-between gap-3">
                 <h2 className="font-display text-2xl uppercase leading-none text-white md:text-3xl">
                   Highlight frames
@@ -215,22 +222,7 @@ export default async function BgisChampionsPage() {
               </div>
 
               {highlights.length > 0 ? (
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
-                  {highlights.map((highlight) => (
-                    <figure
-                      key={highlight.id}
-                      className="public-card relative aspect-[4/3] overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.02]"
-                    >
-                      <Image
-                        src={highlight.url}
-                        alt={highlight.alt}
-                        fill
-                        className="object-contain object-top"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                      />
-                    </figure>
-                  ))}
-                </div>
+                <HighlightGallery highlights={highlights} />
               ) : (
                 <p className="text-sm leading-7 text-text-muted">
                   No highlight assets found yet. Run <code>npm run upload:bgmi-assets</code>.

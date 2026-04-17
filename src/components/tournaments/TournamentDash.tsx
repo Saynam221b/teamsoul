@@ -159,7 +159,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
   return (
     <div>
       {ongoingTournaments.length > 0 && (
-        <section className="archive-panel public-card mb-5 rounded-[20px] p-4 md:mb-6 md:rounded-[24px] md:p-5">
+        <section className="archive-panel public-card route-live-panel mb-5 rounded-[20px] p-4 md:mb-6 md:rounded-[24px] md:p-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
             <div>
               <p className="section-kicker">Ongoing right now</p>
@@ -181,7 +181,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
       )}
 
       {upcomingTournaments.length > 0 && (
-        <section className="archive-panel public-card mb-6 rounded-[20px] p-4 md:mb-8 md:rounded-[24px] md:p-5">
+        <section className="archive-panel public-card route-live-panel mb-6 rounded-[20px] p-4 md:mb-8 md:rounded-[24px] md:p-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b border-white/8 pb-4 md:mb-5 md:gap-4 md:pb-5">
             <div>
               <p className="section-kicker">Upcoming events</p>
@@ -276,7 +276,7 @@ export default function TournamentDash({ tournaments }: { tournaments: Tournamen
         </div>
       </DynamicFilterDock>
 
-      <div className="filter-results-shell">
+      <div className="filter-results-shell route-results-grid route-results-grid-tournaments">
         {activeTab === "by-year" ? (
           <div className="space-y-10">
             {groupedByYear.map(({ year, tournaments: items }) => (

@@ -41,7 +41,7 @@ export default function TournamentCard({
 
   return (
     <article
-      className={`${featured ? "bento-featured" : ""} archive-card-shell archive-panel public-card rounded-[20px] p-4 md:rounded-[22px]`}
+      className={`${featured ? "bento-featured" : ""} archive-card-shell archive-panel public-card route-card-chromatic rounded-[20px] p-4 md:rounded-[22px]`}
       style={{ animationDelay: `${Math.min(index * 28, 180)}ms` }}
     >
       <div className="mb-3 flex items-start justify-between gap-2 md:mb-4 md:gap-3">

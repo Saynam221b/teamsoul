@@ -194,7 +194,7 @@ export default function PlayerGrid({ players, eras }: PlayerGridProps) {
         </div>
       </DynamicFilterDock>
 
-      <div className="filter-results-shell bento-grid">
+      <div className="filter-results-shell bento-grid route-results-grid route-results-grid-roster">
         {filteredPlayers.map((player, index) => (
           <PlayerCard key={player.id} player={player} index={index} />
         ))}

@@ -41,6 +41,19 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
   return (
     <header className={`fixed inset-x-0 top-0 z-50 pt-3 md:pt-4 ${hidden ? "pointer-events-none" : ""}`}>
       <motion.div
@@ -56,13 +69,18 @@ export default function Navbar() {
             : "nav-shell-rest"
         }`}
       >
+        <span className="nav-shell-ambient nav-shell-ambient-cyan" aria-hidden="true" />
+        <span className="nav-shell-ambient nav-shell-ambient-gold" aria-hidden="true" />
+        <span className="nav-shell-grid" aria-hidden="true" />
+
         <RouteLink
           href="/"
           className="nav-brand flex min-w-0 items-center gap-3"
           prefetch={true}
           pendingIndicator="off"
+          onClick={() => setMenuOpen(false)}
         >
-          <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-white/5">
+          <div className="nav-brand-mark relative h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-white/5">
             <Image
               src="/logo.png"
               alt="Team SOUL logo"
@@ -105,6 +123,8 @@ export default function Navbar() {
           onClick={() => setMenuOpen((value) => !value)}
           className="nav-menu-trigger inline-flex h-10 items-center justify-center rounded-full px-4 text-[11px] uppercase tracking-[0.22em] text-text-primary md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-panel"
         >
           {menuOpen ? "Close" : "Menu"}
         </button>
@@ -117,7 +137,8 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
             transition={{ duration: prefersReducedMotion ? MOTION_TIMINGS.fast : MOTION_TIMINGS.base, ease: EASE_PREMIUM }}
-            className="page-wrap nav-mobile-panel mt-2 flex flex-col gap-2 p-3 md:hidden"
+            className="page-wrap nav-mobile-panel public-card mt-2 flex flex-col gap-2 p-3 md:hidden"
+            id="mobile-nav-panel"
           >
             {NAV_LINKS.map((item) => {
               const active = pathname === item.href;

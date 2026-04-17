@@ -1390,6 +1390,60 @@ h6 {
     transform var(--motion-duration-base) var(--motion-ease-premium);
 }
 
+.nav-shell-ambient {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.nav-shell-ambient-cyan {
+  width: 170px;
+  height: 170px;
+  top: -120px;
+  right: 8%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 76%);
+  animation: navAmbientFloat 7.8s ease-in-out infinite;
+}
+
+.nav-shell-ambient-gold {
+  width: 130px;
+  height: 130px;
+  top: -84px;
+  left: 14%;
+  background: radial-gradient(circle, rgba(243, 199, 106, 0.12) 0%, rgba(243, 199, 106, 0) 74%);
+  animation: navAmbientFloat 8.6s ease-in-out infinite reverse;
+}
+
+.nav-shell-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.84), transparent 88%);
+  animation: navGridDrift 9.4s linear infinite;
+}
+
+.nav-brand,
+.nav-shell nav,
+.nav-menu-trigger {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 229, 255, 0.16);
+  mask-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.92) 26%, rgba(0, 0, 0, 0.92) 74%, transparent);
+  animation: navBrandRing 5.8s linear infinite;
+}
+
 .nav-shell-rest {
   background: rgba(10, 17, 28, 0.62);
   border: 1px solid rgba(128, 145, 164, 0.14);
@@ -1508,10 +1562,109 @@ h6 {
   .nav-mobile-link-active {
     transform: none;
   }
+
+  .hero-orb {
+    opacity: 0.72;
+    filter: none;
+  }
+
+  .hero-grid-sweep {
+    opacity: 0.12;
+  }
+
+  .hero-highlight-sweep {
+    animation-duration: 9.5s;
+    opacity: 0.22;
+  }
+
+  .stat-marquee-card {
+    animation-duration: 7.2s;
+  }
+
+  .route-kinetic-lines {
+    opacity: 0.08;
+  }
+
+  .route-kinetic-glow {
+    opacity: 0.76;
+  }
+
+  .route-live-panel::before {
+    animation-duration: 9.2s;
+    opacity: 0.34;
+  }
+
+  .route-hero .hero-stat-card {
+    animation-duration: 7.4s;
+  }
+
+  .nav-shell-ambient,
+  .footer-orb {
+    opacity: 0.76;
+  }
+
+  .nav-shell-grid,
+  .footer-grid {
+    opacity: 0.06;
+  }
 }
 
 .hero-section::before {
   content: none;
+}
+
+.hero-kinetic-layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(2px);
+  will-change: transform, opacity;
+}
+
+.hero-orb-cyan {
+  width: clamp(240px, 30vw, 460px);
+  height: clamp(240px, 30vw, 460px);
+  top: -100px;
+  right: -120px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.22) 0%, rgba(0, 229, 255, 0) 72%);
+  animation: heroOrbFloatCyan 12s ease-in-out infinite;
+}
+
+.hero-orb-energy {
+  width: clamp(180px, 22vw, 320px);
+  height: clamp(180px, 22vw, 320px);
+  bottom: 20%;
+  left: -80px;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, rgba(57, 255, 20, 0) 72%);
+  animation: heroOrbFloatEnergy 10s ease-in-out infinite;
+}
+
+.hero-orb-gold {
+  width: clamp(200px, 24vw, 340px);
+  height: clamp(200px, 24vw, 340px);
+  bottom: -130px;
+  right: 18%;
+  background: radial-gradient(circle, rgba(243, 199, 106, 0.14) 0%, rgba(243, 199, 106, 0) 74%);
+  animation: heroOrbFloatGold 11s ease-in-out infinite;
+}
+
+.hero-grid-sweep {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background:
+    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+  background-size: 86px 86px;
+  mask-image: radial-gradient(circle at 30% 10%, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.24) 68%, transparent 100%);
+  animation: heroGridDrift 16s linear infinite;
 }
 
 .hero-stage {
@@ -1525,6 +1678,274 @@ h6 {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
     0 20px 48px rgba(0, 0, 0, 0.18);
+}
+
+.hero-title-kinetic {
+  text-shadow:
+    0 0 32px rgba(0, 229, 255, 0.14),
+    0 0 82px rgba(0, 0, 0, 0.16);
+}
+
+.hero-highlight {
+  transition:
+    transform var(--motion-duration-slow) var(--motion-ease-premium),
+    box-shadow var(--motion-duration-base) ease;
+  will-change: transform;
+}
+
+.hero-highlight-sweep {
+  position: absolute;
+  inset: -40% auto -40% -44%;
+  width: 34%;
+  pointer-events: none;
+  opacity: 0.32;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.26) 46%, transparent 100%);
+  transform: skewX(-16deg);
+  animation: heroHighlightSweep 7.6s linear infinite;
+}
+
+.hero-logo-orbit {
+  will-change: transform;
+  animation: heroLogoFloat 4.8s ease-in-out infinite;
+}
+
+.hero-badge {
+  animation: heroBadgePulse 3s ease-in-out infinite;
+}
+
+.stat-marquee-card {
+  position: relative;
+  will-change: transform;
+  animation: heroStatWave 6.4s ease-in-out infinite;
+}
+
+.stat-marquee-card:nth-child(2) {
+  animation-delay: 220ms;
+}
+
+.stat-marquee-card:nth-child(3) {
+  animation-delay: 440ms;
+}
+
+.stat-marquee-card:nth-child(4) {
+  animation-delay: 660ms;
+}
+
+.tournaments-route,
+.roster-route,
+.champions-route,
+.community-route {
+  position: relative;
+  isolation: isolate;
+}
+
+.tournaments-route .page-wrap,
+.roster-route .page-wrap,
+.champions-route .page-wrap,
+.community-route .page-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.route-kinetic-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.route-kinetic-glow {
+  position: absolute;
+  border-radius: 999px;
+  will-change: transform, opacity;
+}
+
+.route-kinetic-glow-cyan {
+  width: clamp(240px, 26vw, 420px);
+  height: clamp(240px, 26vw, 420px);
+  top: 8%;
+  right: -120px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 72%);
+  animation: routeGlowDriftA 13s ease-in-out infinite;
+}
+
+.route-kinetic-glow-gold {
+  width: clamp(220px, 24vw, 380px);
+  height: clamp(220px, 24vw, 380px);
+  top: 34%;
+  left: -110px;
+  background: radial-gradient(circle, rgba(243, 199, 106, 0.14) 0%, rgba(243, 199, 106, 0) 72%);
+  animation: routeGlowDriftB 12s ease-in-out infinite;
+}
+
+.route-kinetic-glow-energy {
+  width: clamp(210px, 22vw, 340px);
+  height: clamp(210px, 22vw, 340px);
+  top: 34%;
+  left: -110px;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, rgba(57, 255, 20, 0) 72%);
+  animation: routeGlowDriftB 12s ease-in-out infinite;
+}
+
+.route-kinetic-lines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at 50% 18%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.2) 66%, transparent 100%);
+  animation: routeLinesDrift 16s linear infinite;
+}
+
+.route-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.route-hero-sweep {
+  position: absolute;
+  inset: -40% auto -40% -44%;
+  width: 34%;
+  pointer-events: none;
+  opacity: 0.26;
+  z-index: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.24) 46%, transparent 100%);
+  transform: skewX(-16deg);
+  animation: routeHeroSweep 8s linear infinite;
+}
+
+.route-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.route-hero .hero-stat-card {
+  transition:
+    transform var(--motion-duration-base) var(--motion-ease-premium),
+    box-shadow var(--motion-duration-base) ease;
+  will-change: transform;
+  animation: routeStatBreath 6.2s ease-in-out infinite;
+}
+
+.route-hero .hero-stat-card:nth-child(2) {
+  animation-delay: 170ms;
+}
+
+.route-hero .hero-stat-card:nth-child(3) {
+  animation-delay: 340ms;
+}
+
+.route-hero .hero-stat-card:nth-child(4) {
+  animation-delay: 510ms;
+}
+
+.route-hero .hero-stat-card:nth-child(5) {
+  animation-delay: 680ms;
+}
+
+.route-info-panel {
+  position: relative;
+}
+
+.route-info-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.36;
+  background: linear-gradient(120deg, rgba(0, 229, 255, 0.12), transparent 38%, transparent 68%, rgba(255, 255, 255, 0.06));
+}
+
+.route-live-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.route-live-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 34%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.16), transparent);
+  transform: skewX(-16deg);
+  opacity: 0.5;
+  pointer-events: none;
+  animation: routePanelSweep 7.4s linear infinite;
+}
+
+.route-card-chromatic {
+  position: relative;
+}
+
+.route-card-chromatic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(0, 229, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 92% 88%, rgba(243, 199, 106, 0.11), transparent 26%);
+  opacity: 0.35;
+}
+
+.route-results-grid {
+  position: relative;
+}
+
+.route-results-grid::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.36), transparent);
+  opacity: 0.6;
+}
+
+.route-hero-champions .route-hero-sweep {
+  background: linear-gradient(90deg, transparent 0%, rgba(243, 199, 106, 0.26) 46%, transparent 100%);
+}
+
+.route-hero-community .route-hero-sweep {
+  background: linear-gradient(90deg, transparent 0%, rgba(57, 255, 20, 0.22) 46%, transparent 100%);
+}
+
+.champions-route .route-live-panel::before {
+  background: linear-gradient(90deg, transparent, rgba(243, 199, 106, 0.16), transparent);
+}
+
+.community-route .route-live-panel::before {
+  background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.16), transparent);
+}
+
+.community-route input,
+.community-route select,
+.community-route button {
+  transition:
+    border-color var(--motion-duration-fast) ease,
+    background-color var(--motion-duration-fast) ease,
+    box-shadow var(--motion-duration-fast) ease,
+    transform var(--motion-duration-fast) var(--motion-ease-premium);
+}
+
+.champions-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.champions-highlight-frame {
+  min-height: 150px;
 }
 
 .home-achievement-card,
@@ -1546,6 +1967,85 @@ h6 {
   border-top: 1px solid rgba(128, 145, 164, 0.12);
 }
 
+.footer-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.footer-kinetic-layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.footer-orb {
+  position: absolute;
+  border-radius: 999px;
+  will-change: transform, opacity;
+}
+
+.footer-orb-cyan {
+  width: clamp(240px, 28vw, 420px);
+  height: clamp(240px, 28vw, 420px);
+  bottom: -220px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 74%);
+  animation: footerOrbDriftA 11.2s ease-in-out infinite;
+}
+
+.footer-orb-gold {
+  width: clamp(220px, 24vw, 360px);
+  height: clamp(220px, 24vw, 360px);
+  top: 22%;
+  right: -120px;
+  background: radial-gradient(circle, rgba(243, 199, 106, 0.14) 0%, rgba(243, 199, 106, 0) 74%);
+  animation: footerOrbDriftB 10.4s ease-in-out infinite;
+}
+
+.footer-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.88) 22%, rgba(0, 0, 0, 0.88) 78%, transparent 100%);
+  animation: footerGridDrift 15s linear infinite;
+}
+
+.footer-shell .page-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.footer-callout {
+  background:
+    linear-gradient(150deg, rgba(232, 234, 237, 0.04), transparent 40%),
+    rgba(10, 17, 28, 0.42);
+  border-radius: 30px;
+  padding-inline: clamp(16px, 3vw, 24px);
+}
+
+.footer-creator-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-creator-link::before {
+  content: "";
+  position: absolute;
+  inset: -120% auto -120% -36%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.24), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+  opacity: 0.48;
+  animation: footerCtaSweep 6.8s linear infinite;
+}
+
 .footer-legacy-copy .section-title {
   font-size: clamp(1.85rem, 4vw, 3rem);
   line-height: 0.92;
@@ -1556,6 +2056,27 @@ h6 {
   max-width: 33rem;
   font-size: 0.92rem;
   line-height: 1.6;
+}
+
+.footer-identity-title {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.footer-identity-sub {
+  margin: 0;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.footer-credit-line {
+  margin: 0;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .public-card {
@@ -1604,6 +2125,18 @@ h6 {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .hero-highlight:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 24px 52px rgba(0, 0, 0, 0.22);
+  }
+
+  .route-hero .hero-stat-card:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.16);
+  }
+
   .public-card:hover {
     transform: translateY(-2px);
     border-color: rgba(255, 255, 255, 0.14);
@@ -1711,7 +2244,231 @@ h6 {
   }
 }
 
+@keyframes heroOrbFloatCyan {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(-26px, 20px, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes heroOrbFloatEnergy {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(18px, -20px, 0) scale(1.1);
+    opacity: 0.88;
+  }
+}
+
+@keyframes heroOrbFloatGold {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.58;
+  }
+  50% {
+    transform: translate3d(-20px, -14px, 0) scale(1.06);
+    opacity: 0.9;
+  }
+}
+
+@keyframes heroGridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-32px, -18px, 0);
+  }
+}
+
+@keyframes heroHighlightSweep {
+  from {
+    transform: translate3d(-10%, 0, 0) skewX(-16deg);
+  }
+  to {
+    transform: translate3d(520%, 0, 0) skewX(-16deg);
+  }
+}
+
+@keyframes heroLogoFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes heroBadgePulse {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    box-shadow: 0 0 0 rgba(57, 255, 20, 0);
+  }
+  50% {
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 0 0 22px rgba(57, 255, 20, 0.16);
+  }
+}
+
+@keyframes heroStatWave {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@keyframes routeGlowDriftA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.76;
+  }
+  50% {
+    transform: translate3d(-22px, 18px, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes routeGlowDriftB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.62;
+  }
+  50% {
+    transform: translate3d(18px, -16px, 0) scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+@keyframes routeLinesDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-34px, -20px, 0);
+  }
+}
+
+@keyframes routeHeroSweep {
+  from {
+    transform: translate3d(-10%, 0, 0) skewX(-16deg);
+  }
+  to {
+    transform: translate3d(510%, 0, 0) skewX(-16deg);
+  }
+}
+
+@keyframes routeStatBreath {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+@keyframes routePanelSweep {
+  from {
+    transform: translate3d(0, 0, 0) skewX(-16deg);
+  }
+  to {
+    transform: translate3d(460%, 0, 0) skewX(-16deg);
+  }
+}
+
+@keyframes navAmbientFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.76;
+  }
+  50% {
+    transform: translate3d(-10px, 8px, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes navGridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-20px, -8px, 0);
+  }
+}
+
+@keyframes navBrandRing {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes footerOrbDriftA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translate3d(16px, -14px, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes footerOrbDriftB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.66;
+  }
+  50% {
+    transform: translate3d(-18px, 12px, 0) scale(1.06);
+    opacity: 0.92;
+  }
+}
+
+@keyframes footerGridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-28px, -10px, 0);
+  }
+}
+
+@keyframes footerCtaSweep {
+  from {
+    transform: translate3d(0, 0, 0) skewX(-18deg);
+  }
+  to {
+    transform: translate3d(430%, 0, 0) skewX(-18deg);
+  }
+}
+
 @media (min-width: 768px) {
+  .champions-highlight-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
   .archive-loader-shell {
     gap: 22px 24px;
     grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
@@ -1802,6 +2559,10 @@ h6 {
 }
 
 @media (min-width: 1200px) {
+  .champions-highlight-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .hero-stat-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
@@ -1886,6 +2647,37 @@ h6 {
 
   .hero-stage {
     border-radius: 24px;
+  }
+
+  .footer-callout {
+    border-radius: 24px;
+    padding-inline: 14px;
+  }
+
+  .hero-orb-cyan {
+    top: -120px;
+    right: -160px;
+  }
+
+  .hero-orb-energy {
+    bottom: 8%;
+    left: -120px;
+  }
+
+  .hero-orb-gold {
+    right: -70px;
+    bottom: -160px;
+  }
+
+  .route-kinetic-glow-cyan {
+    right: -170px;
+    top: 3%;
+  }
+
+  .route-kinetic-glow-gold,
+  .route-kinetic-glow-energy {
+    left: -150px;
+    top: 38%;
   }
 
   .utility-panel {
@@ -2298,5 +3090,26 @@ h6 {
 
   .archive-card-shell {
     animation: none;
+  }
+
+  .hero-orb,
+  .hero-grid-sweep,
+  .hero-highlight-sweep,
+  .hero-logo-orbit,
+  .hero-badge,
+  .stat-marquee-card,
+  .nav-shell-ambient,
+  .nav-shell-grid,
+  .nav-brand-mark::after,
+  .footer-orb,
+  .footer-grid,
+  .footer-creator-link::before,
+  .route-kinetic-glow,
+  .route-kinetic-lines,
+  .route-hero-sweep,
+  .route-live-panel::before,
+  .route-hero .hero-stat-card {
+    animation: none !important;
+    transform: none !important;
   }
 }

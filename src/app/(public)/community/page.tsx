@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CommunityClient from "@/components/community/CommunityClient";
 import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
+import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import { getCurrentCommunityUser } from "@/lib/communityAuth";
 import {
   getCommunityVoteAggregate,
@@ -57,17 +58,27 @@ export default async function CommunityPage() {
   }
 
   return (
-    <div className="space-y-6 pt-28 md:space-y-8 md:pt-32">
+    <div className="community-route relative space-y-6 overflow-hidden pt-28 md:space-y-8 md:pt-32">
+      <div className="route-kinetic-layers" aria-hidden="true">
+        <span className="route-kinetic-glow route-kinetic-glow-cyan" />
+        <span className="route-kinetic-glow route-kinetic-glow-energy" />
+        <span className="route-kinetic-lines" />
+      </div>
       <section className="archive-section !pt-0 !pb-0">
         <div className="page-wrap">
-          <div className="inner-hero rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10">
+          <RevealOnScroll
+            as="div"
+            className="inner-hero route-hero route-hero-community rounded-[28px] px-5 py-7 md:rounded-[36px] md:px-10 md:py-10"
+            intensity="hero"
+          >
+            <span className="route-hero-sweep" aria-hidden="true" />
             <p className="section-kicker">Community Arena</p>
             <h1 className="section-title">One featured live board. One vote per account.</h1>
             <p className="section-copy">
               This section is for community predictions only. Once you submit your vote for the current board,
               your picks are final.
             </p>
-          </div>
+          </RevealOnScroll>
         </div>
       </section>
 
