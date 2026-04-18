@@ -63,6 +63,12 @@ type DbPlayerRow = {
   sort_order: number;
 };
 
+type DbRosterPlayerRow = {
+  id: string;
+  display_name: string;
+  role: string | null;
+};
+
 type DbVoteRow = {
   id: string;
   board_id: string;
@@ -88,6 +94,11 @@ function ensurePool() {
 
 function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "")}`;
+}
+
+function isIglRole(role: string | null | undefined): boolean {
+  if (!role) return false;
+  return /\bigl\b/i.test(role);
 }
 
 function mapCommunityUser(row: Pick<DbCommunityUserRow, "id" | "username" | "created_at">): CommunityUser {
@@ -669,11 +680,64 @@ export async function createAdminCommunityBoard(
       ]
     );
 
+    const teamSoulPlayersResult = await client.query(
+      `
+        select id, display_name, role
+        from public.players
+        where is_active = true
+          and coalesce(current_status, 'active') = 'active'
+        order by display_name asc
+      `
+    );
+
+    const teamSoulPlayers = teamSoulPlayersResult.rows as DbRosterPlayerRow[];
+    const boardRow = (result.rows as DbBoardRow[])[0];
+
+    if (teamSoulPlayers.length > 0) {
+      const teamId = makeId("community_team");
+      await client.query(
+        `
+          insert into public.community_board_teams (id, board_id, name, short_name, sort_order)
+          values ($1, $2, $3, $4, $5)
+        `,
+        [teamId, boardRow.id, "Team SouL", "SOUL", 0]
+      );
+
+      const hasIgl = teamSoulPlayers.some((player) => isIglRole(player.role));
+      for (let index = 0; index < teamSoulPlayers.length; index += 1) {
+        const player = teamSoulPlayers[index];
+        await client.query(
+          `
+            insert into public.community_board_players (
+              id,
+              team_id,
+              display_name,
+              role,
+              is_mvp_candidate,
+              is_igl_candidate,
+              sort_order
+            )
+            values ($1, $2, $3, $4, $5, $6, $7)
+          `,
+          [
+            makeId("community_player"),
+            teamId,
+            player.display_name,
+            player.role,
+            true,
+            hasIgl ? isIglRole(player.role) : index === 0,
+            index,
+          ]
+        );
+      }
+    }
+
     await client.query("commit");
 
-    const rows = result.rows as DbBoardRow[];
+    const rows = [boardRow];
+    const seededTeams = await loadBoardTeamsAndPlayers(boardRow.id);
     return {
-      ...mapBoard(rows[0], []),
+      ...mapBoard(rows[0], seededTeams),
       voteAggregate: {
         totalVotes: 0,
         mvpVotesByPlayerId: {},

@@ -11,6 +11,8 @@ import type {
 
 type LiveTournamentOption = { id: string; name: string };
 
+type TeamPlayerInput = CommunityBoardTeamEditorInput["players"][number];
+
 function emptyTeam(sortOrder: number): CommunityBoardTeamEditorInput {
   return {
     name: "",
@@ -18,6 +20,56 @@ function emptyTeam(sortOrder: number): CommunityBoardTeamEditorInput {
     sortOrder,
     players: [],
   };
+}
+
+function inferIglFromRole(role: string | null | undefined): boolean {
+  if (!role) return false;
+  return /\bigl\b/i.test(role);
+}
+
+function parsePlayerNameList(value: string): string[] {
+  return value
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function teamKey(team: CommunityBoardTeamEditorInput, teamIndex: number): string {
+  return team.id ?? `team-${teamIndex}`;
+}
+
+function normalizeTeamsForSave(teams: CommunityBoardTeamEditorInput[]): CommunityBoardTeamEditorInput[] {
+  return teams
+    .map((team, teamIndex) => {
+      const normalizedPlayers = team.players.reduce<TeamPlayerInput[]>((acc, player, playerIndex) => {
+          const displayName = player.displayName.trim();
+          const role = player.role?.trim() || null;
+          if (!displayName) return acc;
+
+          acc.push({
+            ...player,
+            displayName,
+            role,
+            sortOrder: playerIndex,
+            isMvpCandidate: player.isMvpCandidate ?? true,
+            isIglCandidate:
+              player.isIglCandidate === undefined
+                ? inferIglFromRole(role)
+                : Boolean(player.isIglCandidate),
+          } satisfies TeamPlayerInput);
+
+          return acc;
+        }, []);
+
+      return {
+        ...team,
+        name: team.name.trim(),
+        shortName: team.shortName?.trim() || null,
+        sortOrder: teamIndex,
+        players: normalizedPlayers,
+      } satisfies CommunityBoardTeamEditorInput;
+    })
+    .filter((team) => team.name.length > 0);
 }
 
 export default function AdminCommunitySection({
@@ -33,8 +85,6 @@ export default function AdminCommunitySection({
   const [notice, setNotice] = useState("");
 
   const [createTournamentId, setCreateTournamentId] = useState("");
-  const [createHeadline, setCreateHeadline] = useState("");
-  const [createDescription, setCreateDescription] = useState("");
 
   const [activeBoardId, setActiveBoardId] = useState<string | null>(null);
   const activeBoard = useMemo(
@@ -47,6 +97,7 @@ export default function AdminCommunitySection({
   const [votingState, setVotingState] = useState<CommunityVotingState>("draft");
   const [isFeatured, setIsFeatured] = useState(false);
   const [teams, setTeams] = useState<CommunityBoardTeamEditorInput[]>([]);
+  const [quickPlayersByTeam, setQuickPlayersByTeam] = useState<Record<string, string>>({});
 
   const loadBoards = useCallback(async () => {
     setLoading(true);
@@ -95,6 +146,7 @@ export default function AdminCommunitySection({
       setVotingState("draft");
       setIsFeatured(false);
       setTeams([]);
+      setQuickPlayersByTeam({});
       return;
     }
 
@@ -118,6 +170,7 @@ export default function AdminCommunitySection({
         })),
       }))
     );
+    setQuickPlayersByTeam({});
   }, [activeBoard]);
 
   async function handleCreateBoard() {
@@ -133,8 +186,6 @@ export default function AdminCommunitySection({
     try {
       const payload: CreateCommunityBoardInput = {
         tournamentId: createTournamentId,
-        headline: createHeadline.trim() || null,
-        description: createDescription.trim() || null,
         votingState: "draft",
         isFeatured: false,
       };
@@ -154,9 +205,7 @@ export default function AdminCommunitySection({
       }
 
       setCreateTournamentId("");
-      setCreateHeadline("");
-      setCreateDescription("");
-      setNotice("Community board created.");
+      setNotice("Community board created. Team SouL active roster is preloaded.");
       await loadBoards();
       if (data.board?.id) {
         setActiveBoardId(data.board.id);
@@ -181,7 +230,7 @@ export default function AdminCommunitySection({
         description: description.trim() || null,
         votingState,
         isFeatured,
-        teams,
+        teams: normalizeTeamsForSave(teams),
       };
 
       const response = await fetch(`/api/admin/community/boards/${activeBoardId}`, {
@@ -247,19 +296,20 @@ export default function AdminCommunitySection({
     setTeams((current) => current.filter((_, idx) => idx !== index));
   }
 
-  function addPlayer(teamIndex: number) {
+  function addPlayer(teamIndex: number, initial?: Partial<TeamPlayerInput>) {
     setTeams((current) =>
       current.map((team, idx) => {
         if (idx !== teamIndex) return team;
+        const role = initial?.role?.trim() || "";
         return {
           ...team,
           players: [
             ...team.players,
             {
-              displayName: "",
-              role: "",
-              isMvpCandidate: true,
-              isIglCandidate: false,
+              displayName: initial?.displayName ?? "",
+              role,
+              isMvpCandidate: initial?.isMvpCandidate ?? true,
+              isIglCandidate: initial?.isIglCandidate ?? inferIglFromRole(role),
               sortOrder: team.players.length,
             },
           ],
@@ -298,6 +348,24 @@ export default function AdminCommunitySection({
     );
   }
 
+  function updateQuickPlayers(teamIndex: number, value: string) {
+    const key = teamKey(teams[teamIndex], teamIndex);
+    setQuickPlayersByTeam((current) => ({ ...current, [key]: value }));
+  }
+
+  function addQuickPlayers(teamIndex: number) {
+    const key = teamKey(teams[teamIndex], teamIndex);
+    const raw = quickPlayersByTeam[key] ?? "";
+    const names = parsePlayerNameList(raw);
+    if (!names.length) return;
+
+    for (const name of names) {
+      addPlayer(teamIndex, { displayName: name });
+    }
+
+    setQuickPlayersByTeam((current) => ({ ...current, [key]: "" }));
+  }
+
   return (
     <section className="space-y-5">
       <div className="archive-panel rounded-[28px] p-5 md:p-6">
@@ -307,6 +375,10 @@ export default function AdminCommunitySection({
             <h2 className="font-display text-3xl uppercase leading-none text-white md:text-5xl">
               Voting Boards
             </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-text-secondary">
+              Simple flow: create a board for a live tournament, get Team SouL players prefilled by default,
+              then add opponent teams and publish when ready.
+            </p>
           </div>
           <button type="button" className="button-secondary" onClick={() => void loadBoards()}>
             {loading ? "Refreshing..." : "Refresh"}
@@ -314,7 +386,7 @@ export default function AdminCommunitySection({
         </div>
 
         <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-1">
             <label className="space-y-2">
               <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">Live tournament</span>
               <select
@@ -330,26 +402,9 @@ export default function AdminCommunitySection({
                 ))}
               </select>
             </label>
-
-            <label className="space-y-2">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">Headline</span>
-              <input
-                value={createHeadline}
-                onChange={(event) => setCreateHeadline(event.target.value)}
-                className="w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
-                placeholder="BGIS Grand Finals"
-              />
-            </label>
-
-            <label className="space-y-2">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">Description</span>
-              <input
-                value={createDescription}
-                onChange={(event) => setCreateDescription(event.target.value)}
-                className="w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
-                placeholder="Who owns this finals weekend?"
-              />
-            </label>
+            <p className="text-xs text-text-muted">
+              New boards start in draft mode and auto-add Team SouL active roster players.
+            </p>
           </div>
 
           <button
@@ -377,6 +432,7 @@ export default function AdminCommunitySection({
       <div className="grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
         <aside className="archive-panel rounded-[28px] p-5 md:p-6">
           <p className="section-kicker">Boards</p>
+          <p className="mt-2 text-xs text-text-muted">Select a board to edit details, teams, and players.</p>
           <div className="mt-4 space-y-3">
             {boards.length ? (
               boards.map((board) => (
@@ -418,33 +474,48 @@ export default function AdminCommunitySection({
                   <h3 className="font-display text-3xl uppercase leading-none text-white md:text-4xl">
                     {activeBoard.tournamentName}
                   </h3>
+                  <p className="mt-2 text-xs text-text-muted">
+                    Tab 1: set headline/description. Tab 2: add teams and players. Tab 3: set status to open and feature when live.
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <button type="button" onClick={() => void handleSaveBoard()} className="button-primary" disabled={saving}>
+                  <button
+                    type="button"
+                    onClick={() => void handleSaveBoard()}
+                    className="button-primary"
+                    disabled={saving}
+                  >
                     {saving ? "Saving..." : "Save Board"}
                   </button>
-                  <button type="button" onClick={() => void handleDeleteBoard()} className="button-secondary" disabled={saving}>
+                  <button
+                    type="button"
+                    onClick={() => void handleDeleteBoard()}
+                    className="button-secondary"
+                    disabled={saving}
+                  >
                     Delete
                   </button>
                 </div>
               </div>
 
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="mt-5 grid gap-3 md:grid-cols-1">
                 <label className="space-y-2">
                   <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">Headline</span>
                   <input
                     value={headline}
                     onChange={(event) => setHeadline(event.target.value)}
                     className="w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
+                    placeholder="Example: Grand Finals Community Vote"
                   />
                 </label>
 
                 <label className="space-y-2">
                   <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">Description</span>
-                  <input
+                  <textarea
                     value={description}
                     onChange={(event) => setDescription(event.target.value)}
-                    className="w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
+                    className="min-h-24 w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
+                    placeholder="Tell users what they are voting for, and any rules."
                   />
                 </label>
               </div>
@@ -457,9 +528,9 @@ export default function AdminCommunitySection({
                     onChange={(event) => setVotingState(event.target.value as CommunityVotingState)}
                     className="w-full rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3 text-sm text-white"
                   >
-                    <option value="draft">Draft</option>
-                    <option value="open">Open</option>
-                    <option value="locked">Locked</option>
+                    <option value="draft">Draft (editing only)</option>
+                    <option value="open">Open (users can vote)</option>
+                    <option value="locked">Locked (voting closed)</option>
                   </select>
                 </label>
 
@@ -470,7 +541,7 @@ export default function AdminCommunitySection({
                     onChange={(event) => setIsFeatured(event.target.checked)}
                     className="h-4 w-4 rounded border-white/20 bg-black/20"
                   />
-                  Featured board
+                  Featured board (shows publicly when tournament is live)
                 </label>
               </div>
 
@@ -483,103 +554,138 @@ export default function AdminCommunitySection({
 
               <div className="mt-5">
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-[0.16em] text-text-muted">Teams & players</p>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-text-muted">Teams & players</p>
+                    <p className="mt-1 text-xs text-text-muted">
+                      Team SouL is preloaded by default. Add opponent teams and their players here.
+                    </p>
+                  </div>
                   <button type="button" className="button-secondary" onClick={addTeam}>
                     Add Team
                   </button>
                 </div>
 
                 <div className="space-y-4">
-                  {teams.map((team, teamIndex) => (
-                    <div key={team.id ?? `team-${teamIndex}`} className="rounded-[18px] border border-white/10 bg-black/15 p-4">
-                      <div className="grid gap-3 md:grid-cols-[1fr_0.6fr_0.24fr_auto]">
-                        <input
-                          value={team.name}
-                          onChange={(event) => updateTeam(teamIndex, { name: event.target.value })}
-                          className="rounded-[14px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                          placeholder="Team name"
-                        />
-                        <input
-                          value={team.shortName ?? ""}
-                          onChange={(event) => updateTeam(teamIndex, { shortName: event.target.value })}
-                          className="rounded-[14px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                          placeholder="Short"
-                        />
-                        <input
-                          type="number"
-                          value={team.sortOrder}
-                          onChange={(event) => updateTeam(teamIndex, { sortOrder: Number(event.target.value) || 0 })}
-                          className="rounded-[14px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                          placeholder="Order"
-                        />
-                        <button type="button" className="button-secondary" onClick={() => removeTeam(teamIndex)}>
-                          Remove
+                  {teams.map((team, teamIndex) => {
+                    const key = teamKey(team, teamIndex);
+                    return (
+                      <div
+                        key={team.id ?? `team-${teamIndex}`}
+                        className="rounded-[18px] border border-white/10 bg-black/15 p-4"
+                      >
+                        <div className="grid gap-3 md:grid-cols-[1fr_0.5fr_auto]">
+                          <input
+                            value={team.name}
+                            onChange={(event) => updateTeam(teamIndex, { name: event.target.value })}
+                            className="rounded-[14px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
+                            placeholder="Team name"
+                          />
+                          <input
+                            value={team.shortName ?? ""}
+                            onChange={(event) => updateTeam(teamIndex, { shortName: event.target.value })}
+                            className="rounded-[14px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
+                            placeholder="Short"
+                          />
+                          <button type="button" className="button-secondary" onClick={() => removeTeam(teamIndex)}>
+                            Remove
+                          </button>
+                        </div>
+
+                        <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_auto]">
+                          <input
+                            value={quickPlayersByTeam[key] ?? ""}
+                            onChange={(event) => updateQuickPlayers(teamIndex, event.target.value)}
+                            className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
+                            placeholder="Quick add players (comma or new line separated)"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => addQuickPlayers(teamIndex)}
+                            className="button-secondary"
+                          >
+                            Add List
+                          </button>
+                        </div>
+
+                        <div className="mt-3 space-y-2">
+                          {team.players.map((player, playerIndex) => (
+                            <div
+                              key={player.id ?? `player-${playerIndex}`}
+                              className="grid gap-2 md:grid-cols-[1fr_0.7fr_auto_auto_auto]"
+                            >
+                              <input
+                                value={player.displayName}
+                                onChange={(event) =>
+                                  updatePlayer(teamIndex, playerIndex, { displayName: event.target.value })
+                                }
+                                className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
+                                placeholder="Player"
+                              />
+                              <input
+                                value={player.role ?? ""}
+                                onChange={(event) => {
+                                  const role = event.target.value;
+                                  updatePlayer(teamIndex, playerIndex, {
+                                    role,
+                                    isIglCandidate: inferIglFromRole(role)
+                                      ? true
+                                      : Boolean(player.isIglCandidate),
+                                  });
+                                }}
+                                className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
+                                placeholder="Role"
+                              />
+                              <label className="inline-flex items-center gap-1 text-xs text-text-secondary">
+                                <input
+                                  type="checkbox"
+                                  checked={Boolean(player.isMvpCandidate)}
+                                  onChange={(event) =>
+                                    updatePlayer(teamIndex, playerIndex, {
+                                      isMvpCandidate: event.target.checked,
+                                    })
+                                  }
+                                />
+                                MVP
+                              </label>
+                              <label className="inline-flex items-center gap-1 text-xs text-text-secondary">
+                                <input
+                                  type="checkbox"
+                                  checked={Boolean(player.isIglCandidate)}
+                                  onChange={(event) =>
+                                    updatePlayer(teamIndex, playerIndex, {
+                                      isIglCandidate: event.target.checked,
+                                    })
+                                  }
+                                />
+                                IGL
+                              </label>
+                              <button
+                                type="button"
+                                className="rounded-full border border-red-500/20 px-2 py-1 text-xs text-red-300"
+                                onClick={() => removePlayer(teamIndex, playerIndex)}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => addPlayer(teamIndex)}
+                          className="button-secondary mt-3"
+                        >
+                          Add Player
                         </button>
                       </div>
-
-                      <div className="mt-3 space-y-2">
-                        {team.players.map((player, playerIndex) => (
-                          <div key={player.id ?? `player-${playerIndex}`} className="grid gap-2 md:grid-cols-[1fr_0.8fr_0.2fr_auto_auto_auto]">
-                            <input
-                              value={player.displayName}
-                              onChange={(event) => updatePlayer(teamIndex, playerIndex, { displayName: event.target.value })}
-                              className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                              placeholder="Player"
-                            />
-                            <input
-                              value={player.role ?? ""}
-                              onChange={(event) => updatePlayer(teamIndex, playerIndex, { role: event.target.value })}
-                              className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                              placeholder="Role"
-                            />
-                            <input
-                              type="number"
-                              value={player.sortOrder}
-                              onChange={(event) => updatePlayer(teamIndex, playerIndex, { sortOrder: Number(event.target.value) || 0 })}
-                              className="rounded-[12px] border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white"
-                            />
-                            <label className="inline-flex items-center gap-1 text-xs text-text-secondary">
-                              <input
-                                type="checkbox"
-                                checked={Boolean(player.isMvpCandidate)}
-                                onChange={(event) =>
-                                  updatePlayer(teamIndex, playerIndex, { isMvpCandidate: event.target.checked })
-                                }
-                              />
-                              MVP
-                            </label>
-                            <label className="inline-flex items-center gap-1 text-xs text-text-secondary">
-                              <input
-                                type="checkbox"
-                                checked={Boolean(player.isIglCandidate)}
-                                onChange={(event) =>
-                                  updatePlayer(teamIndex, playerIndex, { isIglCandidate: event.target.checked })
-                                }
-                              />
-                              IGL
-                            </label>
-                            <button
-                              type="button"
-                              className="rounded-full border border-red-500/20 px-2 py-1 text-xs text-red-300"
-                              onClick={() => removePlayer(teamIndex, playerIndex)}
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-
-                      <button type="button" onClick={() => addPlayer(teamIndex)} className="button-secondary mt-3">
-                        Add Player
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </>
           ) : (
             <div className="rounded-[20px] border border-dashed border-white/10 bg-black/10 p-8 text-sm text-text-muted">
-              Select a board to edit teams, players, vote settings, and featured status.
+              Select a board to edit details, teams, players, vote settings, and featured status.
             </div>
           )}
         </section>
