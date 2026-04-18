@@ -7,7 +7,7 @@ import {
 } from "../src/lib/tournamentLifecycle";
 
 describe("normalizeTournamentLifecycleInput", () => {
-  it("drops completed-only fields for upcoming updates", () => {
+  it("drops completed-only result fields but keeps roster for upcoming updates", () => {
     const normalized = normalizeTournamentLifecycleInput({
       status: "upcoming",
       placement: "1",
@@ -19,11 +19,11 @@ describe("normalizeTournamentLifecycleInput", () => {
       status: "upcoming",
       placement: null,
       isWin: false,
-      rosterIds: [],
+      rosterIds: ["manya", "nakul"],
     });
   });
 
-  it("drops completed-only fields for live updates", () => {
+  it("drops completed-only result fields but keeps roster for live updates", () => {
     const normalized = normalizeTournamentLifecycleInput({
       status: "live",
       placement: "2",
@@ -35,7 +35,7 @@ describe("normalizeTournamentLifecycleInput", () => {
       status: "live",
       placement: null,
       isWin: false,
-      rosterIds: [],
+      rosterIds: ["manya"],
     });
   });
 

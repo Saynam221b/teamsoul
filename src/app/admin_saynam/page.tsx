@@ -9,8 +9,10 @@ import type {
   AdminPlayerOption,
   AdminTournament,
   CompleteTournamentInput,
+  CreateAdminPlayerInput,
   CreateUpcomingTournamentInput,
   Tournament,
+  UpdateAdminPlayerInput,
   UpdateTournamentInput,
 } from "@/data/types";
 
@@ -34,6 +36,7 @@ type TierFilter = "all" | Tournament["tier"];
 type WinFilter = "all" | "won" | "not_won";
 type YearFilter = "all" | string;
 type AdminSection = "tournaments" | "community";
+type PlayerStatusFilter = AdminPlayerOption["currentStatus"] | "all";
 
 type TournamentFormState = {
   status: "upcoming" | "live" | "completed";
@@ -50,6 +53,14 @@ type TournamentFormState = {
   placement: string;
   isWin: boolean;
   rosterIds: string[];
+};
+
+type PlayerFormState = {
+  id: string;
+  displayName: string;
+  role: string;
+  currentStatus: AdminPlayerOption["currentStatus"];
+  isActive: boolean;
 };
 
 const TIER_OPTIONS: Tournament["tier"][] = [
@@ -76,6 +87,14 @@ const EMPTY_FORM: TournamentFormState = {
   placement: "",
   isWin: false,
   rosterIds: [],
+};
+
+const EMPTY_PLAYER_FORM: PlayerFormState = {
+  id: "",
+  displayName: "",
+  role: "Player",
+  currentStatus: "active",
+  isActive: true,
 };
 
 function toFormState(tournament: AdminTournament): TournamentFormState {
@@ -150,6 +169,18 @@ function getStatusLabel(status: NonNullable<Tournament["status"]> | AdminFilter)
   return status === "live" ? "ongoing" : status;
 }
 
+function getPlayerStatusTone(status: AdminPlayerOption["currentStatus"]) {
+  if (status === "active") {
+    return "border-emerald-500/25 bg-emerald-500/10 text-emerald-200";
+  }
+
+  if (status === "retired") {
+    return "border-amber-500/25 bg-amber-500/10 text-amber-200";
+  }
+
+  return "border-white/10 bg-white/[0.03] text-text-secondary";
+}
+
 function getPlayerTone(player: AdminPlayerOption, selected: boolean) {
   if (selected) {
     return "border-accent/30 bg-accent/10 text-white";
@@ -166,7 +197,6 @@ function TournamentModal({
   mode,
   form,
   players,
-  includeCompletionFields,
   saving,
   onClose,
   onSubmit,
@@ -175,7 +205,6 @@ function TournamentModal({
   mode: ModalMode;
   form: TournamentFormState;
   players: AdminPlayerOption[];
-  includeCompletionFields: boolean;
   saving: boolean;
   onClose: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -184,14 +213,14 @@ function TournamentModal({
     value: TournamentFormState[K]
   ) => void;
 }) {
-  const requiresResults = includeCompletionFields;
+  const requiresResults = mode === "complete" || form.status === "completed";
   const creationLabel = form.status === "live" ? "Ongoing" : "Upcoming";
   const title =
     mode === "create"
       ? `Add New ${creationLabel} Tournament`
       : mode === "complete"
         ? "Complete Tournament"
-        : includeCompletionFields
+        : requiresResults
           ? "Edit Completed Tournament"
           : `Edit ${form.status === "live" ? "Ongoing" : "Upcoming"} Tournament`;
 
@@ -375,9 +404,11 @@ function TournamentModal({
                   Save behavior
                 </p>
                 <p className="mt-3 text-sm leading-7 text-text-secondary">
-                  {requiresResults
-                    ? "This save updates the tournament row and keeps its normalized data in Supabase."
-                    : `This save creates the tournament as ${creationLabel.toLowerCase()} with a generated ID, no placement, and no roster links yet.`}
+                  {mode === "create"
+                    ? `This save creates the tournament as ${creationLabel.toLowerCase()} with a generated ID, no placement yet, and any roster links you choose now.`
+                    : requiresResults
+                      ? "This save updates the tournament row and keeps its normalized data in Supabase."
+                      : "This save updates the tournament details while keeping it in upcoming or ongoing state."}
                 </p>
               </div>
 
@@ -406,56 +437,57 @@ function TournamentModal({
                     Mark this event as a title win
                   </label>
 
-                  <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 md:p-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
-                          Roster
-                        </p>
-                        <p className="mt-2 text-sm text-text-secondary">
-                          Select the players tied to this completed tournament.
-                        </p>
-                      </div>
-                      <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
-                        {form.rosterIds.length} selected
-                      </span>
-                    </div>
-
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {players.map((player) => {
-                        const selected = form.rosterIds.includes(player.id);
-                        return (
-                          <label
-                            key={player.id}
-                            className={`flex cursor-pointer items-start gap-3 rounded-[18px] border px-3 py-3 transition-colors ${getPlayerTone(
-                              player,
-                              selected
-                            )}`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selected}
-                              onChange={(event) => {
-                                const nextIds = event.target.checked
-                                  ? [...form.rosterIds, player.id]
-                                  : form.rosterIds.filter((id) => id !== player.id);
-                                onChange("rosterIds", nextIds);
-                              }}
-                              className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent"
-                            />
-                            <div>
-                              <p className="text-sm font-medium text-white">{player.displayName}</p>
-                              <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-text-muted">
-                                {player.role}
-                              </p>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </>
               ) : null}
+
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4 md:p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                      Roster
+                    </p>
+                    <p className="mt-2 text-sm text-text-secondary">
+                      Select players now or edit this list later, regardless of tournament status.
+                    </p>
+                  </div>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                    {form.rosterIds.length} selected
+                  </span>
+                </div>
+
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {players.map((player) => {
+                    const selected = form.rosterIds.includes(player.id);
+                    return (
+                      <label
+                        key={player.id}
+                        className={`flex cursor-pointer items-start gap-3 rounded-[18px] border px-3 py-3 transition-colors ${getPlayerTone(
+                          player,
+                          selected
+                        )}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={(event) => {
+                            const nextIds = event.target.checked
+                              ? [...form.rosterIds, player.id]
+                              : form.rosterIds.filter((id) => id !== player.id);
+                            onChange("rosterIds", nextIds);
+                          }}
+                          className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent"
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-white">{player.displayName}</p>
+                          <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-text-muted">
+                            {player.role}
+                          </p>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
             </section>
           </div>
 
@@ -503,6 +535,11 @@ export default function AdminSaynamPage() {
   const [activeTournament, setActiveTournament] = useState<AdminTournament | null>(null);
   const [form, setForm] = useState<TournamentFormState>(EMPTY_FORM);
   const [statusActionId, setStatusActionId] = useState<string | null>(null);
+  const [playerForm, setPlayerForm] = useState<PlayerFormState>(EMPTY_PLAYER_FORM);
+  const [editingPlayerId, setEditingPlayerId] = useState<string | null>(null);
+  const [playerSaving, setPlayerSaving] = useState(false);
+  const [playerSearch, setPlayerSearch] = useState("");
+  const [playerStatusFilter, setPlayerStatusFilter] = useState<PlayerStatusFilter>("all");
 
   useEffect(() => {
     const savedAuth = window.sessionStorage.getItem("admin_saynam_auth");
@@ -614,6 +651,19 @@ export default function AdminSaynamPage() {
     [players]
   );
 
+  const filteredPlayers = useMemo(() => {
+    const term = playerSearch.trim().toLowerCase();
+    return sortedPlayers.filter((player) => {
+      if (playerStatusFilter !== "all" && player.currentStatus !== playerStatusFilter) {
+        return false;
+      }
+
+      if (!term) return true;
+      const haystack = `${player.displayName} ${player.role} ${player.id}`.toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [playerSearch, playerStatusFilter, sortedPlayers]);
+
   function resetModal() {
     setModalMode(null);
     setActiveTournament(null);
@@ -688,6 +738,41 @@ export default function AdminSaynamPage() {
     setNotice("");
     setAdminSection("tournaments");
     resetModal();
+    setPlayerForm(EMPTY_PLAYER_FORM);
+    setEditingPlayerId(null);
+    setPlayerSearch("");
+    setPlayerStatusFilter("all");
+  }
+
+  function resetPlayerEditor() {
+    setEditingPlayerId(null);
+    setPlayerForm(EMPTY_PLAYER_FORM);
+  }
+
+  function startCreatePlayer() {
+    setError("");
+    setNotice("");
+    resetPlayerEditor();
+  }
+
+  function startEditPlayer(player: AdminPlayerOption) {
+    setError("");
+    setNotice("");
+    setEditingPlayerId(player.id);
+    setPlayerForm({
+      id: player.id,
+      displayName: player.displayName,
+      role: player.role,
+      currentStatus: player.currentStatus,
+      isActive: player.isActive,
+    });
+  }
+
+  function updatePlayerForm<K extends keyof PlayerFormState>(
+    key: K,
+    value: PlayerFormState[K]
+  ) {
+    setPlayerForm((current) => ({ ...current, [key]: value }));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -706,6 +791,7 @@ export default function AdminSaynamPage() {
         const payload: CreateUpcomingTournamentInput = {
           ...basePayload,
           status: form.status === "live" ? "live" : "upcoming",
+          rosterIds: form.rosterIds,
         };
         response = await fetch("/api/admin/tournaments", {
           method: "POST",
@@ -832,6 +918,98 @@ export default function AdminSaynamPage() {
       setError(err instanceof Error ? err.message : "Could not delete tournament");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSavePlayer(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setPlayerSaving(true);
+    setError("");
+    setNotice("");
+
+    try {
+      const payload = {
+        displayName: playerForm.displayName.trim(),
+        role: playerForm.role.trim() || "Player",
+        currentStatus: playerForm.currentStatus,
+        isActive: playerForm.isActive,
+      };
+
+      let response: Response;
+      if (editingPlayerId) {
+        const updatePayload: UpdateAdminPlayerInput = payload;
+        response = await fetch(`/api/admin/players/${editingPlayerId}`, {
+          method: "PATCH",
+          headers: {
+            "content-type": "application/json",
+            ...authHeaders,
+          },
+          body: JSON.stringify(updatePayload),
+        });
+      } else {
+        const createPayload: CreateAdminPlayerInput = {
+          ...payload,
+          id: playerForm.id.trim() || undefined,
+        };
+        response = await fetch("/api/admin/players", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            ...authHeaders,
+          },
+          body: JSON.stringify(createPayload),
+        });
+      }
+
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "Could not save player");
+      }
+
+      await loadAdminData();
+      setNotice(editingPlayerId ? "Player updated." : "Player created.");
+      resetPlayerEditor();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save player");
+    } finally {
+      setPlayerSaving(false);
+    }
+  }
+
+  async function handleDeletePlayer(player: AdminPlayerOption) {
+    if (
+      !window.confirm(
+        `Delete ${player.displayName}? This removes the player and any tournament roster links using this player.`
+      )
+    ) {
+      return;
+    }
+
+    setPlayerSaving(true);
+    setError("");
+    setNotice("");
+
+    try {
+      const response = await fetch(`/api/admin/players/${player.id}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      });
+
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "Could not delete player");
+      }
+
+      await loadAdminData();
+      setNotice("Player deleted.");
+      if (editingPlayerId === player.id) {
+        resetPlayerEditor();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete player");
+    } finally {
+      setPlayerSaving(false);
     }
   }
 
@@ -1318,6 +1496,231 @@ export default function AdminSaynamPage() {
                     </div>
                   )}
                 </section>
+
+                <section className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+                  <div className="archive-panel rounded-[28px] p-5 md:p-6">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="section-kicker">Player management</p>
+                        <h2 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                          {editingPlayerId ? "Edit Roster Player" : "Add Roster Player"}
+                        </h2>
+                        <p className="mt-3 text-sm leading-7 text-text-secondary">
+                          Add or update players, change roles, and set active or retired status for tournament roster selection.
+                        </p>
+                      </div>
+                      {editingPlayerId ? (
+                        <button
+                          type="button"
+                          onClick={resetPlayerEditor}
+                          className="button-secondary px-4 text-xs"
+                        >
+                          Cancel Edit
+                        </button>
+                      ) : null}
+                    </div>
+
+                    <form onSubmit={handleSavePlayer} className="mt-5 space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <label className="space-y-2">
+                          <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                            Player Name
+                          </span>
+                          <input
+                            value={playerForm.displayName}
+                            onChange={(event) => updatePlayerForm("displayName", event.target.value)}
+                            className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                            placeholder="Display name"
+                            required
+                          />
+                        </label>
+
+                        <label className="space-y-2">
+                          <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                            Role
+                          </span>
+                          <input
+                            value={playerForm.role}
+                            onChange={(event) => updatePlayerForm("role", event.target.value)}
+                            className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                            placeholder="IGL, Assaulter, Support..."
+                          />
+                        </label>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <label className="space-y-2">
+                          <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                            Player ID
+                          </span>
+                          <input
+                            value={playerForm.id}
+                            onChange={(event) => updatePlayerForm("id", event.target.value)}
+                            className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                            placeholder={editingPlayerId ? "Locked while editing" : "Optional custom ID"}
+                            disabled={Boolean(editingPlayerId)}
+                          />
+                        </label>
+
+                        <label className="space-y-2">
+                          <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                            Status
+                          </span>
+                          <select
+                            value={playerForm.currentStatus}
+                            onChange={(event) =>
+                              updatePlayerForm(
+                                "currentStatus",
+                                event.target.value as AdminPlayerOption["currentStatus"]
+                              )
+                            }
+                            className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                          >
+                            <option value="active">Active</option>
+                            <option value="retired">Retired</option>
+                            <option value="departed">Departed</option>
+                          </select>
+                        </label>
+
+                        <label className="flex items-center gap-3 rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-text-primary">
+                          <input
+                            type="checkbox"
+                            checked={playerForm.isActive}
+                            onChange={(event) => updatePlayerForm("isActive", event.target.checked)}
+                            className="h-4 w-4 rounded border-white/20 bg-transparent"
+                          />
+                          Mark as active roster option
+                        </label>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3">
+                        <button type="submit" disabled={playerSaving} className="button-primary px-5 text-sm">
+                          {playerSaving
+                            ? "Saving..."
+                            : editingPlayerId
+                              ? "Save Player Changes"
+                              : "Create Player"}
+                        </button>
+                        {!editingPlayerId ? (
+                          <button
+                            type="button"
+                            onClick={startCreatePlayer}
+                            className="button-secondary px-5 text-sm"
+                          >
+                            Reset Form
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </div>
+
+                  <div className="archive-panel rounded-[28px] p-5 md:p-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="section-kicker">Roster directory</p>
+                        <h2 className="font-display text-2xl uppercase leading-none text-white md:text-4xl">
+                          Players
+                        </h2>
+                      </div>
+                      <span className="rounded-full border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                        {filteredPlayers.length} player{filteredPlayers.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_190px_auto]">
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Search players
+                        </span>
+                        <input
+                          value={playerSearch}
+                          onChange={(event) => setPlayerSearch(event.target.value)}
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                          placeholder="Name, role, or player ID"
+                        />
+                      </label>
+
+                      <label className="space-y-2">
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-text-muted">
+                          Status
+                        </span>
+                        <select
+                          value={playerStatusFilter}
+                          onChange={(event) =>
+                            setPlayerStatusFilter(event.target.value as PlayerStatusFilter)
+                          }
+                          className="w-full rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white"
+                        >
+                          <option value="all">All statuses</option>
+                          <option value="active">Active</option>
+                          <option value="retired">Retired</option>
+                          <option value="departed">Departed</option>
+                        </select>
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPlayerSearch("");
+                          setPlayerStatusFilter("all");
+                        }}
+                        className="self-end rounded-full border border-white/10 px-4 py-3 text-[11px] uppercase tracking-[0.18em] text-text-secondary transition-colors hover:border-white/20 hover:text-white"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    <div className="mt-5 space-y-3">
+                      {filteredPlayers.length > 0 ? (
+                        filteredPlayers.map((player) => (
+                          <article
+                            key={player.id}
+                            className="rounded-[20px] border border-white/10 bg-white/[0.03] p-4"
+                          >
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div>
+                                <p className="font-display text-2xl uppercase leading-none text-white">
+                                  {player.displayName}
+                                </p>
+                                <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-text-muted">
+                                  {player.id}
+                                </p>
+                              </div>
+                              <span
+                                className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.16em] ${getPlayerStatusTone(
+                                  player.currentStatus
+                                )}`}
+                              >
+                                {player.currentStatus}
+                              </span>
+                            </div>
+                            <p className="mt-3 text-sm text-text-secondary">{player.role}</p>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => startEditPlayer(player)}
+                                className="button-secondary px-4 text-xs"
+                              >
+                                Edit Player
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => void handleDeletePlayer(player)}
+                                className="rounded-full border border-red-500/20 px-4 py-[7px] text-xs font-medium tracking-wide text-red-500/80 transition-colors hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </article>
+                        ))
+                      ) : (
+                        <div className="rounded-[24px] border border-dashed border-white/10 bg-black/10 px-5 py-12 text-center text-sm text-text-muted">
+                          No players match the current filters.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </section>
                   </>
                 ) : (
                   <AdminCommunitySection authHeaders={authHeaders} />
@@ -1334,9 +1737,6 @@ export default function AdminSaynamPage() {
           mode={modalMode}
           form={form}
           players={sortedPlayers}
-          includeCompletionFields={
-            modalMode === "complete" || activeTournament?.status === "completed"
-          }
           saving={saving}
           onClose={resetModal}
           onSubmit={handleSubmit}

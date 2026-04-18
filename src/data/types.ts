@@ -174,6 +174,7 @@ export interface CreateUpcomingTournamentInput {
   details?: string | null;
   coach?: string | null;
   analyst?: string | null;
+  rosterIds?: string[];
 }
 
 export interface UpdateTournamentInput {
@@ -222,6 +223,21 @@ export interface AdminPlayerOption {
   role: string;
   currentStatus: Player["currentStatus"];
   isActive: boolean;
+}
+
+export interface CreateAdminPlayerInput {
+  id?: string;
+  displayName: string;
+  role?: string | null;
+  currentStatus?: Player["currentStatus"];
+  isActive?: boolean;
+}
+
+export interface UpdateAdminPlayerInput {
+  displayName: string;
+  role?: string | null;
+  currentStatus?: Player["currentStatus"];
+  isActive?: boolean;
 }
 
 export type CommunityVotingState = "draft" | "open" | "locked";

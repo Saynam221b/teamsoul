@@ -2,8 +2,10 @@ import type {
   AdminPlayerOption,
   AdminTournament,
   CompleteTournamentInput,
+  CreateAdminPlayerInput,
   CreateUpcomingTournamentInput,
   Tournament,
+  UpdateAdminPlayerInput,
   UpdateTournamentInput,
 } from "@/data/types";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabaseAdmin";
@@ -28,6 +30,14 @@ type DbTournamentRow = {
   tournament_rosters?: Array<{ player_id: string }>;
 };
 
+type DbPlayerRow = {
+  id: string;
+  display_name: string;
+  role: string | null;
+  current_status: AdminPlayerOption["currentStatus"] | null;
+  is_active: boolean | null;
+};
+
 const VALID_TIERS: Tournament["tier"][] = [
   "S-Tier",
   "A-Tier",
@@ -35,6 +45,12 @@ const VALID_TIERS: Tournament["tier"][] = [
   "C-Tier",
   "Qualifier",
   "Showmatch",
+];
+
+const VALID_PLAYER_STATUS: AdminPlayerOption["currentStatus"][] = [
+  "active",
+  "retired",
+  "departed",
 ];
 
 function ensureSupabase() {
@@ -139,6 +155,82 @@ function normalizeBaseTournamentInput(
 
 function normalizeRosterIds(rosterIds?: string[]) {
   return dedupeIds((rosterIds ?? []).map((value) => value.trim()));
+}
+
+function mapAdminPlayer(row: DbPlayerRow): AdminPlayerOption {
+  return {
+    id: row.id,
+    displayName: row.display_name,
+    role: row.role?.trim() || "Player",
+    currentStatus: row.current_status ?? "active",
+    isActive: Boolean(row.is_active),
+  };
+}
+
+function normalizePlayerStatus(
+  value: string | null | undefined
+): AdminPlayerOption["currentStatus"] {
+  if (!value) return "active";
+  if (VALID_PLAYER_STATUS.includes(value as AdminPlayerOption["currentStatus"])) {
+    return value as AdminPlayerOption["currentStatus"];
+  }
+  throw new Error("Player status is invalid");
+}
+
+function normalizePlayerInput(
+  input: CreateAdminPlayerInput | UpdateAdminPlayerInput
+) {
+  const displayName = input.displayName?.trim();
+  if (!displayName) {
+    throw new Error("Player display name is required");
+  }
+
+  const role = input.role?.trim() || "Player";
+  const currentStatus = normalizePlayerStatus(input.currentStatus);
+  const isActive =
+    typeof input.isActive === "boolean" ? input.isActive : currentStatus === "active";
+
+  return {
+    displayName,
+    role,
+    currentStatus,
+    isActive,
+  };
+}
+
+async function getPlayerById(id: string) {
+  const client = ensureSupabase();
+  const { data, error } = await client
+    .from("players")
+    .select("id")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+async function generatePlayerId(displayName: string) {
+  const baseId = slugify(displayName);
+  if (!baseId) {
+    throw new Error("Player ID could not be generated");
+  }
+
+  let candidate = baseId;
+  let suffix = 2;
+
+  for (;;) {
+    const existing = await getPlayerById(candidate);
+    if (!existing) {
+      return candidate;
+    }
+
+    candidate = `${baseId}-${suffix}`;
+    suffix += 1;
+  }
 }
 
 function mapAdminTournament(row: DbTournamentRow): AdminTournament {
@@ -267,24 +359,89 @@ export async function listAdminPlayers(): Promise<AdminPlayerOption[]> {
     throw new Error(error.message);
   }
 
-  return (data ?? []).map((player) => ({
-    id: String(player.id),
-    displayName: String(player.display_name),
-    role: String(player.role ?? "Player"),
-    currentStatus: player.current_status as AdminPlayerOption["currentStatus"],
-    isActive: Boolean(player.is_active),
-  }));
+  return ((data ?? []) as DbPlayerRow[]).map(mapAdminPlayer);
+}
+
+export async function createAdminPlayer(input: CreateAdminPlayerInput) {
+  const client = ensureSupabase();
+  const normalized = normalizePlayerInput(input);
+  const requestedId = input.id?.trim() ? slugify(input.id) : null;
+  if (input.id?.trim() && !requestedId) {
+    throw new Error("Player ID is invalid");
+  }
+
+  if (requestedId) {
+    const existing = await getPlayerById(requestedId);
+    if (existing) {
+      throw new Error("Player ID already exists");
+    }
+  }
+
+  const id = requestedId ?? (await generatePlayerId(normalized.displayName));
+
+  const { data, error } = await client
+    .from("players")
+    .insert({
+      id,
+      display_name: normalized.displayName,
+      role: normalized.role,
+      current_status: normalized.currentStatus,
+      is_active: normalized.isActive,
+    })
+    .select("id,display_name,role,current_status,is_active")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Could not create player");
+  }
+
+  return mapAdminPlayer(data as DbPlayerRow);
+}
+
+export async function updateAdminPlayer(id: string, input: UpdateAdminPlayerInput) {
+  const client = ensureSupabase();
+  const normalized = normalizePlayerInput(input);
+
+  const { data, error } = await client
+    .from("players")
+    .update({
+      display_name: normalized.displayName,
+      role: normalized.role,
+      current_status: normalized.currentStatus,
+      is_active: normalized.isActive,
+    })
+    .eq("id", id)
+    .select("id,display_name,role,current_status,is_active")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Could not update player");
+  }
+
+  return mapAdminPlayer(data as DbPlayerRow);
+}
+
+export async function deleteAdminPlayer(id: string) {
+  const client = ensureSupabase();
+  const { error } = await client.from("players").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message || "Could not delete player");
+  }
+
+  return true;
 }
 
 export async function createUpcomingTournament(input: CreateUpcomingTournamentInput) {
   const client = ensureSupabase();
   const normalized = normalizeBaseTournamentInput(input);
   const id = await generateTournamentId(normalized.name, normalized.year);
+  const rosterIds = normalizeRosterIds(input.rosterIds);
   const lifecycle = normalizeTournamentLifecycleInput({
     status: input.status === "live" ? "live" : "upcoming",
     placement: null,
     isWin: false,
-    rosterIds: [],
+    rosterIds,
   });
 
   const { data, error } = await client
@@ -314,7 +471,15 @@ export async function createUpcomingTournament(input: CreateUpcomingTournamentIn
     throw new Error(error?.message ?? "Could not create tournament");
   }
 
-  return mapAdminTournament(data as DbTournamentRow);
+  await replaceTournamentRoster(id, lifecycle.rosterIds);
+
+  const refreshed = await listAdminTournaments();
+  const created = refreshed.find((item) => item.id === id);
+  if (!created) {
+    throw new Error("Tournament creation could not be verified");
+  }
+
+  return created;
 }
 
 export async function updateTournament(id: string, input: UpdateTournamentInput) {
@@ -360,12 +525,8 @@ export async function updateTournament(id: string, input: UpdateTournamentInput)
     throw new Error(error?.message ?? "Could not update tournament");
   }
 
-  if (lifecycle.status === "completed") {
-    if (rosterIds) {
-      await replaceTournamentRoster(id, lifecycle.rosterIds);
-    }
-  } else {
-    await replaceTournamentRoster(id, []);
+  if (rosterIds) {
+    await replaceTournamentRoster(id, lifecycle.rosterIds);
   }
 
   const refreshed = await listAdminTournaments();
