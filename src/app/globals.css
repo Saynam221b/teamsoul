@@ -2124,6 +2124,105 @@ h6 {
     border-color var(--motion-duration-base) ease;
 }
 
+.verification-panel {
+  overflow: hidden;
+}
+
+.verification-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0.8rem;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.verification-pill-confirmed {
+  border-color: rgba(0, 229, 255, 0.22);
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent);
+}
+
+.verification-pill-candidate {
+  border-color: rgba(243, 199, 106, 0.2);
+  background: rgba(243, 199, 106, 0.1);
+  color: var(--gold);
+}
+
+.verification-pill-archived {
+  border-color: rgba(128, 145, 164, 0.2);
+  background: rgba(128, 145, 164, 0.12);
+  color: var(--text-secondary);
+}
+
+.verification-pill-neutral {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+}
+
+.verification-reference {
+  position: relative;
+}
+
+.verification-reference-label,
+.verification-reference-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.verification-reference-label {
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.08);
+  color: var(--accent);
+}
+
+.verification-reference-date {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+}
+
+.updates-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.updates-card {
+  min-height: 100%;
+}
+
+.updates-card-result {
+  border-color: rgba(0, 229, 255, 0.14);
+}
+
+.updates-card-roster {
+  border-color: rgba(243, 199, 106, 0.14);
+}
+
+.updates-card-staff {
+  border-color: rgba(57, 255, 20, 0.14);
+}
+
+.updates-card-system,
+.updates-card-candidate {
+  border-color: rgba(128, 145, 164, 0.18);
+}
+
+@media (min-width: 768px) {
+  .updates-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .hero-highlight:hover {
     transform: translateY(-4px) scale(1.01);
@@ -2967,6 +3066,100 @@ h6 {
 
   .nav-link-active::after {
     display: none;
+  }
+}
+
+.fan-command-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(320px, 0.72fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.fan-command-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.fan-command-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(35, 232, 255, 0.18), transparent 34%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 32%);
+  opacity: 0.9;
+}
+
+.fan-command-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fan-live-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(0, 0, 0, 0.18);
+  padding: 18px;
+}
+
+.fan-live-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(35, 232, 255, 0.95), rgba(255, 209, 102, 0.5));
+  opacity: 0.8;
+}
+
+.fan-reaction-chip,
+.fan-badge-button {
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  padding: 0.68rem 0.82rem;
+  text-transform: uppercase;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.fan-badge-button {
+  width: 100%;
+  text-align: left;
+}
+
+.fan-reaction-chip:hover,
+.fan-badge-button:hover:not(:disabled) {
+  border-color: rgba(35, 232, 255, 0.35);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.fan-reaction-chip:disabled,
+.fan-badge-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.soul-moment-player {
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34), 0 0 70px rgba(35, 232, 255, 0.08);
+}
+
+@media (max-width: 1024px) {
+  .fan-command-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

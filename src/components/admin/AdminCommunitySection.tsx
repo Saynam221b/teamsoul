@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import AdminFanArenaSection from "@/components/admin/AdminFanArenaSection";
 import type {
   AdminCommunityBoard,
   CommunityBoardTeamEditorInput,
@@ -428,6 +429,8 @@ export default function AdminCommunitySection({
           {notice}
         </div>
       ) : null}
+
+      <AdminFanArenaSection authHeaders={authHeaders} boards={boards} />
 
       <div className="grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
         <aside className="archive-panel rounded-[28px] p-5 md:p-6">

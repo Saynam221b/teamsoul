@@ -4,6 +4,7 @@ import type { Tournament } from "@/data/types";
 import { formatDate, formatPlacement, formatPrize } from "@/data/helpers";
 import TierBadge from "../shared/TierBadge";
 import { isCompletedWin } from "@/lib/tournamentLifecycle";
+import RouteLink from "@/components/layout/RouteLink";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -52,9 +53,13 @@ export default function TournamentCard({
         <span className="text-[10px] uppercase tracking-[0.14em] text-text-muted md:text-xs md:tracking-[0.18em]">{year}</span>
       </div>
 
-      <h3 className="font-display text-lg uppercase leading-[0.94] text-white md:text-xl">
+      <RouteLink
+        href={`/tournaments/${tournament.id}`}
+        className="font-display text-lg uppercase leading-[0.94] text-white transition-colors hover:text-accent md:text-xl"
+        pendingIndicator="off"
+      >
         {name}
-      </h3>
+      </RouteLink>
 
       {details && <p className="mt-2 text-xs leading-6 text-text-secondary md:mt-3 md:text-sm md:leading-6">{details}</p>}
 

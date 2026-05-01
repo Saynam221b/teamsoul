@@ -8,6 +8,12 @@ import { formatPrize } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import TournamentDash from "@/components/tournaments/TournamentDash";
 import { getChampionshipTournaments, getCompletedTournaments } from "@/lib/tournamentLifecycle";
+import VerificationSummaryPanel from "@/components/shared/VerificationSummaryPanel";
+import {
+  getCanonicalTournaments,
+  getEntityVerificationSummary,
+  mergeTournamentTruth,
+} from "@/lib/sourceTruth";
 
 export const metadata: Metadata = {
   title: "Tournament History — Team SOUL Archive",
@@ -18,13 +24,14 @@ export const dynamic = "force-dynamic";
 
 export default async function TournamentsPage() {
   const tournamentFeed = await getPublicTournamentFeed();
-  const tournaments = tournamentFeed.tournaments;
+  const tournaments = getCanonicalTournaments(mergeTournamentTruth(tournamentFeed.tournaments));
   const ongoing = tournaments.filter((item) => item.status === "live");
   const completed = getCompletedTournaments(tournaments);
   const wins = getChampionshipTournaments(tournaments);
   const upcoming = tournaments.filter((item) => item.status === "upcoming");
   const totalPrize = completed.reduce((sum, item) => sum + (item.prize ?? 0), 0);
   const latestYear = completed.reduce((latest, item) => Math.max(latest, item.year), 0);
+  const verificationSummary = getEntityVerificationSummary("organization", "team-soul");
   const unavailableMessage =
     tournamentFeed.source === "unavailable"
       ? getTournamentFeedUnavailableMessage(tournamentFeed.message)
@@ -104,6 +111,17 @@ export default async function TournamentsPage() {
             </div>
           </section>
         ) : null}
+
+        <section className="archive-section !pt-0 !pb-0">
+          <div className="page-wrap">
+            <VerificationSummaryPanel
+              summary={verificationSummary}
+              eyebrow="Canonical board"
+              title="Only confirmed tournaments stay public"
+              description="Upcoming and live entries now need explicit verification before they appear on the canonical tournament board."
+            />
+          </div>
+        </section>
 
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">

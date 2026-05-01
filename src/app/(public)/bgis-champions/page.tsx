@@ -6,6 +6,7 @@ import HighlightGallery from "@/components/champions/HighlightGallery";
 import { getArchiveFeedUnavailableMessage, getPublicArchiveFeed } from "@/lib/db/archive";
 import { getPublicBlobAssetFeed, getBlobAssetFeedUnavailableMessage } from "@/lib/db/blobAssets";
 import { getBgisHighlights, getChampionPlayers, getChampionStaff } from "@/lib/bgis";
+import { mergePlayerTruth, mergeStaffTruth } from "@/lib/sourceTruth";
 
 export const metadata: Metadata = {
   title: "BGIS Champions — Team SOUL Archive",
@@ -17,8 +18,8 @@ export const dynamic = "force-dynamic";
 export default async function BgisChampionsPage() {
   const archiveFeed = await getPublicArchiveFeed();
   const blobAssetFeed = await getPublicBlobAssetFeed();
-  const players = getChampionPlayers(archiveFeed.players, blobAssetFeed.assets);
-  const staff = getChampionStaff(archiveFeed.staff, blobAssetFeed.assets);
+  const players = getChampionPlayers(mergePlayerTruth(archiveFeed.players), blobAssetFeed.assets);
+  const staff = getChampionStaff(mergeStaffTruth(archiveFeed.staff), blobAssetFeed.assets);
   const highlights = getBgisHighlights(blobAssetFeed.assets);
   const assetStats = {
     generatedAt: blobAssetFeed.generatedAt,

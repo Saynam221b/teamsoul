@@ -1,0 +1,348 @@
+<style>
+  .board-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .direction-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    cursor: pointer;
+  }
+  .direction-card[data-selected="true"] {
+    border-color: rgba(88, 160, 255, 0.9);
+    box-shadow: 0 0 0 1px rgba(88, 160, 255, 0.45), 0 28px 90px rgba(21, 55, 118, 0.35);
+  }
+  .direction-hero {
+    aspect-ratio: 4 / 4.8;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mock-frame {
+    position: absolute;
+    inset: 16px;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .mini-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.86;
+  }
+  .mock-copy {
+    padding: 22px 18px 20px;
+  }
+  .mock-kicker {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .mock-title {
+    margin-top: 12px;
+    font-size: 34px;
+    line-height: 0.92;
+    letter-spacing: -0.06em;
+    font-weight: 700;
+    max-width: 8ch;
+  }
+  .mock-body {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.55;
+    max-width: 28ch;
+    opacity: 0.8;
+  }
+  .mock-cta-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .mock-pill {
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .mock-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .mock-stat {
+    border-radius: 18px;
+    padding: 14px 12px;
+    min-height: 78px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .mock-stat strong {
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .mock-stat span {
+    margin-top: 6px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .route-row {
+    display: grid;
+    gap: 8px;
+    padding: 0 18px 18px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .route-chip {
+    border-radius: 999px;
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .direction-body {
+    padding: 20px 20px 18px;
+  }
+  .direction-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: start;
+  }
+  .direction-name {
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    margin: 0;
+  }
+  .direction-tag {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .direction-copy {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.65;
+    opacity: 0.82;
+  }
+  .direction-list {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .direction-list li::before {
+    content: "•";
+    margin-right: 8px;
+    opacity: 0.45;
+  }
+  .summary-strip {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 16px;
+  }
+  .summary-panel {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+  .summary-panel p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+  @media (max-width: 1100px) {
+    .board-grid,
+    .summary-strip {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<h2>Team SOUL redesign directions</h2>
+<p class="subtitle">Apple-inspired, but translated for an esports legacy site. Pick the direction that should drive the whole public surface: Home, Tournaments, Roster, Champions, and Community.</p>
+
+<div class="summary-strip">
+  <div class="summary-panel">
+    <div class="label">Current read</div>
+    <p>The site already has strong motion and complete structure, but almost every route is using the same dark glass vocabulary, the same chrome density, and the same loudness level. The redesign should create hierarchy by restraint: one dominant moment per page, cleaner product-style sections, and more confidence in whitespace.</p>
+  </div>
+  <div class="summary-panel">
+    <div class="label">Recommended</div>
+    <p><strong>B. Titanium Editorial</strong> gives you the strongest Apple influence without making Team SOUL feel like a generic electronics clone. It keeps the black prestige, adds brighter editorial breathing room, and makes the BGIS / legacy moments feel more premium.</p>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px">
+  <div class="board-grid">
+    <div class="direction-card" data-choice="a" onclick="toggleSelect(this)">
+      <div class="direction-hero" style="background: radial-gradient(circle at 20% 15%, rgba(95,152,255,0.34), transparent 34%), radial-gradient(circle at 80% 0%, rgba(255,255,255,0.12), transparent 28%), linear-gradient(180deg, #02040a 0%, #07111e 48%, #091624 100%); color:#f5f8ff;">
+        <div class="mock-frame" style="background: linear-gradient(180deg, rgba(8,14,23,0.88), rgba(7,13,22,0.98));">
+          <div class="mini-nav" style="color:rgba(245,248,255,0.86)">
+            <div class="brand-mark"><span class="dot"></span><span>Team Soul</span></div>
+            <div>Home • Archive • Champions</div>
+          </div>
+          <div class="mock-copy">
+            <div class="mock-kicker" style="color:#8bc0ff">Cinematic flagship</div>
+            <div class="mock-title">A darker, more monumental Team SOUL.</div>
+            <div class="mock-body">Full-bleed black hero. Chrome gets reduced, but the mood stays theatrical and arena-like.</div>
+            <div class="mock-cta-row">
+              <div class="mock-pill" style="background:#eef4ff; color:#03101e">Explore legacy</div>
+              <div class="mock-pill" style="border:1px solid rgba(255,255,255,0.16)">View champions</div>
+            </div>
+            <div class="mock-strip">
+              <div class="mock-stat" style="background:rgba(255,255,255,0.06)"><strong>19</strong><span>titles</span></div>
+              <div class="mock-stat" style="background:rgba(255,255,255,0.05)"><strong>01</strong><span>dynasty</span></div>
+              <div class="mock-stat" style="background:rgba(255,255,255,0.04)"><strong>2026</strong><span>peak</span></div>
+            </div>
+          </div>
+          <div class="route-row">
+            <div class="route-chip" style="background:rgba(255,255,255,0.07)">Poster home</div>
+            <div class="route-chip" style="background:rgba(255,255,255,0.06)">Command board</div>
+            <div class="route-chip" style="background:rgba(255,255,255,0.05)">Player wall</div>
+            <div class="route-chip" style="background:rgba(255,255,255,0.05)">Stage gallery</div>
+            <div class="route-chip" style="background:rgba(255,255,255,0.05)">Arena vote</div>
+          </div>
+        </div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-title-row">
+          <h3 class="direction-name">A. Monumental Cinema</h3>
+          <div class="direction-tag">Most dramatic</div>
+        </div>
+        <p class="direction-copy">This keeps the site mostly dark and prestige-heavy, but removes the current clutter. It feels like Apple event-film energy pushed into esports.</p>
+        <ul class="direction-list">
+          <li>Best if you want the homepage to feel like a premium launch trailer.</li>
+          <li>Tournaments and roster become cleaner but still black-first and atmospheric.</li>
+          <li>Remotion role: cinematic section transitions, soft parallax, stage-light reveals.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="direction-card" data-choice="b" onclick="toggleSelect(this)">
+      <div class="direction-hero" style="background: linear-gradient(180deg, #f5f5f7 0%, #e9edf3 52%, #d8dee8 100%); color:#0e1520;">
+        <div class="mock-frame" style="background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(237,241,246,0.94)); border-color:rgba(17,24,39,0.06);">
+          <div class="mini-nav" style="color:rgba(14,21,32,0.7)">
+            <div class="brand-mark"><span class="dot" style="background:#111827"></span><span>Team Soul</span></div>
+            <div>Legacy • Roster • BGIS • Community</div>
+          </div>
+          <div class="mock-copy">
+            <div class="mock-kicker" style="color:#50627b">Titanium editorial</div>
+            <div class="mock-title" style="max-width:9ch">A quieter, sharper way to show dominance.</div>
+            <div class="mock-body" style="color:rgba(14,21,32,0.7)">Large typography, vast negative space, pale metallic surfaces, and isolated dark frames only where the moment needs weight.</div>
+            <div class="mock-cta-row">
+              <div class="mock-pill" style="background:#111827; color:#f8fbff">See the archive</div>
+              <div class="mock-pill" style="border:1px solid rgba(17,24,39,0.12); color:#334155">Meet the roster</div>
+            </div>
+            <div class="mock-strip">
+              <div class="mock-stat" style="background:rgba(17,24,39,0.04)"><strong>Home</strong><span>light poster</span></div>
+              <div class="mock-stat" style="background:rgba(17,24,39,0.045)"><strong>Archive</strong><span>museum grid</span></div>
+              <div class="mock-stat" style="background:rgba(17,24,39,0.05)"><strong>BGIS</strong><span>dark jewel</span></div>
+            </div>
+          </div>
+          <div class="route-row">
+            <div class="route-chip" style="background:rgba(17,24,39,0.05)">Poster intro</div>
+            <div class="route-chip" style="background:rgba(17,24,39,0.05)">Editorial stats</div>
+            <div class="route-chip" style="background:rgba(17,24,39,0.05)">Portrait tiles</div>
+            <div class="route-chip" style="background:rgba(17,24,39,0.08)">Black hero</div>
+            <div class="route-chip" style="background:rgba(17,24,39,0.05)">Clean vote deck</div>
+          </div>
+        </div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-title-row">
+          <h3 class="direction-name">B. Titanium Editorial</h3>
+          <div class="direction-tag" style="background:rgba(17,24,39,0.05)">Recommended</div>
+        </div>
+        <p class="direction-copy">This is the strongest Apple-like route: bright premium surfaces, giant disciplined typography, and dark contrast reserved for championship moments.</p>
+        <ul class="direction-list">
+          <li>Homepage feels closer to an Apple product story than a gaming landing page.</li>
+          <li>Tournaments and roster read like curated museum exhibits, not dashboards.</li>
+          <li>Remotion role: product-film reveals, slow typography lifts, ambient light sweeps.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="direction-card" data-choice="c" onclick="toggleSelect(this)">
+      <div class="direction-hero" style="background: linear-gradient(180deg, #f8efe0 0%, #e7dccb 48%, #d8c7b0 100%); color:#221b17;">
+        <div class="mock-frame" style="background: linear-gradient(180deg, rgba(251,245,236,0.88), rgba(232,220,203,0.96)); border-color:rgba(34,27,23,0.08);">
+          <div class="mini-nav" style="color:rgba(34,27,23,0.68)">
+            <div class="brand-mark"><span class="dot" style="background:#221b17"></span><span>Team Soul</span></div>
+            <div>Origins • Dynasties • Hall • Vote</div>
+          </div>
+          <div class="mock-copy">
+            <div class="mock-kicker" style="color:#6b574a">Archive museum</div>
+            <div class="mock-title" style="max-width:9ch">The legacy site becomes a digital exhibition.</div>
+            <div class="mock-body" style="color:rgba(34,27,23,0.72)">Warm metal, stone-paper tones, trophy-room pacing, and timeline storytelling with almost no neon or esports chrome.</div>
+            <div class="mock-cta-row">
+              <div class="mock-pill" style="background:#221b17; color:#f8efe0">Enter exhibit</div>
+              <div class="mock-pill" style="border:1px solid rgba(34,27,23,0.12); color:#4b382e">See eras</div>
+            </div>
+            <div class="mock-strip">
+              <div class="mock-stat" style="background:rgba(34,27,23,0.05)"><strong>Story</strong><span>first</span></div>
+              <div class="mock-stat" style="background:rgba(34,27,23,0.05)"><strong>Warm</strong><span>palette</span></div>
+              <div class="mock-stat" style="background:rgba(34,27,23,0.05)"><strong>Less</strong><span>sporty</span></div>
+            </div>
+          </div>
+          <div class="route-row">
+            <div class="route-chip" style="background:rgba(34,27,23,0.05)">Exhibit home</div>
+            <div class="route-chip" style="background:rgba(34,27,23,0.05)">Plaque lists</div>
+            <div class="route-chip" style="background:rgba(34,27,23,0.05)">Portrait hall</div>
+            <div class="route-chip" style="background:rgba(34,27,23,0.08)">Gold vault</div>
+            <div class="route-chip" style="background:rgba(34,27,23,0.05)">Polling salon</div>
+          </div>
+        </div>
+      </div>
+      <div class="direction-body">
+        <div class="direction-title-row">
+          <h3 class="direction-name">C. Archive Museum</h3>
+          <div class="direction-tag">Most editorial</div>
+        </div>
+        <p class="direction-copy">This is less Apple launch-page and more Apple editorial exhibit. It would make Team SOUL feel historic, curated, and almost luxury-brand archival.</p>
+        <ul class="direction-list">
+          <li>Strongest if the goal is legacy and culture over hype and energy.</li>
+          <li>Could undersell the competitive sharpness if pushed too far.</li>
+          <li>Remotion role: gallery pacing, slow object reveals, timeline film loops.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

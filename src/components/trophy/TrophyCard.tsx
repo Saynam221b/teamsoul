@@ -1,4 +1,5 @@
 import type { Player, Tournament } from "@/data/types";
+import Link from "next/link";
 import {
   formatPlacement,
   formatPrize,
@@ -115,9 +116,12 @@ export default function TrophyCard({
       </div>
 
       <div className="trophy-card-title mt-6 flex min-h-[4.2rem] flex-1 flex-col justify-start md:min-h-[5rem]">
-        <h3 className="font-display text-xl uppercase leading-[0.9] tracking-[-0.04em] text-white md:text-2xl">
+        <Link
+          href={`/tournaments/${tournament.id}`}
+          className="font-display text-xl uppercase leading-[0.9] tracking-[-0.04em] text-white transition-colors hover:text-accent md:text-2xl"
+        >
           {tournament.name}
-        </h3>
+        </Link>
       </div>
 
       <div className="trophy-card-stats mt-6 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
@@ -151,9 +155,12 @@ export default function TrophyCard({
                 key={player.id}
                 className="rounded-[18px] border border-white/8 bg-white/[0.03] px-3 py-2"
               >
-                <p className="text-xs font-medium uppercase tracking-[0.08em] text-white">
+                <Link
+                  href={`/roster/${player.id}`}
+                  className="text-xs font-medium uppercase tracking-[0.08em] text-white transition-colors hover:text-accent"
+                >
                   {player.displayName}
-                </p>
+                </Link>
                 <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-text-muted">
                   {getRoleLabel(player.role)}
                 </p>

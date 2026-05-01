@@ -14,6 +14,7 @@
     "db:sync-blob-assets:supabase": "node scripts/sync_blob_assets_to_supabase.mjs"
   },
   "dependencies": {
+    "@remotion/player": "^4.0.455",
     "@supabase/supabase-js": "^2.103.0",
     "@tanstack/query-sync-storage-persister": "^5.99.0",
     "@tanstack/react-query": "^5.99.0",
@@ -22,7 +23,8 @@
     "next": "16.2.3",
     "pg": "^8.20.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "remotion": "^4.0.455"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

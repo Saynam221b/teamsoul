@@ -11,8 +11,8 @@ const connectionString = rawConnectionString
   .replace(/[?&]$/g, "");
 
 function getPoolMax() {
-  const fromEnv = Number(process.env.POSTGRES_POOL_MAX || "1");
-  if (!Number.isFinite(fromEnv)) return 1;
+  const fromEnv = Number(process.env.POSTGRES_POOL_MAX || "4");
+  if (!Number.isFinite(fromEnv)) return 4;
   return Math.max(1, Math.min(10, Math.trunc(fromEnv)));
 }
 

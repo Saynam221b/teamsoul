@@ -14,6 +14,75 @@ export interface SoulArchive {
   stats: AggregateStats;
 }
 
+export type SourceType = "official" | "official_tournament" | "wiki" | "report";
+export type CanonicalStatus = "confirmed" | "candidate" | "archived";
+export type VerifiedEntityType =
+  | "organization"
+  | "player"
+  | "staff"
+  | "tournament"
+  | "media"
+  | "community";
+
+export interface Source {
+  id: string;
+  name: string;
+  sourceType: SourceType;
+  baseUrl: string;
+  note?: string;
+}
+
+export interface SourceReference {
+  id: string;
+  entityType: VerifiedEntityType;
+  entityId: string;
+  sourceId: string;
+  sourceUrl: string;
+  sourceType: SourceType;
+  title: string;
+  verifiedAt: string;
+  confidence: "high" | "medium" | "low";
+  notes?: string;
+}
+
+export interface VerificationSummary {
+  sourceCount: number;
+  lastVerifiedAt: string | null;
+  canonicalStatus: CanonicalStatus;
+  references: SourceReference[];
+}
+
+export interface VerificationRecord extends VerificationSummary {
+  entityType: VerifiedEntityType;
+  entityId: string;
+}
+
+export interface ApprovedChange {
+  id: string;
+  entityType: VerifiedEntityType;
+  entityId: string;
+  kind: "result" | "roster" | "staff" | "correction" | "media" | "system";
+  title: string;
+  summary: string;
+  publishedAt: string;
+  effectiveDate?: string;
+  href: string;
+  canonicalStatus: CanonicalStatus;
+  sourceReferenceIds: string[];
+  public: boolean;
+}
+
+export interface UpdateCandidate {
+  id: string;
+  entityType: VerifiedEntityType;
+  entityId: string;
+  title: string;
+  summary: string;
+  candidateStatus: "watchlist" | "ready_for_review" | "needs_source";
+  proposedAt: string;
+  sourceReferenceIds: string[];
+}
+
 export interface Organization {
   name: string;
   founded: string;
@@ -59,6 +128,10 @@ export interface Player {
   isFounder: boolean;
   isActive: boolean;
   currentStatus: "active" | "retired" | "departed";
+  canonicalStatus?: CanonicalStatus;
+  lastVerifiedAt?: string | null;
+  sourceReferences?: SourceReference[];
+  recentChangeIds?: string[];
 }
 
 export interface StaffMember {
@@ -71,6 +144,10 @@ export interface StaffMember {
   isActive: boolean;
   impact: string;
   eras: string[];
+  canonicalStatus?: CanonicalStatus;
+  lastVerifiedAt?: string | null;
+  sourceReferences?: SourceReference[];
+  recentChangeIds?: string[];
 }
 
 export interface PlayerStint {
@@ -99,6 +176,10 @@ export interface Tournament {
   roster?: string[];
   staff?: string[];
   awards?: Award[];
+  canonicalStatus?: CanonicalStatus;
+  lastVerifiedAt?: string | null;
+  sourceReferences?: SourceReference[];
+  recentChangeIds?: string[];
 }
 
 export type DataFeedSource = "db" | "unavailable";
@@ -125,6 +206,26 @@ export interface BlobAsset {
   createdAt?: string | null;
 }
 
+export interface MediaAsset {
+  id: string;
+  title: string;
+  imageUrl: string;
+  assetType: "portrait" | "highlight" | "poster" | "gallery";
+  tournamentId?: string;
+  playerId?: string;
+  staffId?: string;
+  eraId?: string;
+  createdAt?: string | null;
+}
+
+export interface MediaCollection {
+  id: string;
+  title: string;
+  description: string;
+  tournamentId?: string;
+  assets: MediaAsset[];
+}
+
 export interface PublicBlobAssetFeedResult {
   assets: BlobAsset[];
   generatedAt?: string | null;
@@ -138,6 +239,17 @@ export interface Award {
   recipient: string;
   prize?: number;
   tournament: string;
+}
+
+export interface RosterEvent {
+  id: string;
+  playerId: string;
+  type: "joined" | "left" | "returned" | "role_change" | "award";
+  date: string;
+  title: string;
+  description: string;
+  eraId?: string;
+  tournamentId?: string;
 }
 
 export interface RosterSnapshot {
@@ -160,6 +272,27 @@ export interface AggregateStats {
   winsByTier: Record<string, number>;
   tournamentsByYear: Record<number, number>;
   bestPlacement: { tournament: string; placement: number; prize: number };
+}
+
+export interface PlayerProfile {
+  player: Player;
+  verification: VerificationSummary;
+  recentChanges: ApprovedChange[];
+  rosterEvents: RosterEvent[];
+}
+
+export interface StaffProfile {
+  staff: StaffMember;
+  verification: VerificationSummary;
+  recentChanges: ApprovedChange[];
+}
+
+export interface TournamentDetail {
+  tournament: Tournament;
+  verification: VerificationSummary;
+  recentChanges: ApprovedChange[];
+  rosterPlayers: Player[];
+  mediaCollection?: MediaCollection | null;
 }
 
 export interface CreateUpcomingTournamentInput {
@@ -306,6 +439,138 @@ export interface CommunityVoteAggregate {
   winnerVotesByTeamId: Record<string, number>;
 }
 
+export type CommunityPostReactionType = "like" | "dislike";
+
+export interface CommunityPost {
+  id: string;
+  authorUserId: string;
+  authorUsername: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  likeCount: number;
+  dislikeCount: number;
+  viewerReaction: CommunityPostReactionType | null;
+}
+
+export type FanContentStatus = "draft" | "published" | "pinned" | "expired" | "archived";
+
+export type CommunityLiveEventType = "announcement" | "score_update" | "poll" | "moment" | "countdown";
+
+export type CommunityReactionKey = "soul" | "hype" | "clutch" | "respect";
+
+export interface CommunityReactionSummary {
+  liveEventId: string;
+  total: number;
+  counts: Record<CommunityReactionKey, number>;
+}
+
+export interface CommunityLiveEvent {
+  id: string;
+  boardId: string | null;
+  tournamentId: string | null;
+  tournamentName: string | null;
+  eventType: CommunityLiveEventType;
+  title: string;
+  body: string | null;
+  payload: Record<string, unknown>;
+  status: FanContentStatus;
+  isPinned: boolean;
+  publishedAt: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CommunityReaction {
+  id: string;
+  liveEventId: string;
+  userId: string;
+  reactionKey: CommunityReactionKey;
+  createdAt: string;
+}
+
+export interface CommunityBadge {
+  id: string;
+  userId: string;
+  badgeKey: string;
+  label: string;
+  description: string;
+  source: string | null;
+  earnedAt: string;
+}
+
+export type MediaMomentTemplateKey = "trophy_pulse" | "roster_intro" | "match_countdown";
+
+export interface MediaMoment {
+  id: string;
+  tournamentId: string | null;
+  tournamentName: string | null;
+  title: string;
+  description: string | null;
+  templateKey: MediaMomentTemplateKey;
+  status: FanContentStatus;
+  durationSeconds: number;
+  accent: "cyan" | "gold" | "energy";
+  thumbnailUrl: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FanEngagementRollup {
+  id: string;
+  rollupDate: string;
+  boardId: string | null;
+  boardHeadline: string | null;
+  votesCount: number;
+  reactionsCount: number;
+  activeUsersCount: number;
+  badgesAwardedCount: number;
+  createdAt: string;
+}
+
+export interface FanProfileSummary {
+  user: CommunityUser;
+  votesCount: number;
+  reactionsCount: number;
+  badgesCount: number;
+  badges: CommunityBadge[];
+}
+
+export interface PredictionSeason {
+  id: string;
+  title: string;
+  status: "upcoming" | "open" | "locked" | "completed";
+  tournamentId: string;
+}
+
+export interface PredictionEntry {
+  id: string;
+  seasonId: string;
+  userId: string;
+  submittedAt: string;
+}
+
+export interface UserBadge {
+  id: string;
+  label: string;
+  description: string;
+}
+
+export interface UserStreak {
+  userId: string;
+  current: number;
+  best: number;
+}
+
+export interface ContributionSubmission {
+  id: string;
+  kind: "correction" | "media" | "missing_result";
+  status: "pending" | "approved" | "rejected";
+  submittedAt: string;
+}
+
 export interface CommunityAuthPayload {
   username: string;
   password: string;
@@ -316,6 +581,23 @@ export interface CommunityVotePayload {
   mvpPlayerId: string;
   bestIglPlayerId: string;
   winnerTeamId: string;
+}
+
+export interface CommunityPostPayload {
+  body: string;
+}
+
+export interface CommunityPostReactionPayload {
+  reactionType: CommunityPostReactionType;
+}
+
+export interface CommunityReactionPayload {
+  liveEventId: string;
+  reactionKey: CommunityReactionKey;
+}
+
+export interface CommunityBadgeClaimPayload {
+  badgeKey: string;
 }
 
 export interface CommunityBoardTeamEditorInput {
@@ -352,6 +634,35 @@ export interface UpdateCommunityBoardInput {
 export interface AdminCommunityBoard extends CommunityBoard {
   voteAggregate: CommunityVoteAggregate;
 }
+
+export interface CreateCommunityLiveEventInput {
+  boardId?: string | null;
+  tournamentId?: string | null;
+  eventType?: CommunityLiveEventType;
+  title: string;
+  body?: string | null;
+  payload?: Record<string, unknown>;
+  status?: FanContentStatus;
+  isPinned?: boolean;
+  publishedAt?: string | null;
+  expiresAt?: string | null;
+}
+
+export type UpdateCommunityLiveEventInput = Partial<CreateCommunityLiveEventInput>;
+
+export interface CreateMediaMomentInput {
+  tournamentId?: string | null;
+  title: string;
+  description?: string | null;
+  templateKey?: MediaMomentTemplateKey;
+  status?: FanContentStatus;
+  durationSeconds?: number;
+  accent?: "cyan" | "gold" | "energy";
+  thumbnailUrl?: string | null;
+  publishedAt?: string | null;
+}
+
+export type UpdateMediaMomentInput = Partial<CreateMediaMomentInput>;
 
 // Tier color mapping — muted professional palette
 export const TIER_COLORS: Record<string, { bg: string; text: string; glow: string }> = {

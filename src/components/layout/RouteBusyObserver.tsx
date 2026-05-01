@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { clearRouteBusy, finishRouteBusy } from "./routeBusyState";
 
-const MONITORED_ROUTES = new Set(["/tournaments", "/roster", "/bgis-champions"]);
+const MONITORED_ROUTES = new Set(["/tournaments", "/roster", "/updates", "/bgis-champions"]);
 
 export default function RouteBusyObserver() {
   const pathname = usePathname();

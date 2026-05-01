@@ -2,6 +2,7 @@
 
 import type { Player } from "@/data/types";
 import { formatDate } from "@/data/helpers";
+import RouteLink from "@/components/layout/RouteLink";
 
 interface PlayerCardProps {
   player: Player;
@@ -36,9 +37,13 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
 
           <div>
             <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
-              <h3 className="font-display text-xl uppercase leading-none text-white md:text-2xl">
+              <RouteLink
+                href={`/roster/${player.id}`}
+                className="font-display text-xl uppercase leading-none text-white transition-colors hover:text-accent md:text-2xl"
+                pendingIndicator="off"
+              >
                 {player.displayName}
-              </h3>
+              </RouteLink>
               {player.isFounder && (
                 <span className="rounded-full border border-gold/30 px-2 py-0.5 text-[9px] uppercase tracking-[0.14em] text-gold md:py-1 md:text-[10px] md:tracking-[0.16em]">
                   Founder
@@ -63,7 +68,9 @@ export default function PlayerCard({ player, index }: PlayerCardProps) {
           <p className="mt-1 text-sm text-text-secondary">{formatDate(latestStint.joinDate)}</p>
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">Current</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-text-muted">
+            {latestStint.leaveDate ? "Active through" : "Current"}
+          </p>
           <p className="mt-1 text-sm text-text-secondary">
             {latestStint.leaveDate ? formatDate(latestStint.leaveDate) : "Active now"}
           </p>

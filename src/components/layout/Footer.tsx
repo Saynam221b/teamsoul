@@ -32,18 +32,11 @@ export default function Footer() {
 
             <div className="flex flex-col items-start gap-4 text-left md:items-end md:text-right">
               <p className="footer-credit-line inline-flex items-center gap-1.5">
-                <span>Built with</span>
-                <span className="text-red-500">❤️</span>
-                <span>by D3xTRverse</span>
+                <span>Verified archive experience</span>
               </p>
-              <a
-                href="https://saynam-portfolio-19qy.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-creator-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-text-secondary transition-colors hover:border-accent/20 hover:bg-white/[0.08] hover:text-white"
-              >
-                Meet the creator
-              </a>
+              <p className="footer-creator-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                Public truth first
+              </p>
             </div>
           </div>
         </RevealOnScroll>

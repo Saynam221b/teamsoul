@@ -4,6 +4,8 @@ import { getArchiveFeedUnavailableMessage, getPublicArchiveFeed } from "@/lib/db
 import { getYearFromDateString } from "@/data/helpers";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import PlayerGrid from "@/components/roster/PlayerGrid";
+import VerificationSummaryPanel from "@/components/shared/VerificationSummaryPanel";
+import { getEntityVerificationSummary, mergePlayerTruth } from "@/lib/sourceTruth";
 
 export const metadata: Metadata = {
   title: "Roster — Team SOUL Archive",
@@ -14,7 +16,7 @@ export const dynamic = "force-dynamic";
 
 export default async function RosterPage() {
   const archiveFeed = await getPublicArchiveFeed();
-  const players = archiveFeed.players;
+  const players = mergePlayerTruth(archiveFeed.players);
   const totalPlayers = players.length;
   const activePlayers = players.filter((player) => player.currentStatus === "active").length;
   const founders = players.filter((player) => player.isFounder).length;
@@ -32,6 +34,7 @@ export default async function RosterPage() {
     archiveFeed.source === "unavailable"
       ? [getArchiveFeedUnavailableMessage(archiveFeed.message)]
       : [];
+  const verificationSummary = getEntityVerificationSummary("organization", "team-soul");
 
   return (
     <div className="roster-route relative space-y-6 overflow-hidden pt-28 md:space-y-8 md:pt-32">
@@ -104,6 +107,17 @@ export default async function RosterPage() {
 
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
+            <VerificationSummaryPanel
+              summary={verificationSummary}
+              eyebrow="Roster truth"
+              title="Verified roster layer"
+              description="Player cards now lead into verified profiles with timeline, sources, and approved public changes."
+            />
+          </div>
+        </section>
+
+        <section className="archive-section !pt-0 !pb-0">
+          <div className="page-wrap">
             <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
               <RevealOnScroll as="div" className="archive-panel public-card route-info-panel rounded-[20px] p-4 md:rounded-[28px] md:p-7" delay={0.04}>
                 <p className="section-kicker">Roster signal</p>
@@ -132,7 +146,7 @@ export default async function RosterPage() {
 
         <section className="archive-section !pt-0 !pb-0">
           <div className="page-wrap">
-            <PlayerGrid players={archiveFeed.players} eras={archiveFeed.eras} />
+            <PlayerGrid players={players} eras={archiveFeed.eras} />
           </div>
         </section>
     </div>

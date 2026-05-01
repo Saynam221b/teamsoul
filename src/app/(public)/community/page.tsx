@@ -4,24 +4,48 @@ import DataFallbackNotice from "@/components/shared/DataFallbackNotice";
 import RevealOnScroll from "@/components/shared/RevealOnScroll";
 import { getCurrentCommunityUser } from "@/lib/communityAuth";
 import {
+  getCommunityReactionSummaries,
+  getCommunityReactionsForUser,
   getCommunityVoteAggregate,
   getCommunityVoteForUser,
+  getFanProfileSummary,
   getFeaturedCommunityBoard,
+  listPublicCommunityLiveEvents,
+  listPublicMediaMoments,
+  listCommunityPosts,
 } from "@/lib/db/community";
 import type {
   CommunityBoard,
+  CommunityLiveEvent,
+  CommunityPost,
+  CommunityReactionKey,
+  CommunityReactionSummary,
   CommunityUser,
   CommunityVote,
   CommunityVoteAggregate,
+  FanProfileSummary,
+  MediaMoment,
 } from "@/data/types";
 
 export const metadata: Metadata = {
-  title: "Community Voting - Team SOUL Archive",
+  title: "Fan Arena - Team SOUL",
   description:
-    "Log in, join the community board, and cast one vote for MVP, Best IGL, and winner predictions.",
+    "Join Team SOUL's Fan Arena with live pulses, reactions, badges, moments, posts, and one-shot prediction boards.",
 };
 
 export const dynamic = "force-dynamic";
+
+type PublicCommunitySnapshot = {
+  board: CommunityBoard | null;
+  posts: CommunityPost[];
+  voteAggregate: CommunityVoteAggregate | null;
+  liveEvents: CommunityLiveEvent[];
+  reactionSummary: Record<string, CommunityReactionSummary>;
+  moments: MediaMoment[];
+};
+
+let publicSnapshotCache: { expiresAt: number; data: PublicCommunitySnapshot } | null = null;
+const PUBLIC_SNAPSHOT_TTL_MS = 2500;
 
 function isMissingCommunityTableError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -32,26 +56,86 @@ function isMissingCommunityTableError(error: unknown): boolean {
       message.includes("community_sessions") ||
       message.includes("community_board_teams") ||
       message.includes("community_board_players") ||
-      message.includes("community_board_votes"))
+      message.includes("community_board_votes") ||
+      message.includes("community_posts") ||
+      message.includes("community_post_reactions") ||
+      message.includes("community_live_events") ||
+      message.includes("community_reactions") ||
+      message.includes("community_badges") ||
+      message.includes("media_moments") ||
+      message.includes("fan_engagement_rollups"))
   );
+}
+
+async function getPublicCommunitySnapshot(): Promise<PublicCommunitySnapshot> {
+  const now = Date.now();
+  if (publicSnapshotCache && publicSnapshotCache.expiresAt > now) {
+    return publicSnapshotCache.data;
+  }
+
+  const board = await getFeaturedCommunityBoard();
+  const [posts, voteAggregate, liveEvents, moments] = await Promise.all([
+    listCommunityPosts(null),
+    board ? getCommunityVoteAggregate(board.id) : Promise.resolve(null),
+    listPublicCommunityLiveEvents(board?.id ?? null),
+    listPublicMediaMoments(4),
+  ]);
+  const reactionSummary = await getCommunityReactionSummaries(liveEvents.map((event) => event.id));
+  const data = { board, posts, voteAggregate, liveEvents, reactionSummary, moments };
+
+  publicSnapshotCache = {
+    expiresAt: now + PUBLIC_SNAPSHOT_TTL_MS,
+    data,
+  };
+
+  return data;
 }
 
 export default async function CommunityPage() {
   let user: CommunityUser | null = null;
   let board: CommunityBoard | null = null;
+  let posts: CommunityPost[] = [];
   let userVote: CommunityVote | null = null;
   let voteAggregate: CommunityVoteAggregate | null = null;
+  let liveEvents: CommunityLiveEvent[] = [];
+  let reactionSummary: Record<string, CommunityReactionSummary> = {};
+  let userReactions: Record<string, CommunityReactionKey[]> = {};
+  let fanProfile: FanProfileSummary | null = null;
+  let moments: MediaMoment[] = [];
   let setupMessage: string | null = null;
 
   try {
     user = await getCurrentCommunityUser();
-    board = await getFeaturedCommunityBoard();
-    userVote = user && board ? await getCommunityVoteForUser(board.id, user.id) : null;
-    voteAggregate = user && board ? await getCommunityVoteAggregate(board.id) : null;
+
+    if (!user) {
+      const snapshot = await getPublicCommunitySnapshot();
+      board = snapshot.board;
+      posts = snapshot.posts;
+      voteAggregate = snapshot.voteAggregate;
+      liveEvents = snapshot.liveEvents;
+      reactionSummary = snapshot.reactionSummary;
+      moments = snapshot.moments;
+    } else {
+      board = await getFeaturedCommunityBoard();
+      [posts, userVote, voteAggregate, liveEvents, moments] = await Promise.all([
+        listCommunityPosts(user.id),
+        board ? getCommunityVoteForUser(board.id, user.id) : Promise.resolve(null),
+        board ? getCommunityVoteAggregate(board.id) : Promise.resolve(null),
+        listPublicCommunityLiveEvents(board?.id ?? null),
+        listPublicMediaMoments(4),
+      ]);
+
+      const liveEventIds = liveEvents.map((event) => event.id);
+      reactionSummary = await getCommunityReactionSummaries(liveEventIds);
+      [userReactions, fanProfile] = await Promise.all([
+        getCommunityReactionsForUser(user.id, liveEventIds),
+        getFanProfileSummary(user),
+      ]);
+    }
   } catch (error) {
     if (isMissingCommunityTableError(error)) {
       setupMessage =
-        "Community module tables are missing. Apply the migration `supabase/migrations/20260416_add_community_module.sql` to enable this page.";
+        "Community module tables are missing. Apply `supabase/migrations/20260416_add_community_module.sql`, `supabase/migrations/20260501_add_community_posts.sql`, and `supabase/migrations/20260501_add_fan_arena_os.sql` to enable Fan Arena.";
     } else {
       throw error;
     }
@@ -92,7 +176,18 @@ export default async function CommunityPage() {
 
       <section className="archive-section !pt-0 !pb-0">
         <div className="page-wrap">
-          <CommunityClient user={user} board={board} userVote={userVote} voteAggregate={voteAggregate} />
+          <CommunityClient
+            user={user}
+            board={board}
+            posts={posts}
+            userVote={userVote}
+            voteAggregate={voteAggregate}
+            liveEvents={liveEvents}
+            reactionSummary={reactionSummary}
+            userReactions={userReactions}
+            fanProfile={fanProfile}
+            moments={moments}
+          />
         </div>
       </section>
     </div>

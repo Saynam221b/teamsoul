@@ -27,6 +27,8 @@ const EXTRA_TABLES = [
   "community_board_teams",
   "community_board_players",
   "community_board_votes",
+  "community_posts",
+  "community_post_reactions",
 ] as const;
 
 async function getTableCount(

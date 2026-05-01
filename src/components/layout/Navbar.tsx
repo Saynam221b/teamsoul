@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { href: "/tournaments", label: "Tournaments" },
   { href: "/community", label: "Community" },
   { href: "/roster", label: "Roster" },
+  { href: "/updates", label: "Updates" },
   { href: "/bgis-champions", label: "Champions" },
 ];
 
